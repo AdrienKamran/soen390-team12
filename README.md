@@ -18,3 +18,6 @@ Tyler Znoj
 
 ## Jira link:
 https://soen390-team12.atlassian.net/
+
+## How to link commits to JIRA issues:
+https://github.com/integrations/jira/blob/master/README.md
