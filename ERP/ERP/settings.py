@@ -25,7 +25,7 @@ SECRET_KEY = '215zumz6ukwkgxfze+jq$e=ikjz$9j+#9ypdjuq5u6tc@k57c!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -75,15 +75,16 @@ WSGI_APPLICATION = 'ERP.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
+# altered based on given will figure a different way over time
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ERPdatabase',
+        'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': 'team12',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'PASSWORD': 'postgres',
+        'HOST': 'db',
+        'PORT': 5432,
     }
 }
 """ *TEMPLATE FOR SQLITE*
