@@ -13,6 +13,11 @@ from .models import *
 from .forms import CreateUserForm
 #from .filters import OrderFilter
 
+import logging
+
+# Create logger
+logger = logging.getLogger(__name__)
+
 # Create your views here.
 @login_required(login_url='login')
 def home(request):
@@ -27,8 +32,9 @@ def register(request):
             form.save()
             user = form.cleaned_data.get('username')
             messages.success(request, 'Account was created for ' + user)
+            logger.debug("creating account with name: " + user)
             return redirect('login')             
-    context = {'form':form}
+    context = {'form': form}
     return render(request, 'register.html', context)
 
 
@@ -41,13 +47,16 @@ def loginPage(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            logger.debug(username + " has logged in")
             return redirect('home')
         else:
             messages.info(request, 'Username OR password is incorrect')
+            logger.debug(username + " entered incorrect password")
     context = {}
     return render(request, 'login.html', context)
 
 def logoutUser(request):
-	logout(request)
-	return redirect('login')
+    logout(request)
+    logger.debug("User has logged out")
+    return redirect('login')
 
