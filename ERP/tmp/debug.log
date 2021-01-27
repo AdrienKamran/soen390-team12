@@ -1,3 +1,4 @@
 2021-01-26 23:01:51,780 django.utils.autoreload INFO     Watching for file changes with StatReloader
 2021-01-26 23:02:11,226 sample.views DEBUG    tyler has logged in
 2021-01-26 23:02:24,389 sample.views DEBUG    User has logged out
+2021-01-27 21:39:25,065 django.utils.autoreload INFO     Watching for file changes with StatReloader
