@@ -21,23 +21,23 @@
                 </a>
                 <hr class="sidebar-divider my-0">
                 <ul class="nav navbar-nav text-light" id="accordionSidebar">
-                    <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="table.html"><i class="fas fa-table"></i><span>Table</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user"></i><span>Profile</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-table"></i><span>Table</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="far fa-user-circle"></i><span>Login</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'register' %}"><i class="fas fa-user-circle"></i><span>Register</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="forgot-password.html"><i class="fas fa-key"></i><span>Forgotten Password</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="404.html"><i class="fas fa-exclamation-circle"></i><span>Page Not Found</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fas fa-window-maximize"></i><span>Blank Page</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-list"></i><span>Planning</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-calendar-o"></i><span>Scheduling</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-shopping-bag"></i><span>Vendors</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-bar-chart-o"></i><span>Production</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-search"></i><span>Quality Management</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-gift"></i><span>Packaging</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-truck"></i><span>Transport</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-user"></i><span>Sales (Customers)</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-money"></i><span>Accounting</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-key"></i><span>Forgotten Password</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-exclamation-circle"></i><span>Page Not Found</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-window-maximize"></i><span>Blank Page</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-list"></i><span>Planning</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-calendar-o"></i><span>Scheduling</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-shopping-bag"></i><span>Vendors</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-bar-chart-o"></i><span>Production</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-search"></i><span>Quality Management</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-gift"></i><span>Packaging</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-truck"></i><span>Transport</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-user"></i><span>Sales (Customers)</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-money"></i><span>Accounting</span></a></li>
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
             </div>
@@ -51,7 +51,11 @@
                                 <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
                             </div>
                         </form>
-                        <p><a href="https://accounts.google.com/ServiceLogin/signinchooser?service=wise&passive=1209600&continue=https%3A%2F%2Fdrive.google.com%2Fdrive%2Fmy-drive&followup=https%3A%2F%2Fdrive.google.com%2Fdrive%2Fmy-drive&flowName=GlifWebSignIn&flowEntry=ServiceLogin">Access Google Drive</a></p>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col offset-xl-11"><a class="btn btn-primary" role="button" data-toggle="tooltip" data-bs-tooltip="" data-placement="bottom" style="width: 107px;margin: 6px;" title="Access your Google Drive" href="https://accounts.google.com/ServiceLogin/signinchooser?service=wise&amp;passive=1209600&amp;continue=https%3A%2F%2Fdrive.google.com%2Fdrive%2Fmy-drive&amp;followup=https%3A%2F%2Fdrive.google.com%2Fdrive%2Fmy-drive&amp;flowName=GlifWebSignIn&amp;flowEntry=ServiceLogin"><i class="fab fa-google-drive" style="padding: 4px;"></i>Drive</a></div>
+                            </div>
+                        </div>
                         <ul class="nav navbar-nav flex-nowrap ml-auto">
                             <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#"><i class="fas fa-search"></i></a>
                                 <div class="dropdown-menu dropdown-menu-right p-3 animated--grow-in" aria-labelledby="searchDropdown">
