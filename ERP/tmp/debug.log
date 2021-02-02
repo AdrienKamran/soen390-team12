@@ -248,3 +248,16 @@ NameError: name 'HttpResponseNotFound' is not defined
 2021-02-02 17:10:37,153 django.request WARNING  Not Found: /csv
 2021-02-02 17:11:12,110 django.security.csrf WARNING  Forbidden (CSRF token missing or incorrect.): /csv
 2021-02-02 17:11:21,812 django.request WARNING  Not Found: /csv
+2021-02-02 17:22:03,454 django.utils.autoreload INFO     /code/sample/views.py changed, reloading.
+2021-02-02 17:22:03,454 asyncio      DEBUG    Using selector: EpollSelector
+2021-02-02 17:22:03,837 django.utils.autoreload INFO     Watching for file changes with StatReloader
+2021-02-02 17:22:15,097 django.utils.autoreload INFO     /code/sample/views.py changed, reloading.
+2021-02-02 17:22:15,098 asyncio      DEBUG    Using selector: EpollSelector
+2021-02-02 17:22:15,465 django.utils.autoreload INFO     Watching for file changes with StatReloader
+2021-02-02 17:23:05,692 django.utils.autoreload INFO     /code/sample/urls.py changed, reloading.
+2021-02-02 17:23:05,693 asyncio      DEBUG    Using selector: EpollSelector
+2021-02-02 17:23:06,132 django.utils.autoreload INFO     Watching for file changes with StatReloader
+2021-02-02 17:23:15,513 django.utils.autoreload INFO     /code/sample/urls.py changed, reloading.
+2021-02-02 17:23:15,514 asyncio      DEBUG    Using selector: EpollSelector
+2021-02-02 17:23:15,953 django.utils.autoreload INFO     Watching for file changes with StatReloader
+2021-02-02 17:23:58,538 django.request WARNING  Not Found: /generate

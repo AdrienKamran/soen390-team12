@@ -64,6 +64,20 @@ def logoutUser(request):
     logger.debug("User has logged out")
     return redirect('login')
 
+#decided to combine the two endpoints together
+def generateReport(request):
+    if request.method =='GET':
+        queryDict = request.GET
+        reportFormat = queryDict.get('format', None)
+        if reportFormat == 'CSV':
+            return generateCSV(request)
+        if reportFormat == 'PDF':
+            return generatePDF(request)
+        else:
+            return HttpResponseNotFound("No report in supplied format")
+    else:
+        return HttpResponseNotFound("Could not process your request") 
+
 
 def generatePDF(request):
     # Create a file-like buffer to receive PDF data.
