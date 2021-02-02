@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect 
-from django.http import HttpResponse, FileResponse
+from django.http import HttpResponse, FileResponse, HttpResponseNotFound
 from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
 
@@ -64,6 +64,7 @@ def logoutUser(request):
     logger.debug("User has logged out")
     return redirect('login')
 
+
 def generatePDF(request):
     # Create a file-like buffer to receive PDF data.
     buffer = io.BytesIO()
@@ -76,9 +77,9 @@ def generatePDF(request):
         if report=='TEST':
             p = drawTestReport(buffer)
         else:
-            return 
+            return HttpResponseNotFound("There is no valid report")
     else:
-        return
+        return HttpResponseNotFound("Could not process your request")
     # Close the PDF object cleanly, and we're done.
     p.showPage()
     p.save()
@@ -103,6 +104,7 @@ def drawTestReport(buffer):
     return p
 
 
+
 def generateCSV(request):
     response = None
     report =None
@@ -112,9 +114,9 @@ def generateCSV(request):
         if report=='TEST':
             response = writeTestReport()
         else:
-            return 
+            return HttpResponseNotFound("There is no valid report")
     else:
-        return
+        return HttpResponseNotFound("Could not process your request")
     return response
 
 """
