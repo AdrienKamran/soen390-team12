@@ -3,7 +3,7 @@ from django.core import mail
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from utils.models import EmailNotification, EmailNotificationUser
+from .models import EmailNotification, EmailNotificationUser
 
 
 @receiver(post_save, sender=User)
