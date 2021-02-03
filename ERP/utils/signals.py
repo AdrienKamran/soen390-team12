@@ -10,7 +10,7 @@ from utils.models import EmailNotificationUser, EmailNotificationUser
 def send_welcome_email(sender, instance, created, **kwargs):
     user = instance
     if created:
-        email_notification = EmailNotificationUser(
+        email_notification = EmailNotification(
             subject='Welcome to the ERP App',
             message='Welcome to our new platform',
         )
