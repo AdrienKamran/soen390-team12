@@ -130,6 +130,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Auto logout after 30min
+SESSION_COOKIE_AGE = 1800
+# Refresh timer for every new request
+SESSION_SAVE_EVERY_REQUEST = True
 
 SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
 
