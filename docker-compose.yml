@@ -4,8 +4,6 @@ services:
    pgadmin:
       image: dpage/pgadmin4
       container_name: pgadmin
-      depends_on:
-        - db
       ports:
         - "5051:80"
       environment:
