@@ -8,7 +8,7 @@ Anthony Chraim
 
 Cedrik Duboi
 
-Killian KKelly
+Killian Kelly
 
 Matthew Giancola
 
