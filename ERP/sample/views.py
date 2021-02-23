@@ -50,7 +50,7 @@ def register(request):
 def loginPage(request):
     if request.method == 'POST':
         username = request.POST.get('username')
-        password =request.POST.get('password')
+        password =request.POST.get('password1')
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
