@@ -18,7 +18,7 @@ class Products(models.Model):
 
 class RawMaterials(models.Model):
     rm_name = models.CharField(null=False, blank=False, max_length=80, unique=True)
-    rm_unit_cost = models.DecimalField(decimal_places=2, null=False, blank=False)
+    rm_unit_cost = models.DecimalField(decimal_places=2, null=False, blank=False, max_digits=9)
 
 
 class Warehouse(models.Model):
@@ -34,8 +34,8 @@ class MadeOfRM(models.Model):
     rm_quantity = models.IntegerField(default=1, null=False, blank=False)
 
 class MadeOfParts(models.Model):
-    product_1_FK = models.ForeignKey(Products, on_delete=models.CASCADE)
-    product_2_FK = models.ForeignKey(Products, on_delete=models.CASCADE)
+    product_1_FK = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='%(class)s_parent_product')
+    product_2_FK = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='%(class)s_child_part')
     p_quantity = models.IntegerField(default=1, null=False, blank=False)
 
 class ContainsRM(models.Model):
