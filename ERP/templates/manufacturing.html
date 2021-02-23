@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Table - TEAM12 ERP</title>
+    <title>Manufacture - TEAM12 ERP</title>
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
     <link rel="stylesheet" href="{% static 'fonts/fontawesome-all.min.css' %}">
@@ -176,10 +176,15 @@
                                                         </div>
                                                         <div class="form-row" style="padding: 5px;height: 48px;">
                                                             <div class="col d-flex justify-content-center"><select class="form-control" id="chosen-component" name="chosen component">
-                                                                    <optgroup label="This is a group">
-                                                                        <option value="12" selected="">This is item 1</option>
-                                                                        <option value="13">This is item 2</option>
-                                                                        <option value="14">This is item 3</option>
+                                                                    <optgroup label="Products">
+                                                                        {% for p in products%}
+                                                                            <option value="{{p.p_name}}" selected="">{{p.p_name}}</option>
+                                                                        {% endfor %}
+                                                                    </optgroup>
+                                                                    <optgroup label="Raw Materials">
+                                                                        {% for p in materials%}
+                                                                            <option value="{{p.rm_name}}" selected="">{{p.rm_name}} ({{p.rm_unit_cost}})</option>
+                                                                        {% endfor %}
                                                                     </optgroup>
                                                                 </select></div>
                                                             <div class="col d-flex justify-content-center"><input class="form-control" type="number" id="chosen-component-qty" name="chosen component qty"></div>
@@ -214,17 +219,18 @@
                                         <div class="row">
                                             <div class="col">
                                                 <form id="manufacture-product">
+                                                    <input type="hidden" id="dateTime" value="{{incident.created_date_time}}"></input>
                                                     <fieldset><label for="choose-material-list">Choose a material list</label><select class="form-control" id="choose-material-list" name="choose material list">
-                                                            <optgroup label="This is a group">
-                                                                <option value="12" selected="">This is item 1</option>
-                                                                <option value="13">This is item 2</option>
-                                                                <option value="14">This is item 3</option>
+                                                            <optgroup label="Products Material Lists">
+                                                                {% for p in products%}
+                                                                    <option value="{{p.p_name}}" selected="">{{p.p_name}}</option>
+                                                                {% endfor %}
                                                             </optgroup>
                                                         </select><label for="warehouse-destination">Choose a warehouse destination</label><select class="form-control" id="warehouse-destination" name="warehouse destination">
-                                                            <optgroup label="This is a group">
-                                                                <option value="12" selected="">This is item 1</option>
-                                                                <option value="13">This is item 2</option>
-                                                                <option value="14">This is item 3</option>
+                                                            <optgroup label="Active Warehouses">
+                                                                {% for p in warehouse%}
+                                                                    <option value="{{p.p_name}}" selected="">{{p.w_name}}</option>
+                                                                {% endfor %}
                                                             </optgroup>
                                                         </select><label for="produce-quantity">Choose the quantity to produce</label><input class="form-control" type="number" id="produce-quantity" name="produce quantity">
                                                         <legend>Choose a product to manufacture:</legend>
@@ -235,39 +241,33 @@
                                                 <div class="card">
                                                     <div class="card-body">
                                                         <h4 class="card-title">Your production request:</h4>
-                                                        <h6 class="text-muted card-subtitle mb-2">Placed on [DATETIME HERE]</h6>
+                                                        <h6 class="text-muted card-subtitle mb-2">Placed on {{incident.created_date_time}}</h6>
                                                         <p class="card-text">The required components are:</p>
                                                         <div class="table-responsive">
-                                                            <table class="table">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Component</th>
-                                                                        <th>Quantity</th>
-                                                                        <th>Available</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td>Steel</td>
-                                                                        <td>8</td>
-                                                                        <td>153</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Leather</td>
-                                                                        <td>7</td>
-                                                                        <td>230</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Chain</td>
-                                                                        <td>1</td>
-                                                                        <td>4</td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
+                                                            {%if productionRequest%}
+                                                                <table class="table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Component</th>
+                                                                            <th>Quantity</th>
+                                                                            <th>Available</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        {% for name, qty, avi in k.items%}
+                                                                        <tr>
+                                                                            <td>{{name}}</td>
+                                                                            <td>{{qty}}</td>
+                                                                            <td>{{avi}}</td>
+                                                                        </tr>
+                                                                        {% endfor %}
+                                                                    </tbody>
+                                                                </table>
+                                                            {% endif %}
                                                         </div>
                                                         <p class="card-text">The product's value:</p>
-                                                        <p class="card-text" style="font-size: 32px;color: var(--blue);">[TOTAL VALUE HERE]</p>
-                                                        <p class="card-text">&nbsp;= (sum of component values) x 105%</p><button class="btn btn-primary" type="button" form="manufacture-product">Manufacture</button>
+                                                        <p class="card-text" style="font-size: 32px;color: var(--blue);">{{productionRequestValue * 1.05}}</p>
+                                                        <p class="card-text">&nbsp;= {{productionRequestValue}} x 105%</p><button class="btn btn-primary" type="button" form="manufacture-product">Manufacture</button>
                                                     </div>
                                                 </div>
                                             </div>

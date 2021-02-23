@@ -47,3 +47,7 @@ class ContainsProducts(models.Model):
     w_FK = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     product_FK = models.ForeignKey(Products, on_delete=models.CASCADE)
     p_quantity = models.IntegerField(default=1, null=False, blank=False)
+
+class MaterialList(models.Model):
+    ml_for_product= models.ForeignKey(Products,on_delete=models.CASCADE)
+    ml_json = models.JSONField()

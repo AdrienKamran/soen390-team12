@@ -155,9 +155,3 @@ def writeTestReport():
     return response
 
 
-def salesViewPage(request):
-    return render(request, template_name='sales.html', context={})
-
-
-def manufacturingViewPage(request):
-    return render(request, template_name='manufacturing.html', context={})
