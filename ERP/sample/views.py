@@ -67,6 +67,10 @@ def logoutUser(request):
     logger.debug("User has logged out")
     return redirect('login')
 
+@login_required(login_url='login')
+def inventory(request):
+    return render(request, 'inventory.html')    
+
 #decided to combine the two endpoints together
 def generateReport(request):
     if request.method =='GET':
