@@ -146,3 +146,11 @@ def writeTestReport():
     writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
     writer.writerow(['Second row', 'A', 'B', 'C', '"Testing"', "Here's a quote"])
     return response
+
+
+def salesViewPage(request):
+    return render(request, template_name='sales.html', context={})
+
+
+def manufacturingViewPage(request):
+    return render(request, template_name='manufacturing.html', context={})
