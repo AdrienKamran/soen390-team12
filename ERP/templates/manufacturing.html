@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Table - TEAM12 ERP</title>
+    <title>Manufacture - TEAM12 ERP</title>
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
     <link rel="stylesheet" href="{% static 'fonts/fontawesome-all.min.css' %}">
@@ -47,7 +47,7 @@
             <div id="content">
                 <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
                     <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
-                        <form class="form-inline d-none d-sm-inline-block mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <form class="form-inline d-none d-sm-inline-block mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">{% csrf_token %}
                             <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
                                 <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
                             </div>
@@ -60,7 +60,7 @@
                         <ul class="navbar-nav flex-nowrap ml-auto">
                             <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
                                 <div class="dropdown-menu dropdown-menu-right p-3 animated--grow-in" aria-labelledby="searchDropdown">
-                                    <form class="form-inline mr-auto navbar-search w-100">
+                                    <form class="form-inline mr-auto navbar-search w-100">{% csrf_token %}
                                         <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
                                             <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
                                         </div>
@@ -164,7 +164,7 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col">
-                                                <form id="create-material-list">
+                                                <form id="create-material-list" method="POST" action="/createmateriallist">{% csrf_token %}
                                                     <fieldset>
                                                         <div class="form-row" style="padding: 5px;height: 48px;">
                                                             <div class="col d-flex justify-content-left"><label for="product-name">Write a product name:</label><input class="form-control" type="text" id="product-name" style="margin: 0px 30px 0px 30px;width: 400px;" name="product name"></div>
@@ -174,19 +174,31 @@
                                                                 <div class="form-check"><input class="form-check-input" type="checkbox" id="bicycle-check" name="bicycle check"><label class="form-check-label" for="bicycle-check">Check this box if this product is classified as a bicycle!</label></div>
                                                             </div>
                                                         </div>
-                                                        <div class="form-row" style="padding: 5px;height: 48px;">
-                                                            <div class="col d-flex justify-content-center"><select class="form-control" id="chosen-component" name="chosen component">
-                                                                    <optgroup label="This is a group">
-                                                                        <option value="12" selected="">This is item 1</option>
-                                                                        <option value="13">This is item 2</option>
-                                                                        <option value="14">This is item 3</option>
-                                                                    </optgroup>
-                                                                </select></div>
-                                                            <div class="col d-flex justify-content-center"><input class="form-control" type="number" id="chosen-component-qty" name="chosen component qty"></div>
-                                                            <div class="col d-flex justify-content-center"><button class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button></div>
+                                                        <div id="partsListRows">
+                                                            <div class="form-row" style="padding: 5px;height: 48px;">
+                                                                <div class="col d-flex justify-content-center"><select class="form-control" id="chosen-component" name="chosen component">
+                                                                        <optgroup label="Products">
+                                                                            {%if products%}
+                                                                                {% for p in products%}
+                                                                                    <option value="{{p.p_name}}" selected="">{{p.p_name}}</option>
+                                                                                {% endfor %}
+                                                                            {% endif %}
+                                                                        </optgroup>
+                                                                        <optgroup label="Raw Materials">
+                                                                            {%if materials%}
+                                                                                {% for p in materials%}
+                                                                                    <option value="{{p.rm_name}}" selected="">{{p.rm_name}} ({{p.rm_unit_cost}})</option>
+                                                                                {% endfor %}
+                                                                            {% endif %}
+                                                                        </optgroup>
+                                                                    </select></div>
+                                                                <div class="col d-flex justify-content-center"><input class="form-control" type="number" id="chosen-component-qty" name="chosen component qty"></div>
+                                                                <div class="col d-flex justify-content-center"><!--<button class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button>--></div>
+                                                            </div>
+                                                            <!--Generated will be appended below here-->
                                                         </div>
                                                         <div class="form-row" style="padding: 5px;height: 48px;">
-                                                            <div class="col d-flex justify-content-center"><button class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Add new component"><i class="fa fa-plus"></i></button></div>
+                                                            <div onclick="addMaterial()" class="col d-flex justify-content-center"><button class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Add new component"><i class="fa fa-plus"></i></button></div>
                                                             <div class="col d-flex justify-content-center"></div>
                                                             <div class="col d-flex justify-content-center"></div>
                                                         </div>
@@ -197,7 +209,7 @@
                                                 <div class="card">
                                                     <div class="card-body">
                                                         <h4 class="card-title">How to create a material list</h4>
-                                                        <p class="card-text">- Write a unique product name;<br>- Pick the product's components (raw materials, other products, and their respective quantities);<br>- Click the button below!</p><button class="btn btn-primary" type="button" form="create-material-list">Create Material List</button>
+                                                        <p class="card-text">- Write a unique product name;<br>- Pick the product's components (raw materials, other products, and their respective quantities);<br>- Click the button below!</p><input class="btn btn-primary" type="submit" form="create-material-list" value="Create Material List"></input>
                                                     </div>
                                                 </div>
                                             </div>
@@ -213,18 +225,23 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col">
-                                                <form id="manufacture-product">
+                                                <form id="manufacture-product"> {% csrf_token %}
+                                                    <input type="hidden" id="dateTime" value="{{incident.created_date_time}}"></input>
                                                     <fieldset><label for="choose-material-list">Choose a material list</label><select class="form-control" id="choose-material-list" name="choose material list">
-                                                            <optgroup label="This is a group">
-                                                                <option value="12" selected="">This is item 1</option>
-                                                                <option value="13">This is item 2</option>
-                                                                <option value="14">This is item 3</option>
+                                                            <optgroup label="Products Material Lists">
+                                                                {% if products %}
+                                                                    {% for p in products%}
+                                                                        <option value="{{p.p_name}}" selected="">{{p.p_name}}</option>
+                                                                    {% endfor %}
+                                                                {% endif %}
                                                             </optgroup>
                                                         </select><label for="warehouse-destination">Choose a warehouse destination</label><select class="form-control" id="warehouse-destination" name="warehouse destination">
-                                                            <optgroup label="This is a group">
-                                                                <option value="12" selected="">This is item 1</option>
-                                                                <option value="13">This is item 2</option>
-                                                                <option value="14">This is item 3</option>
+                                                            <optgroup label="Active Warehouses">
+                                                                {% if warehouse %}
+                                                                    {% for p in warehouse%}
+                                                                        <option value="{{p.p_name}}" selected="">{{p.w_name}}</option>
+                                                                    {% endfor %}
+                                                                {% endif %}
                                                             </optgroup>
                                                         </select><label for="produce-quantity">Choose the quantity to produce</label><input class="form-control" type="number" id="produce-quantity" name="produce quantity">
                                                         <legend>Choose a product to manufacture:</legend>
@@ -235,39 +252,34 @@
                                                 <div class="card">
                                                     <div class="card-body">
                                                         <h4 class="card-title">Your production request:</h4>
-                                                        <h6 class="text-muted card-subtitle mb-2">Placed on [DATETIME HERE]</h6>
+                                                        <h6 class="text-muted card-subtitle mb-2">Placed on {{incident.created_date_time}}</h6>
                                                         <p class="card-text">The required components are:</p>
                                                         <div class="table-responsive">
-                                                            <table class="table">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Component</th>
-                                                                        <th>Quantity</th>
-                                                                        <th>Available</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td>Steel</td>
-                                                                        <td>8</td>
-                                                                        <td>153</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Leather</td>
-                                                                        <td>7</td>
-                                                                        <td>230</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Chain</td>
-                                                                        <td>1</td>
-                                                                        <td>4</td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
+                                                            {%if productionRequest%}
+                                                                <table class="table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Component</th>
+                                                                            <th>Quantity</th>
+                                                                            <th>Available</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        {% for name, qty, avi in productionRequest.items%}
+                                                                        <tr>
+                                                                            <td>{{name}}</td>
+                                                                            <td>{{qty}}</td>
+                                                                            <td>{{avi}}</td>
+                                                                        </tr>
+                                                                        {% endfor %}
+                                                                    </tbody>
+                                                                </table>
+                                                            {% endif %}
                                                         </div>
+                                                        <!--Below should be temp and will be converted over to javascript based to be more dynamic-->
                                                         <p class="card-text">The product's value:</p>
-                                                        <p class="card-text" style="font-size: 32px;color: var(--blue);">[TOTAL VALUE HERE]</p>
-                                                        <p class="card-text">&nbsp;= (sum of component values) x 105%</p><button class="btn btn-primary" type="button" form="manufacture-product">Manufacture</button>
+                                                        <p class="card-text" style="font-size: 32px;color: var(--blue);">{{productionRequestValueMul}}</p>
+                                                        <p class="card-text">&nbsp;= {{productionRequestValue}} x 105%</p><button class="btn btn-primary" type="button" form="manufacture-product">Manufacture</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -286,6 +298,26 @@
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
+    <script>
+        //Function to add a new row to the list of materials
+        function addMaterial(){
+            anchor = document.getElementById("partsListRows");
+            num = anchor.childNodes.length;
+            componentTemplate = document.createElement("DIV");
+            componentTemplate.setAttribute("class", "form-row");
+            componentTemplate.setAttribute("style", "padding: 5px;height:48px;");
+            componentTemplate.setAttribute("id","cRow"+num);
+            //the below code could be converted over to DOMNODES or django based solution but should work fine for now
+            componentTemplate.innerHTML =  '<div class="col d-flex justify-content-center"><select class="form-control" id="'+num+'chosen-component" name="chosen component"><optgroup label="Products">{%if products%}{% for p in products%}<option value="{{p.p_name}}" selected="">{{p.p_name}}</option>{% endfor %}{%endif%}</optgroup><optgroup label="Raw Materials">{%if materials%}{% for p in materials%}<option value="{{p.rm_name}}" selected="">{{p.rm_name}} ({{p.rm_unit_cost}})</option>{% endfor %}{%endif%}</optgroup></select></div><div class="col d-flex justify-content-center"><input class="form-control" type="number" id="'+num+'chosen-component-qty" name="chosen component qty"></div><div class="col d-flex justify-content-center"><button onclick="removeMaterial('+num+')" class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button></div>'
+            anchor.appendChild(componentTemplate);   
+        }
+        //function to remove a row from the list of materials, autogenerated by addMaterial.
+        function removeMaterial(num){
+            anchor = document.getElementById("partsListRows");
+            target = document.getElementById("cRow"+num);
+            anchor.removeChild(target);
+        }
+    </script>
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/chart.min.js' %}"></script>
