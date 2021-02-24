@@ -11,7 +11,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user
 from inventory.models import *
-from .forms import CreateUserForm
+from .forms import CreateUserForm, OrderRawMaterialForm
 #from .filters import OrderFilter
 from datetime import datetime
 import logging
@@ -79,12 +79,14 @@ def inventory(request):
         product_inventory = ContainsParts.objects.select_related().all()
         raw_material_all = RawMaterials.objects.all()
         warehouse_all = Warehouse.objects.all()
+        vendor_all = Vendor.objects.all()
         date_of_day = datetime.now()
         context = {
             'rm_inventory': raw_material_inventory,
             'product_inventory': product_inventory,
             'raw_material_all': raw_material_all,
             'warehouse_all': warehouse_all,
+            'vendor_all': vendor_all,
             'date_of_day': date_of_day
         }
     return render(request, 'inventory.html', context=context)
@@ -188,9 +190,44 @@ def returnRawMaterial(request):
     return HttpResponse(rm_json)
 
 @login_required(login_url='login')
+def returnVendor(request):
+    v_id = request.GET.get('v_id')
+    vendor = Vendor.objects.filter(pk=v_id).all()
+    v_json = serializers.serialize('json', vendor)
+    return HttpResponse(v_json)
+
+@login_required(login_url='login')
 def orderRawMaterial(request):
     if request.method == 'POST':
-        something = 0
+        # Use form to validate information automatically
+        form = OrderRawMaterialForm(data={
+            'v_FK': request.POST.get('purchase-vendor-pk'),
+            'w_FK': request.POST.get('warehouse-pk'),
+            'rm_FK': request.POST.get('raw-mat-pk'),
+            'order_quantity': request.POST.get('purchase-order-quantity')
+        })
+        if form.is_valid():
+            # save the new record
+            new_order = form.save()
+            new_order.order_status = 'SHIPPED'
+            new_order.save()
+            # for the sake of this sprint, the order is automatically shipped and appears in the warehouse inventory
+
+            #first, check if there is existing raw material in the warehouse inventory
+            rm = ContainsRM.objects.filter(rm_FK=new_order.rm_FK).first()
+            if rm:
+                #this material already exists
+                rm.rm_quantity = rm.rm_quantity + new_order.order_quantity
+                rm.save()
+            else:
+                new_rm = ContainsRM(rm_FK=new_order.rm_FK, w_FK=new_order.w_FK, rm_quantity=new_order.order_quantity)
+                new_rm.save()
+
+            messages.success(request, 'Raw material ordered successfully.')
+            return redirect('inventory')
+        else:
+            messages.error(request, 'Problem ordering raw material.')
+            return redirect('inventory')
     else:
         return redirect('inventory')
 

@@ -15,5 +15,6 @@ urlpatterns = [
     path('inventory/get-raw-material/', views.returnRawMaterial, name='return-raw-material'),
     path('inventory/order-raw-material/', views.orderRawMaterial, name='order-raw-material'),
     path('inventory/create-raw-material/', views.createRawMaterial, name='create-raw-material'),
-    path('inventory/check-unique/', views.checkUniqueRawMatName, name='check-unique')
+    path('inventory/check-unique/', views.checkUniqueRawMatName, name='check-unique'),
+    path('inventory/get-vendor/', views.returnVendor, name='return-vendor')
 ]
