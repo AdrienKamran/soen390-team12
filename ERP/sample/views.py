@@ -73,12 +73,12 @@ def inventory(request):
     if request.method == 'POST':
         var = 0
     else:
-        raw_material_inventory = ContainsRM.objects.select_related().all()
-        product_inventory = ContainsParts.objects.select_related().all()
-        raw_material_all = RawMaterials.objects.all()
+        raw_material_inventory = Contains.objects.select_related().all()
+        product_inventory = Contains.objects.select_related().all()
+        raw_material_all = Part.objects.all()
         warehouse_all = Warehouse.objects.all()
         vendor_all = Vendor.objects.all()
-        rm_orders = OrderRM.objects.select_related().all().order_by('timestamp')
+        rm_orders = Orders.objects.select_related().all().order_by('timestamp')
         date_of_day = datetime.now()
         context = {
             'rm_inventory': raw_material_inventory,
@@ -181,7 +181,7 @@ def salesViewPage(request):
 @login_required(login_url='login')
 def returnRawMaterial(request):
     rm_id = request.GET.get('rm_id')
-    raw_material = RawMaterials.objects.filter(pk=rm_id).all()
+    raw_material = Part.objects.filter(pk=rm_id).all()
     rm_json = serializers.serialize('json', raw_material)
     return HttpResponse(rm_json)
 
@@ -213,13 +213,13 @@ def orderRawMaterial(request):
             # for the sake of this sprint, the order is automatically shipped and appears in the warehouse inventory
 
             #first, check if there is existing raw material in the warehouse inventory
-            rm = ContainsRM.objects.filter(rm_FK=new_order.rm_FK).first()
+            rm = Contains.objects.filter(rm_FK=new_order.rm_FK).first()
             if rm:
                 #this material already exists
                 rm.rm_quantity = rm.rm_quantity + new_order.order_quantity
                 rm.save()
             else:
-                new_rm = ContainsRM(rm_FK=new_order.rm_FK, w_FK=new_order.w_FK, rm_quantity=new_order.order_quantity)
+                new_rm = Contains(rm_FK=new_order.rm_FK, w_FK=new_order.w_FK, rm_quantity=new_order.order_quantity)
                 new_rm.save()
 
             messages.success(request, 'Raw material ordered successfully.')
@@ -236,20 +236,20 @@ def createRawMaterial(request):
         new_rm_name = request.POST.get('new-raw-mat-name')
         if not new_rm_name == "":
             # create a new raw material
-            existing_rm = RawMaterials.objects.filter(rm_name=new_rm_name).first()
+            existing_rm = Part.objects.filter(rm_name=new_rm_name).first()
             if existing_rm:
                 # return to inventory with error message
                 messages.error(request, 'This raw material already exists.')
                 return redirect('inventory')
             else:
                 # material doesn't exist yet
-                new_rm = RawMaterials(rm_name=new_rm_name, rm_unit_cost=request.POST.get('new-mat-cost'))
+                new_rm = Part(rm_name=new_rm_name, rm_unit_cost=request.POST.get('new-mat-cost'))
                 new_rm.save()
                 messages.success(request, 'Raw material created.')
                 return redirect('inventory')
         else:
             # edit existing raw material
-            rm = RawMaterials.objects.get(pk=request.POST.get('existing-raw-mat'))
+            rm = Part.objects.get(pk=request.POST.get('existing-raw-mat'))
             rm.rm_unit_cost = request.POST.get('new-mat-cost')
             rm.save()
             messages.info(request, 'The raw material was modified.')
@@ -260,7 +260,7 @@ def createRawMaterial(request):
 @login_required(login_url='login')
 def checkUniqueRawMatName(request):
     rm_name = request.GET.get('rm_name')
-    rm = RawMaterials.objects.filter(rm_name=rm_name).first()
+    rm = Part.objects.filter(rm_name=rm_name).first()
     if rm:
         json = {
             'rm_pk':rm.pk

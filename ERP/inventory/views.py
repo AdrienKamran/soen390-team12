@@ -59,12 +59,12 @@ def manufacturingViewPage(request):
     containP = None
     #Call all the itmes that we need to render these templates
     try:
-        products = Products.objects.all()
+        products = Part.objects.all()
         print(products)
     except:
         pass
     try:
-        materials = RawMaterials.objects.all()
+        materials = Part.objects.all()
         print(materials)
     except:
         pass
@@ -74,22 +74,22 @@ def manufacturingViewPage(request):
     except:
         pass
     try:
-        madeR = MadeOfRM.objects.all()
+        madeR = MadeOf.objects.all()
         print(madeR)
     except:
         pass
     try:
-        madeP = MadeOfParts.objects.all()
+        madeP = MadeOf.objects.all()
         print(madeP)
     except:
         pass
     try:
-        containR = ContainsRM.objects.all()
+        containR = Contains.objects.all()
         print(containR)
     except:
         pass
     try:
-        containP = ContainsProducts.objects.all()
+        containP = Contains.objects.all()
         print(containP)
     except:
         pass
