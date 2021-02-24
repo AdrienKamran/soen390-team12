@@ -164,7 +164,7 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col">
-                                                <form id="create-material-list">
+                                                <form id="create-material-list" method="POST" action="/createmateriallist">
                                                     <fieldset>
                                                         <div class="form-row" style="padding: 5px;height: 48px;">
                                                             <div class="col d-flex justify-content-left"><label for="product-name">Write a product name:</label><input class="form-control" type="text" id="product-name" style="margin: 0px 30px 0px 30px;width: 400px;" name="product name"></div>
@@ -174,24 +174,27 @@
                                                                 <div class="form-check"><input class="form-check-input" type="checkbox" id="bicycle-check" name="bicycle check"><label class="form-check-label" for="bicycle-check">Check this box if this product is classified as a bicycle!</label></div>
                                                             </div>
                                                         </div>
-                                                        <div class="form-row" style="padding: 5px;height: 48px;">
-                                                            <div class="col d-flex justify-content-center"><select class="form-control" id="chosen-component" name="chosen component">
-                                                                    <optgroup label="Products">
-                                                                        {% for p in products%}
-                                                                            <option value="{{p.p_name}}" selected="">{{p.p_name}}</option>
-                                                                        {% endfor %}
-                                                                    </optgroup>
-                                                                    <optgroup label="Raw Materials">
-                                                                        {% for p in materials%}
-                                                                            <option value="{{p.rm_name}}" selected="">{{p.rm_name}} ({{p.rm_unit_cost}})</option>
-                                                                        {% endfor %}
-                                                                    </optgroup>
-                                                                </select></div>
-                                                            <div class="col d-flex justify-content-center"><input class="form-control" type="number" id="chosen-component-qty" name="chosen component qty"></div>
-                                                            <div class="col d-flex justify-content-center"><button class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button></div>
+                                                        <div id="partsListRows">
+                                                            <div class="form-row" style="padding: 5px;height: 48px;">
+                                                                <div class="col d-flex justify-content-center"><select class="form-control" id="chosen-component" name="chosen component">
+                                                                        <optgroup label="Products">
+                                                                            {% for p in products%}
+                                                                                <option value="{{p.p_name}}" selected="">{{p.p_name}}</option>
+                                                                            {% endfor %}
+                                                                        </optgroup>
+                                                                        <optgroup label="Raw Materials">
+                                                                            {% for p in materials%}
+                                                                                <option value="{{p.rm_name}}" selected="">{{p.rm_name}} ({{p.rm_unit_cost}})</option>
+                                                                            {% endfor %}
+                                                                        </optgroup>
+                                                                    </select></div>
+                                                                <div class="col d-flex justify-content-center"><input class="form-control" type="number" id="chosen-component-qty" name="chosen component qty"></div>
+                                                                <div class="col d-flex justify-content-center"><!--<button class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button>--></div>
+                                                            </div>
+                                                            <!--Generated will be appended below here-->>
                                                         </div>
                                                         <div class="form-row" style="padding: 5px;height: 48px;">
-                                                            <div class="col d-flex justify-content-center"><button class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Add new component"><i class="fa fa-plus"></i></button></div>
+                                                            <div onclick="addMaterial()" class="col d-flex justify-content-center"><button class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Add new component"><i class="fa fa-plus"></i></button></div>
                                                             <div class="col d-flex justify-content-center"></div>
                                                             <div class="col d-flex justify-content-center"></div>
                                                         </div>
@@ -254,7 +257,7 @@
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                        {% for name, qty, avi in k.items%}
+                                                                        {% for name, qty, avi in productionRequest.items%}
                                                                         <tr>
                                                                             <td>{{name}}</td>
                                                                             <td>{{qty}}</td>
@@ -286,6 +289,26 @@
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
+    <script>
+        //Function to add a new row to the list of materials
+        function addMaterial(){
+            anchor = document.getElementById("partsListRows");
+            num = anchor.childNodes.length;
+            componentTemplate = document.createElement("DIV");
+            componentTemplate.setAttribute("class", "form-row");
+            componentTemplate.setAttribute("style", "padding: 5px;height:48px;");
+            componentTemplate.setAttribute("id","cRow"+num);
+            //the below code could be converted over to DOMNODES but should work fine for now
+            componentTemplate.innerHTML =  '<div class="col d-flex justify-content-center"><select class="form-control" id="'+num+'chosen-component" name="chosen component"><optgroup label="Products">{% for p in products%}<option value="{{p.p_name}}" selected="">{{p.p_name}}</option>{% endfor %}</optgroup><optgroup label="Raw Materials">{% for p in materials%}<option value="{{p.rm_name}}" selected="">{{p.rm_name}} ({{p.rm_unit_cost}})</option>{% endfor %}</optgroup></select></div><div class="col d-flex justify-content-center"><input class="form-control" type="number" id="'+num+'chosen-component-qty" name="chosen component qty"></div><div class="col d-flex justify-content-center"><button onclick="removeMaterial('+num+')" class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button></div>'
+            anchor.appendChild(componentTemplate);   
+        }
+        //function to remove a row from the list of materials, autogenerated by addMaterial.
+        function removeMaterial(num){
+            anchor = document.getElementById("partsListRows");
+            target = anchor = document.getElementById("cRow"+num);
+            anchor.removeChild(target);
+        }
+    </script>
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/chart.min.js' %}"></script>

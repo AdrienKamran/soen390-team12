@@ -21,6 +21,26 @@ import logging
 
 
 
+@login_required(login_url='login')
+def createMaterialList(request):
+    if request.method == 'POST':
+        product-name = None
+        bike = False
+        parts = {}
+        counter = 0
+        for key in request.POST:
+            if key == "product-name":
+                product-name = request.POST[key]
+            if key == "bicycle-check":
+                bike = True
+            if "component" in key:
+                #this is a generated component
+                value = request.POST[key]
+                parts[counter] = value
+                counter = counter+1
+    return redirect('manufacturing')             
+
+
 
 @login_required(login_url='login')
 def salesViewPage(request):
