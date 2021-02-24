@@ -198,7 +198,7 @@ def orderRawMaterial(request):
 def createRawMaterial(request):
     if request.method == 'POST':
         new_rm_name = request.POST.get('new-raw-mat-name')
-        if new_rm_name:
+        if not new_rm_name == "":
             # create a new raw meterial
             existing_rm = RawMaterials.objects.filter(rm_name=new_rm_name).first()
             if existing_rm:
@@ -213,9 +213,10 @@ def createRawMaterial(request):
                 return redirect('inventory')
         else:
             # edit existing raw material
-            rm = RawMaterials.objects.filter(rm_name=request.POST.get('existing-raw-mat')).first()
+            rm = RawMaterials.objects.get(pk=request.POST.get('existing-raw-mat'))
             rm.rm_unit_cost = request.POST.get('new-mat-cost')
             rm.save()
+            messages.info(request, 'The raw material was modified.')
             return redirect('inventory')
     else:
         return redirect('inventory')

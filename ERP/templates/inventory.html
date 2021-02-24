@@ -409,6 +409,24 @@
         function SelectExistingRM() {
             element = document.getElementById("new-raw-mat-name");
             element.value = "";
+
+            existing_raw_material = document.getElementById("existing-raw-mat");
+            $.ajax({
+                url: '/inventory/get-raw-material/',
+                data: {
+                    'rm_id': existing_raw_material.value
+                },
+                dataType: 'json',
+                success: function(data) {
+                    var rm_unit_cost = data[0].fields.rm_unit_cost;
+                    var element = document.getElementById("new-mat-cost");
+
+                    element.value = rm_unit_cost
+                },
+                error: function(data) {
+                    alert("Uh-oh");
+                }
+            });
         }
     </script>
 </body>
