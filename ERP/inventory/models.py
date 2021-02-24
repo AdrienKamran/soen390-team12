@@ -129,6 +129,8 @@ class OrderParts(models.Model):
     w_FK = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     order_status = models.TextField(choices=status_choices, null=False, blank=False, default='PENDING')
     order_quantity = models.IntegerField(default=1, null=False, blank=False)
+    order_total_cost = models.DecimalField(decimal_places=2, null=False, blank=False, max_digits=9)
+    timestamp = models.DateTimeField(auto_now_add=True, null=False, blank=False)
 
 class OrderRM(models.Model):
     status_choices = (
@@ -141,3 +143,5 @@ class OrderRM(models.Model):
     w_FK = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     order_status = models.TextField(choices=status_choices, null=False, blank=False, default='PENDING')
     order_quantity = models.IntegerField(default=1, null=False, blank=False)
+    order_total_cost = models.DecimalField(decimal_places=2, null=False, blank=False, max_digits=9)
+    timestamp = models.DateTimeField(auto_now_add=True, null=False, blank=False)

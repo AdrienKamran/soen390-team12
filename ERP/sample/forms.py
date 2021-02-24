@@ -14,4 +14,4 @@ class CreateUserForm(UserCreationForm):
 class OrderRawMaterialForm(forms.ModelForm):
     class Meta:
         model = OrderRM
-        fields = ['v_FK', 'rm_FK', 'w_FK', 'order_quantity']
+        fields = ['v_FK', 'rm_FK', 'w_FK', 'order_quantity', 'order_total_cost']

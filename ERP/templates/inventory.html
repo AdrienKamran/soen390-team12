@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 {% load static %}
+{% load filters %}
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
@@ -156,6 +157,7 @@
                                 <li class="nav-item"><a class="nav-link active" href="#tab1" data-toggle="tab">Inventory</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#tab2" data-toggle="tab">Order</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#tab3" data-toggle="tab">Create</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#tab4" data-toggle="tab">Order History</a></li>
                             </ul>
                         </div>
                         <div class="card-body tab-content">
@@ -271,7 +273,7 @@
                                                                     <option value="{{ vendor.pk }}">{{ vendor.v_name }}</option>
                                                                 {% endfor %}
                                                             </optgroup>
-                                                        </select><label for="purchase-order-quantity">Choose the quantity to receive</label><input class="form-control" type="number" id="purchase-order-quantity" name="purchase-order-quantity" value="1" onchange="UpdatePrice()">
+                                                        </select><label for="purchase-order-quantity">Choose the quantity to receive</label><input class="form-control" type="number" id="purchase-order-quantity" name="purchase-order-quantity" value="1" onchange="UpdatePrice(this.value)"><input id="total-cost" name="total-cost" value="0" step=".01" hidden>
                                                         <legend>Place your order here:</legend>
                                                     </fieldset>
                                                 </form>
@@ -330,6 +332,76 @@
                                     </div>
                                 </div>
                             </div>
+                            <div id="tab4" class="tab-pane fade show">
+                                <div class="card shadow" id="sales-history-card">
+                                    <div class="card-header py-3">
+                                        <p class="text-primary m-0 font-weight-bold">Order History</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 text-nowrap"><input type="search" class="form-control form-control-sm" aria-controls="dataTable" placeholder="Search"></div>
+                                            <div class="col-md-6">
+                                                <div class="text-md-right dataTables_filter" id="dataTable_filter"><label></label></div>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive table mt-2" id="dataTable-1" role="grid" aria-describedby="dataTable_info">
+                                            <table class="table my-0" id="dataTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Date</th>
+                                                        <th>Raw Material</th>
+                                                        <th>Quantity</th>
+                                                        <th>Warehouse</th>
+                                                        <th>Vendor</th>
+                                                        <th>Cost ($)</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for order in rm_orders %}
+                                                        <tr>
+                                                            <td>{{ order.timestamp }}</td>
+                                                            <td>{{ order.rm_FK.rm_name }}</td>
+                                                            <td>{{ order.order_quantity }}</td>
+                                                            <td>{{ order.w_FK.w_name }}</td>
+                                                            <td>{{ order.v_FK.v_name }}</td>
+                                                            <td>{{ order.order_total_cost }}</td>
+                                                            <td>{{ order.order_status }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td><strong>Date</strong></td>
+                                                        <td><strong>Raw Material</strong></td>
+                                                        <td><strong>Quantity</strong></td>
+                                                        <td><strong>Warehouse</strong></td>
+                                                        <td><strong>Vendor</strong></td>
+                                                        <td><strong>Cost ($)</strong></td>
+                                                        <td><strong>Status</strong></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 align-self-center">
+                                                <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 27</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                                    <ul class="pagination">
+                                                        <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -349,10 +421,13 @@
     <script src="{% static 'js/theme.js' %}"></script>
     <script>
         var orderRawMaterialUnitCost = -1;
+        var vendorMultiplier = -1;
+        var totalCostElement = document.getElementById("total-cost")
         function DisplayPrice(raw_material_id) {
             if (raw_material_id == 0) {
                 var element = document.getElementById("total-cost-here");
                 element.innerHTML = "$ --";
+                totalCostElement.value = 0;
                 orderRawMaterialUnitCost = -1;
             }
             else {
@@ -369,6 +444,7 @@
                         var total = uc * quantity
 
                         element.innerHTML = "$" + total.toFixed(2);
+                        totalCostElement.value = total;
                         orderRawMaterialUnitCost = uc;
                     },
                     error: function(data) {
@@ -378,8 +454,26 @@
             }
         }
 
-        function UpdatePrice() {
-            DisplayPrice(document.getElementById("purchase-raw-mat").value);
+        function UpdatePrice(quantity) {
+            if (orderRawMaterialUnitCost < 0) {
+                alert("Select a raw material before changing quantity.");
+            }
+            else {
+                if (vendorMultiplier < 0) {
+                    var total = orderRawMaterialUnitCost * quantity;
+                    var element = document.getElementById("total-cost-here");
+
+                    element.innerHTML = "$" + total.toFixed(2);
+                    totalCostElement.value = total;
+                }
+                else {
+                    var total = orderRawMaterialUnitCost * vendorMultiplier * quantity;
+                    var element = document.getElementById("total-cost-here");
+
+                    element.innerHTML = "$" + total.toFixed(2);
+                    totalCostElement.value = total;
+                }
+            }
         }
 
         function CheckIfUnique() {
@@ -429,30 +523,43 @@
         }
 
         function SelectOrderVendor(vendor_id) {
-            $.ajax({
-                url: '/inventory/get-vendor/',
-                data: {
-                    'v_id': vendor_id
-                },
-                dataType: 'json',
-                success: function(data) {
-                    var v_multiplier = data[0].fields.v_price_multiplier;
-                    var element = document.getElementById("total-cost-here");
+            if (vendor_id == 0) {
+                var quantity = document.getElementById("purchase-order-quantity").value;
+                var updatedUnitCost = orderRawMaterialUnitCost * quantity;
+                var element = document.getElementById("total-cost-here");
 
-                    if (orderRawMaterialUnitCost >= 0) {
-                        var updatedUnitCost = orderRawMaterialUnitCost * v_multiplier;
-                        element.innerHTML = "$" + updatedUnitCost.toFixed(2);
+                element.innerHTML = "$" + updatedUnitCost.toFixed(2);
+                totalCostElement.value = updatedUnitCost;
+            }
+            else {
+                $.ajax({
+                    url: '/inventory/get-vendor/',
+                    data: {
+                        'v_id': vendor_id
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        var v_multiplier = data[0].fields.v_price_multiplier;
+                        var element = document.getElementById("total-cost-here");
+
+                        if (orderRawMaterialUnitCost >= 0) {
+                            var quantity = document.getElementById("purchase-order-quantity").value;
+                            var updatedUnitCost = orderRawMaterialUnitCost * v_multiplier * quantity;
+                            element.innerHTML = "$" + updatedUnitCost.toFixed(2);
+                            totalCostElement.value = updatedUnitCost;
+                            vendorMultiplier = v_multiplier;
+                        }
+                        else {
+                            alert("You must choose a raw material first");
+                            var select = document.getElementById("purchase-vendor-name");
+                            select.value = 0;
+                        }
+                    },
+                    error: function(data) {
+                        alert("Uh-oh");
                     }
-                    else {
-                        alert("You must choose a raw material first");
-                        var select = document.getElementById("purchase-vendor-name");
-                        select.value = 0;
-                    }
-                },
-                error: function(data) {
-                    alert("Uh-oh");
-                }
-            });
+                });
+            }
         }
     </script>
 </body>

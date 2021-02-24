@@ -3,17 +3,15 @@ from django.http import HttpResponse, FileResponse, HttpResponseNotFound, JsonRe
 from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
 from django.core import serializers
-
 from django.contrib.auth import authenticate, login, logout
-
 from django.contrib import messages
-
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user
 from inventory.models import *
 from .forms import CreateUserForm, OrderRawMaterialForm
 #from .filters import OrderFilter
 from datetime import datetime
+from decimal import Decimal
 import logging
 
 import io
@@ -80,6 +78,7 @@ def inventory(request):
         raw_material_all = RawMaterials.objects.all()
         warehouse_all = Warehouse.objects.all()
         vendor_all = Vendor.objects.all()
+        rm_orders = OrderRM.objects.select_related().all().order_by('timestamp')
         date_of_day = datetime.now()
         context = {
             'rm_inventory': raw_material_inventory,
@@ -87,6 +86,7 @@ def inventory(request):
             'raw_material_all': raw_material_all,
             'warehouse_all': warehouse_all,
             'vendor_all': vendor_all,
+            'rm_orders': rm_orders,
             'date_of_day': date_of_day
         }
     return render(request, 'inventory.html', context=context)
@@ -200,11 +200,14 @@ def returnVendor(request):
 def orderRawMaterial(request):
     if request.method == 'POST':
         # Use form to validate information automatically
+        cost = Decimal(request.POST.get('total-cost'))
+        cost_rounded = round(cost, 2)
         form = OrderRawMaterialForm(data={
             'v_FK': request.POST.get('purchase-vendor-pk'),
             'w_FK': request.POST.get('warehouse-pk'),
             'rm_FK': request.POST.get('raw-mat-pk'),
-            'order_quantity': request.POST.get('purchase-order-quantity')
+            'order_quantity': request.POST.get('purchase-order-quantity'),
+            'order_total_cost': cost_rounded
         })
         if form.is_valid():
             # save the new record
@@ -226,7 +229,7 @@ def orderRawMaterial(request):
             messages.success(request, 'Raw material ordered successfully.')
             return redirect('inventory')
         else:
-            messages.error(request, 'Problem ordering raw material.')
+            messages.error(request, f'Problem ordering raw material.')
             return redirect('inventory')
     else:
         return redirect('inventory')
@@ -236,7 +239,7 @@ def createRawMaterial(request):
     if request.method == 'POST':
         new_rm_name = request.POST.get('new-raw-mat-name')
         if not new_rm_name == "":
-            # create a new raw meterial
+            # create a new raw material
             existing_rm = RawMaterials.objects.filter(rm_name=new_rm_name).first()
             if existing_rm:
                 # return to inventory with error message
