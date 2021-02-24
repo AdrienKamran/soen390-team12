@@ -76,7 +76,7 @@ def inventory(request):
         var = 0
     else:
         raw_material_inventory = ContainsRM.objects.select_related().all()
-        product_inventory = ContainsProducts.objects.select_related().all()
+        product_inventory = ContainsParts.objects.select_related().all()
         raw_material_all = RawMaterials.objects.all()
         warehouse_all = Warehouse.objects.all()
         date_of_day = datetime.now()
