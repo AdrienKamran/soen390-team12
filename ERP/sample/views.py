@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect 
-from django.http import HttpResponse, FileResponse, HttpResponseNotFound
+from django.http import HttpResponse, FileResponse, HttpResponseNotFound, JsonResponse
 from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
+from django.core import serializers
 
 from django.contrib.auth import authenticate, login, logout
 
@@ -9,14 +10,15 @@ from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user
-from .models import *
+from inventory.models import *
 from .forms import CreateUserForm
 #from .filters import OrderFilter
-
+from datetime import datetime
 import logging
 
 import io
 import csv
+
 
 from reportlab.pdfgen import canvas
 
@@ -69,7 +71,23 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 def inventory(request):
-    return render(request, 'inventory.html')    
+    context = {}
+    if request.method == 'POST':
+        var = 0
+    else:
+        raw_material_inventory = ContainsRM.objects.select_related().all()
+        product_inventory = ContainsProducts.objects.select_related().all()
+        raw_material_all = RawMaterials.objects.all()
+        warehouse_all = Warehouse.objects.all()
+        date_of_day = datetime.now()
+        context = {
+            'rm_inventory': raw_material_inventory,
+            'product_inventory': product_inventory,
+            'raw_material_all': raw_material_all,
+            'warehouse_all': warehouse_all,
+            'date_of_day': date_of_day
+        }
+    return render(request, 'inventory.html', context=context)
 
 #decided to combine the two endpoints together
 def generateReport(request):
@@ -154,10 +172,62 @@ def writeTestReport():
     writer.writerow(['Second row', 'A', 'B', 'C', '"Testing"', "Here's a quote"])
     return response
 
-
+@login_required(login_url='login')
 def salesViewPage(request):
     return render(request, template_name='sales.html', context={})
 
-
+@login_required(login_url='login')
 def manufacturingViewPage(request):
     return render(request, template_name='manufacturing.html', context={})
+
+@login_required(login_url='login')
+def returnRawMaterial(request):
+    rm_id = request.GET.get('rm_id')
+    raw_material = RawMaterials.objects.filter(pk=rm_id).all()
+    rm_json = serializers.serialize('json', raw_material)
+    return HttpResponse(rm_json)
+
+@login_required(login_url='login')
+def orderRawMaterial(request):
+    if request.method == 'POST':
+        something = 0
+    else:
+        return redirect('inventory')
+
+@login_required(login_url='login')
+def createRawMaterial(request):
+    if request.method == 'POST':
+        new_rm_name = request.POST.get('new-raw-mat-name')
+        if new_rm_name:
+            # create a new raw meterial
+            existing_rm = RawMaterials.objects.filter(rm_name=new_rm_name).first()
+            if existing_rm:
+                # return to inventory with error message
+                messages.error(request, 'This raw material already exists.')
+                return redirect('inventory')
+            else:
+                # material doesn't exist yet
+                new_rm = RawMaterials(rm_name=new_rm_name, rm_unit_cost=request.POST.get('new-mat-cost'))
+                new_rm.save()
+                messages.success(request, 'Raw material created.')
+                return redirect('inventory')
+        else:
+            # edit existing raw material
+            rm = RawMaterials.objects.filter(rm_name=request.POST.get('existing-raw-mat')).first()
+            rm.rm_unit_cost = request.POST.get('new-mat-cost')
+            rm.save()
+            return redirect('inventory')
+    else:
+        return redirect('inventory')
+
+@login_required(login_url='login')
+def checkUniqueRawMatName(request):
+    rm_name = request.GET.get('rm_name')
+    rm = RawMaterials.objects.filter(rm_name=rm_name).first()
+    if rm:
+        json = {
+            'rm_pk':rm.pk
+        }
+    else:
+        json = {}
+    return JsonResponse(json)

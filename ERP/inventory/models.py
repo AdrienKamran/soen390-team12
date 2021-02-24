@@ -14,6 +14,7 @@ class TestModel(models.Model):
 
 class Products(models.Model):
     p_name = models.CharField(null=False, blank=False, max_length=80, unique=True)
+    p_unit_cost = models.DecimalField(decimal_places=2, null=False, blank=False, max_digits=9)
         
 
 class RawMaterials(models.Model):
