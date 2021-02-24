@@ -179,10 +179,6 @@ def salesViewPage(request):
     return render(request, template_name='sales.html', context={})
 
 @login_required(login_url='login')
-def manufacturingViewPage(request):
-    return render(request, template_name='manufacturing.html', context={})
-
-@login_required(login_url='login')
 def returnRawMaterial(request):
     rm_id = request.GET.get('rm_id')
     raw_material = RawMaterials.objects.filter(pk=rm_id).all()
