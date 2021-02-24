@@ -21,16 +21,16 @@ import logging
 
 
 
-@login_required(login_url='login')
+#@login_required(login_url='login')
 def createMaterialList(request):
     if request.method == 'POST':
-        product-name = None
+        productName = None
         bike = False
         parts = {}
         counter = 0
         for key in request.POST:
             if key == "product-name":
-                product-name = request.POST[key]
+                productName = request.POST[key]
             if key == "bicycle-check":
                 bike = True
             if "component" in key:
@@ -47,7 +47,7 @@ def salesViewPage(request):
     return render(request, template_name='sales.html', context={})
 
 
-@login_required(login_url='login')
+#@login_required(login_url='login')
 def manufacturingViewPage(request):
     #Call all the itmes that we need to render these templates
     products = Products.objects.all()
@@ -66,7 +66,8 @@ def manufacturingViewPage(request):
         'containR':containR,
         'containP':containP,
         'productionRequest':"[{'name': 'Steel','qty': 15,'avi': 7},{'name': 'Leather','qty': 5,'avi': 8}]",
-        'productionRequestValue':1
+        'productionRequestValue':1,
+        'productionRequestValueMul':1.5
     }
 
     return render(request, template_name='manufacturing.html', context=data)

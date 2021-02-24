@@ -178,14 +178,18 @@
                                                             <div class="form-row" style="padding: 5px;height: 48px;">
                                                                 <div class="col d-flex justify-content-center"><select class="form-control" id="chosen-component" name="chosen component">
                                                                         <optgroup label="Products">
-                                                                            {% for p in products%}
-                                                                                <option value="{{p.p_name}}" selected="">{{p.p_name}}</option>
-                                                                            {% endfor %}
+                                                                            {%if products%}
+                                                                                {% for p in products%}
+                                                                                    <option value="{{p.p_name}}" selected="">{{p.p_name}}</option>
+                                                                                {% endfor %}
+                                                                            {% endif %}
                                                                         </optgroup>
                                                                         <optgroup label="Raw Materials">
-                                                                            {% for p in materials%}
-                                                                                <option value="{{p.rm_name}}" selected="">{{p.rm_name}} ({{p.rm_unit_cost}})</option>
-                                                                            {% endfor %}
+                                                                            {%if materials%}
+                                                                                {% for p in materials%}
+                                                                                    <option value="{{p.rm_name}}" selected="">{{p.rm_name}} ({{p.rm_unit_cost}})</option>
+                                                                                {% endfor %}
+                                                                            {% endif %}
                                                                         </optgroup>
                                                                     </select></div>
                                                                 <div class="col d-flex justify-content-center"><input class="form-control" type="number" id="chosen-component-qty" name="chosen component qty"></div>
@@ -225,15 +229,19 @@
                                                     <input type="hidden" id="dateTime" value="{{incident.created_date_time}}"></input>
                                                     <fieldset><label for="choose-material-list">Choose a material list</label><select class="form-control" id="choose-material-list" name="choose material list">
                                                             <optgroup label="Products Material Lists">
-                                                                {% for p in products%}
-                                                                    <option value="{{p.p_name}}" selected="">{{p.p_name}}</option>
-                                                                {% endfor %}
+                                                                {% if products %}
+                                                                    {% for p in products%}
+                                                                        <option value="{{p.p_name}}" selected="">{{p.p_name}}</option>
+                                                                    {% endfor %}
+                                                                {% endif %}
                                                             </optgroup>
                                                         </select><label for="warehouse-destination">Choose a warehouse destination</label><select class="form-control" id="warehouse-destination" name="warehouse destination">
                                                             <optgroup label="Active Warehouses">
-                                                                {% for p in warehouse%}
-                                                                    <option value="{{p.p_name}}" selected="">{{p.w_name}}</option>
-                                                                {% endfor %}
+                                                                {% if warehouse %}
+                                                                    {% for p in warehouse%}
+                                                                        <option value="{{p.p_name}}" selected="">{{p.w_name}}</option>
+                                                                    {% endfor %}
+                                                                {% endif %}
                                                             </optgroup>
                                                         </select><label for="produce-quantity">Choose the quantity to produce</label><input class="form-control" type="number" id="produce-quantity" name="produce quantity">
                                                         <legend>Choose a product to manufacture:</legend>
@@ -268,8 +276,9 @@
                                                                 </table>
                                                             {% endif %}
                                                         </div>
+                                                        <!--Below should be temp and will be converted over to javascript based to be more dynamic-->>
                                                         <p class="card-text">The product's value:</p>
-                                                        <p class="card-text" style="font-size: 32px;color: var(--blue);">{{productionRequestValue * 1.05}}</p>
+                                                        <p class="card-text" style="font-size: 32px;color: var(--blue);">{{productionRequestValueMul}}</p>
                                                         <p class="card-text">&nbsp;= {{productionRequestValue}} x 105%</p><button class="btn btn-primary" type="button" form="manufacture-product">Manufacture</button>
                                                     </div>
                                                 </div>
@@ -299,7 +308,7 @@
             componentTemplate.setAttribute("style", "padding: 5px;height:48px;");
             componentTemplate.setAttribute("id","cRow"+num);
             //the below code could be converted over to DOMNODES but should work fine for now
-            componentTemplate.innerHTML =  '<div class="col d-flex justify-content-center"><select class="form-control" id="'+num+'chosen-component" name="chosen component"><optgroup label="Products">{% for p in products%}<option value="{{p.p_name}}" selected="">{{p.p_name}}</option>{% endfor %}</optgroup><optgroup label="Raw Materials">{% for p in materials%}<option value="{{p.rm_name}}" selected="">{{p.rm_name}} ({{p.rm_unit_cost}})</option>{% endfor %}</optgroup></select></div><div class="col d-flex justify-content-center"><input class="form-control" type="number" id="'+num+'chosen-component-qty" name="chosen component qty"></div><div class="col d-flex justify-content-center"><button onclick="removeMaterial('+num+')" class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button></div>'
+            componentTemplate.innerHTML =  '<div class="col d-flex justify-content-center"><select class="form-control" id="'+num+'chosen-component" name="chosen component"><optgroup label="Products">{%if products%}{% for p in products%}<option value="{{p.p_name}}" selected="">{{p.p_name}}</option>{% endfor %}{%endif%}</optgroup><optgroup label="Raw Materials">{%if materials%}{% for p in materials%}<option value="{{p.rm_name}}" selected="">{{p.rm_name}} ({{p.rm_unit_cost}})</option>{% endfor %}{%endif%}</optgroup></select></div><div class="col d-flex justify-content-center"><input class="form-control" type="number" id="'+num+'chosen-component-qty" name="chosen component qty"></div><div class="col d-flex justify-content-center"><button onclick="removeMaterial('+num+')" class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button></div>'
             anchor.appendChild(componentTemplate);   
         }
         //function to remove a row from the list of materials, autogenerated by addMaterial.
