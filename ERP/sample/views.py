@@ -17,7 +17,10 @@ import logging
 
 import io
 import csv
+
 from reportlab.pdfgen import canvas
+
+#from reportlab.pdfgen import canvas
 
 # Create logger
 logger = logging.getLogger(__name__)
@@ -47,7 +50,7 @@ def register(request):
 def loginPage(request):
     if request.method == 'POST':
         username = request.POST.get('username')
-        password =request.POST.get('password')
+        password =request.POST.get('password1')
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
@@ -63,6 +66,10 @@ def logoutUser(request):
     logout(request)
     logger.debug("User has logged out")
     return redirect('login')
+
+@login_required(login_url='login')
+def inventory(request):
+    return render(request, 'inventory.html')    
 
 #decided to combine the two endpoints together
 def generateReport(request):
@@ -146,3 +153,11 @@ def writeTestReport():
     writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
     writer.writerow(['Second row', 'A', 'B', 'C', '"Testing"', "Here's a quote"])
     return response
+
+
+def salesViewPage(request):
+    return render(request, template_name='sales.html', context={})
+
+
+def manufacturingViewPage(request):
+    return render(request, template_name='manufacturing.html', context={})
