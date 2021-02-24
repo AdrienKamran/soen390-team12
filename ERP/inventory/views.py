@@ -49,14 +49,50 @@ def salesViewPage(request):
 
 #@login_required(login_url='login')
 def manufacturingViewPage(request):
+    #define everything as None to start to cover relation not found errors
+    products = None
+    materials = None
+    warehouses = None
+    madeR = None
+    madeP = None
+    containR = None
+    containP = None
     #Call all the itmes that we need to render these templates
-    products = Products.objects.all()
-    materials = RawMaterials.objects.all()
-    warehouses = Warehouse.objects.all()
-    madeR = MadeOfRM.objects.all()
-    madeP = MadeOfParts.objects.all()
-    containR = ContainsRM.objects.all()
-    containP = ContainsProducts.objects.all()
+    try:
+        products = Products.objects.all()
+        print(products)
+    except:
+        pass
+    try:
+        materials = RawMaterials.objects.all()
+        print(materials)
+    except:
+        pass
+    try:
+        warehouses = Warehouse.objects.all()
+        print(warehouses)
+    except:
+        pass
+    try:
+        madeR = MadeOfRM.objects.all()
+        print(madeR)
+    except:
+        pass
+    try:
+        madeP = MadeOfParts.objects.all()
+        print(madeP)
+    except:
+        pass
+    try:
+        containR = ContainsRM.objects.all()
+        print(containR)
+    except:
+        pass
+    try:
+        containP = ContainsProducts.objects.all()
+        print(containP)
+    except:
+        pass
     data = {
         'products':products,
         'materials':materials,
