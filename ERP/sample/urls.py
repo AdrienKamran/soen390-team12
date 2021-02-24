@@ -2,6 +2,7 @@
 
 from django.urls import path
 from . import views
+from inventory import views as inventoryViews
 
 urlpatterns = [
     path('', views.home, name="home"),
@@ -9,8 +10,9 @@ urlpatterns = [
     path('register', views.register, name="register"),
     path('logout', views.logoutUser, name="logout"),
     path('generate', views.generateReport, name='generate'),
-    path('sales', views.salesViewPage, name='sales'),
-    path('manufacturing', views.manufacturingViewPage, name='manufacturing'),
+    path('sales', inventoryViews.salesViewPage, name='sales'),
+    path('manufacturing', inventoryViews.manufacturingViewPage, name='manufacturing'),
+    path('createmateriallist', inventoryViews.createMaterialList, name='createMaterialList'),
     path('inventory', views.inventory, name="inventory"),
     path('inventory/get-raw-material/', views.returnRawMaterial, name='return-raw-material'),
     path('inventory/order-raw-material/', views.orderRawMaterial, name='order-raw-material'),
