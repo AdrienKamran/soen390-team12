@@ -167,7 +167,7 @@
                                                 <form id="create-material-list" method="POST" action="/createmateriallist">{% csrf_token %}
                                                     <fieldset>
                                                         <div class="form-row" style="padding: 5px;height: 48px;">
-                                                            <div class="col d-flex justify-content-left"><label for="product-name">Write a product name:</label><input class="form-control" type="text" id="product-name" style="margin: 0px 30px 0px 30px;width: 400px;" name="product name"></div>
+                                                            <div class="col d-flex justify-content-left"><label for="product-name">Write a product name:</label><input class="form-control" type="text" id="product-name" style="margin: 0px 30px 0px 30px;width: 400px;" name="product-name"></div>
                                                         </div>
                                                         <div class="form-row" style="padding: 5px;height: 48px;">
                                                             <div class="col d-flex justify-content-left">
@@ -176,23 +176,16 @@
                                                         </div>
                                                         <div id="partsListRows">
                                                             <div class="form-row" style="padding: 5px;height: 48px;">
-                                                                <div class="col d-flex justify-content-center"><select class="form-control" id="chosen-component" name="chosen component">
-                                                                        <optgroup label="Products">
-                                                                            {%if products%}
-                                                                                {% for p in products%}
+                                                                <div class="col d-flex justify-content-center"><select class="form-control" id="chosen-component" name="chosen-component">
+                                                                        <optgroup label="Parts">
+                                                                            {%if parts%}
+                                                                                {% for p in parts%}
                                                                                     <option value="{{p.p_name}}" selected="">{{p.p_name}}</option>
                                                                                 {% endfor %}
                                                                             {% endif %}
                                                                         </optgroup>
-                                                                        <optgroup label="Raw Materials">
-                                                                            {%if materials%}
-                                                                                {% for p in materials%}
-                                                                                    <option value="{{p.rm_name}}" selected="">{{p.rm_name}} ({{p.rm_unit_cost}})</option>
-                                                                                {% endfor %}
-                                                                            {% endif %}
-                                                                        </optgroup>
                                                                     </select></div>
-                                                                <div class="col d-flex justify-content-center"><input class="form-control" type="number" id="chosen-component-qty" name="chosen component qty"></div>
+                                                                <div class="col d-flex justify-content-center"><input class="form-control" type="number" id="chosen-component-qty" name="chosen-component-qty"></div>
                                                                 <div class="col d-flex justify-content-center"><!--<button class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button>--></div>
                                                             </div>
                                                             <!--Generated will be appended below here-->
@@ -227,35 +220,35 @@
                                             <div class="col">
                                                 <form id="manufacture-product"> {% csrf_token %}
                                                     <input type="hidden" id="dateTime" value="{{incident.created_date_time}}"></input>
-                                                    <fieldset><label for="choose-material-list">Choose a material list</label><select class="form-control" id="choose-material-list" name="choose material list">
-                                                            <optgroup label="Products Material Lists">
-                                                                {% if products %}
-                                                                    {% for p in products%}
+                                                    <fieldset><label for="choose-material-list">Choose a material list</label><select class="form-control" id="choose-material-list" name="choose-material-list">
+                                                            <optgroup label="Material List For Part">
+                                                                {% if parts %}
+                                                                    {% for p in parts%}
                                                                         <option value="{{p.p_name}}" selected="">{{p.p_name}}</option>
                                                                     {% endfor %}
                                                                 {% endif %}
                                                             </optgroup>
-                                                        </select><label for="warehouse-destination">Choose a warehouse destination</label><select class="form-control" id="warehouse-destination" name="warehouse destination">
+                                                        </select><label for="warehouse-destination">Choose a warehouse destination</label><select class="form-control" id="warehouse-destination" name="warehouse-destination">
                                                             <optgroup label="Active Warehouses">
                                                                 {% if warehouse %}
                                                                     {% for p in warehouse%}
-                                                                        <option value="{{p.p_name}}" selected="">{{p.w_name}}</option>
+                                                                        <option value="{{p.w_name}}" selected="">{{p.w_name}}</option>
                                                                     {% endfor %}
                                                                 {% endif %}
                                                             </optgroup>
-                                                        </select><label for="produce-quantity">Choose the quantity to produce</label><input class="form-control" type="number" id="produce-quantity" name="produce quantity">
+                                                        </select><label for="produce-quantity">Choose the quantity to produce</label><input class="form-control" type="number" id="produce-quantity" name="produce-quantity" value="1">
                                                         <legend>Choose a product to manufacture:</legend>
                                                     </fieldset>
                                                 </form>
+                                                <button class="btn btn-primary" onclick="updateProductionMaterialList()">Update</button>
                                             </div>
                                             <div class="col">
                                                 <div class="card">
                                                     <div class="card-body">
                                                         <h4 class="card-title">Your production request:</h4>
-                                                        <h6 class="text-muted card-subtitle mb-2">Placed on {{incident.created_date_time}}</h6>
+                                                        <h6 class="text-muted card-subtitle mb-2">Placed on {{ incident.created_date_time }}</h6>
                                                         <p class="card-text">The required components are:</p>
                                                         <div class="table-responsive">
-                                                            {%if productionRequest%}
                                                                 <table class="table">
                                                                     <thead>
                                                                         <tr>
@@ -264,22 +257,19 @@
                                                                             <th>Available</th>
                                                                         </tr>
                                                                     </thead>
-                                                                    <tbody>
-                                                                        {% for name, qty, avi in productionRequest.items%}
-                                                                        <tr>
+                                                                    <tbody id="partListHolder">
+                                                                        <!--<tr>
                                                                             <td>{{name}}</td>
                                                                             <td>{{qty}}</td>
                                                                             <td>{{avi}}</td>
-                                                                        </tr>
-                                                                        {% endfor %}
+                                                                        </tr>-->
                                                                     </tbody>
                                                                 </table>
-                                                            {% endif %}
                                                         </div>
                                                         <!--Below should be temp and will be converted over to javascript based to be more dynamic-->
                                                         <p class="card-text">The product's value:</p>
-                                                        <p class="card-text" style="font-size: 32px;color: var(--blue);">{{productionRequestValueMul}}</p>
-                                                        <p class="card-text">&nbsp;= {{productionRequestValue}} x 105%</p><button class="btn btn-primary" type="button" form="manufacture-product">Manufacture</button>
+                                                        <p id = "mulPrice" class="card-text" style="font-size: 32px;color: var(--blue);"></p>
+                                                        <p class="card-text">&nbsp;= <p id="basePrice"></p> x 105%</p><button class="btn btn-primary" type="button" form="manufacture-product">Manufacture</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -298,6 +288,13 @@
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/chart.min.js' %}"></script>
+    <script src="{% static 'js/bs-init.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+    <script src="{% static 'js/theme.js' %}"></script>
     <script>
         //Function to add a new row to the list of materials
         function addMaterial(){
@@ -308,8 +305,9 @@
             componentTemplate.setAttribute("style", "padding: 5px;height:48px;");
             componentTemplate.setAttribute("id","cRow"+num);
             //the below code could be converted over to DOMNODES or django based solution but should work fine for now
-            componentTemplate.innerHTML =  '<div class="col d-flex justify-content-center"><select class="form-control" id="'+num+'chosen-component" name="chosen component"><optgroup label="Products">{%if products%}{% for p in products%}<option value="{{p.p_name}}" selected="">{{p.p_name}}</option>{% endfor %}{%endif%}</optgroup><optgroup label="Raw Materials">{%if materials%}{% for p in materials%}<option value="{{p.rm_name}}" selected="">{{p.rm_name}} ({{p.rm_unit_cost}})</option>{% endfor %}{%endif%}</optgroup></select></div><div class="col d-flex justify-content-center"><input class="form-control" type="number" id="'+num+'chosen-component-qty" name="chosen component qty"></div><div class="col d-flex justify-content-center"><button onclick="removeMaterial('+num+')" class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button></div>'
-            anchor.appendChild(componentTemplate);   
+            componentTemplate.innerHTML =  '<div class="col d-flex justify-content-center"><select class="form-control" id="'+num+'chosen-component" name="'+num+'chosen-component"><optgroup label="Products">{%if parts%}{% for p in parts%}<option value="{{p.p_name}}" selected="">{{p.p_name}}</option>{% endfor %}{%endif%}</optgroup></select></div><div class="col d-flex justify-content-center"><input class="form-control" type="number" id="'+num+'chosen-component-qty" name="'+num+'chosen-component-qty"></div><div class="col d-flex justify-content-center"><button onclick="removeMaterial('+num+')" class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button></div>';
+            anchor.appendChild(componentTemplate);
+
         }
         //function to remove a row from the list of materials, autogenerated by addMaterial.
         function removeMaterial(num){
@@ -317,13 +315,44 @@
             target = document.getElementById("cRow"+num);
             anchor.removeChild(target);
         }
+
+        function updateProductionMaterialList(){
+            p = document.getElementById("choose-material-list").value;
+            w = document.getElementById("warehouse-destination").value; 
+            q = document.getElementById("produce-quantity").value; 
+            jQuery.get("/produceMaterialList",{ product: p, warehouse: w, qty: q }, function(data, status){
+                console.log("Data: " + data + "\nStatus: " + status);
+                anchor = document.getElementById("partListHolder");
+                anchor.innerHTML = '';
+                jQuery.each(data, function(i, val) {
+                    if(i=='0'){
+                        document.getElementById("basePrice").innerHTML = data['0'];
+                    }
+                    else if(i=='1'){
+                        document.getElementById("mulPrice").innerHTML = data['1'];
+                    }
+                    else if(!jQuery.isEmptyObject(val)){
+                        console.log(val);
+                        row = document.createElement("TR");
+                        //name = document.createElement("TD");
+                        //name.appendChild(document.createTextNode(val["name"]));
+                        //qty = document.createElement("TD");
+                        //qty.appendChild(document.createTextNode(val["quantity"]));
+                        //avi = document.createElement("TD");
+                        //avi.appendChild(document.createTextNode(val["store"]));
+                        //row.appendChild(name);
+                        //row.appendChild(qty);
+                        //row.appendChild(avi);
+
+                        row.innerHTML = "<td>"+val["name"]+"</td><td>"+val["quantity"]+"</td><td>"+val["store"]+"</td>";
+
+                        anchor.appendChild(row);
+                    }
+                });
+            });
+        }
+
     </script>
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/chart.min.js' %}"></script>
-    <script src="{% static 'js/bs-init.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
-    <script src="{% static 'js/theme.js' %}"></script>
 </body>
 
 </html>

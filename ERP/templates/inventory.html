@@ -192,22 +192,13 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {% for product in product_inventory %}
+                                                    {% for part in inventory %}
                                                         <tr>
-                                                            <td data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" title="Product">{{product.product_FK.p_name}}</td>
-                                                            <td>Product</td>
-                                                            <td>{{ product.p_quantity }}</td>
-                                                            <td>${{ product.product_FK.p_unit_cost }}</td>
-                                                            <td>{{ product.w_FK.w_name }}</td>
-                                                        </tr>
-                                                    {% endfor %}
-                                                    {% for rm in rm_inventory %}
-                                                        <tr>
-                                                            <td>{{ rm.rm_FK.rm_name }}</td>
-                                                            <td>Raw Material</td>
-                                                            <td>{{ rm.rm_quantity }}</td>
-                                                            <td>${{ rm.rm_FK.rm_unit_cost }}</td>
-                                                            <td>{{ rm.w_FK.w_name }}</td>
+                                                            <td>{{ part.p_FK.p_name }}</td>
+                                                            <td>{{ part.p_FK.p_type }}</td>
+                                                            <td>{{ part.p_quantity }}</td>
+                                                            <td>{{ part.p_FK.p_unit_value }}</td>
+                                                            <td>{{ part.w_FK.w_name }}</td>
                                                         </tr>
                                                     {% endfor %}
                                                 </tbody>
@@ -256,7 +247,7 @@
                                                             <optgroup label="This is a group">
                                                                 <option value="0" selected="">Select a raw material</option>
                                                                 {% for rm in raw_material_all %}
-                                                                    <option value="{{ rm.pk }}">{{ rm.rm_name }}</option>
+                                                                    <option value="{{ rm.pk }}">{{ rm.p_name }}</option>
                                                                 {% endfor %}
                                                             </optgroup>
                                                         </select><label for="warehouse-destination">Choose a warehouse destination</label><select class="form-control" id="warehouse-destination" name="warehouse-pk">
@@ -306,10 +297,10 @@
                                                             <optgroup label="This is a group">
                                                                 <option value="0" selected="">Select a raw material</option>
                                                                 {% for rm in raw_material_all %}
-                                                                    <option value="{{ rm.pk }}">{{ rm.rm_name }}</option>
+                                                                    <option value="{{ rm.pk }}">{{ rm.p_name }}</option>
                                                                 {% endfor %}
                                                             </optgroup>
-                                                        </select><label for="new-mat-cost">Choose the material's unit cost:</label><input class="form-control" type="number" step=".01" id="new-mat-cost" name="new-mat-cost"><label for="new-mat-vendor">Pick the material's vendor:</label><select class="form-control" id="new-mat-vendor" name="new mat vendor">
+                                                        </select><label for="new-mat-cost">Choose the material's unit cost:</label><input class="form-control" type="number" step=".01" id="new-mat-cost" name="new-mat-cost"><label for="new-mat-vendor">Pick the material's vendor:</label><select class="form-control" id="new-mat-vendor" name="new-mat-vendor">
                                                             <optgroup label="This is a group">
                                                                 <option value="12" selected="">Select a vendor</option>
                                                                 {% for vendor in vendor_all %}
@@ -419,10 +410,15 @@
     <script src="{% static 'js/bs-init.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
     <script src="{% static 'js/theme.js' %}"></script>
-    <script>
+    <script type="text/javascript">
         var orderRawMaterialUnitCost = -1;
         var vendorMultiplier = -1;
-        var totalCostElement = document.getElementById("total-cost")
+        var totalCostElement = document.getElementById("total-cost");
+
+        function test() {
+            alert("TEST");
+        }
+
         function DisplayPrice(raw_material_id) {
             if (raw_material_id == 0) {
                 var element = document.getElementById("total-cost-here");
@@ -438,7 +434,7 @@
                     },
                     dataType: 'json',
                     success: function(data) {
-                        var uc = data[0].fields.rm_unit_cost;
+                        var uc = data[0].fields.p_unit_value;
                         var element = document.getElementById("total-cost-here");
                         var quantity = document.getElementById("purchase-order-quantity").value
                         var total = uc * quantity
@@ -446,6 +442,7 @@
                         element.innerHTML = "$" + total.toFixed(2);
                         totalCostElement.value = total;
                         orderRawMaterialUnitCost = uc;
+
                     },
                     error: function(data) {
                         alert("Uh-oh");
@@ -511,9 +508,8 @@
                 },
                 dataType: 'json',
                 success: function(data) {
-                    var rm_unit_cost = data[0].fields.rm_unit_cost;
+                    var rm_unit_cost = data[0].fields.p_unit_value;
                     var element = document.getElementById("new-mat-cost");
-
                     element.value = rm_unit_cost
                 },
                 error: function(data) {
@@ -523,43 +519,44 @@
         }
 
         function SelectOrderVendor(vendor_id) {
-            if (vendor_id == 0) {
-                var quantity = document.getElementById("purchase-order-quantity").value;
-                var updatedUnitCost = orderRawMaterialUnitCost * quantity;
-                var element = document.getElementById("total-cost-here");
+                if (vendor_id == 0) {
+                    var quantity = document.getElementById("purchase-order-quantity").value;
+                    var updatedUnitCost = orderRawMaterialUnitCost * quantity;
+                    var element = document.getElementById("total-cost-here");
 
-                element.innerHTML = "$" + updatedUnitCost.toFixed(2);
-                totalCostElement.value = updatedUnitCost;
-            }
-            else {
-                $.ajax({
-                    url: '/inventory/get-vendor/',
-                    data: {
-                        'v_id': vendor_id
-                    },
-                    dataType: 'json',
-                    success: function(data) {
-                        var v_multiplier = data[0].fields.v_price_multiplier;
-                        var element = document.getElementById("total-cost-here");
+                    element.innerHTML = "$" + updatedUnitCost.toFixed(2);
+                    totalCostElement.value = updatedUnitCost;
+                }
+                else {
+                    $.ajax({
+                        url: '/inventory/get-vendor/',
+                        data: {
+                            'v_id': vendor_id
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            var v_multiplier = data[0].fields.v_price_multiplier;
+                            var element = document.getElementById("total-cost-here");
 
-                        if (orderRawMaterialUnitCost >= 0) {
-                            var quantity = document.getElementById("purchase-order-quantity").value;
-                            var updatedUnitCost = orderRawMaterialUnitCost * v_multiplier * quantity;
-                            element.innerHTML = "$" + updatedUnitCost.toFixed(2);
-                            totalCostElement.value = updatedUnitCost;
-                            vendorMultiplier = v_multiplier;
+                            if (orderRawMaterialUnitCost >= 0) {
+                                var quantity = document.getElementById("purchase-order-quantity").value;
+                                var updatedUnitCost = orderRawMaterialUnitCost * v_multiplier * quantity;
+                                element.innerHTML = "$" + updatedUnitCost.toFixed(2);
+                                totalCostElement.value = updatedUnitCost;
+                                vendorMultiplier = v_multiplier;
+                            }
+                            else {
+                                alert("You must choose a raw material first");
+                                var select = document.getElementById("purchase-vendor-name");
+                                select.value = 0;
+                            }
+                        },
+                        error: function(data) {
+                            alert("Uh-oh");
                         }
-                        else {
-                            alert("You must choose a raw material first");
-                            var select = document.getElementById("purchase-vendor-name");
-                            select.value = 0;
-                        }
-                    },
-                    error: function(data) {
-                        alert("Uh-oh");
-                    }
-                });
-            }
+                    });
+                }
+
         }
     </script>
 </body>
