@@ -69,11 +69,6 @@ def produceMaterialList(request):
                                 messages.error(request, 'warehouse does not have items.')
                         resp['0'] = resp['0']*float(runTotal)*mulQty
                         resp['1'] = resp['1']*float(runTotal)*mulQty
-                else:
-                    # material doesn't exist yet
-                    messages.error(request, 'Could not find list.')
-            else:
-                messages.error(request, 'Could not find part.')
         return JsonResponse(resp)
 
 
@@ -87,14 +82,11 @@ def createMaterialList(request):
             existing_rm = Part.objects.filter(p_name=new_rm_name).first()
             if existing_rm:
                 parent_part = existing_rm
-                # return to inventory with error message
-                messages.success(request, 'This part already exists.')
             else:
                 # material doesn't exist yet
                 new_rm = Part(p_name=new_rm_name, p_type='Part', p_unit_value=0)
                 new_rm.save()
                 parent_part = new_rm
-                messages.success(request, 'Raw material created.')
         bike = False
         parts = {}
         counter = 0
@@ -119,10 +111,6 @@ def createMaterialList(request):
                     #update price
                     parent_part.p_unit_value+existing_rm.p_unit_value
                     parent_part.save()
-                    messages.success(request, 'Part relation added.')
-                else:
-                    # material doesn't exist yet
-                    messages.error(request, 'Part not found.')
     return redirect('manufacturing')         
 
 #@login_required(login_url='login')

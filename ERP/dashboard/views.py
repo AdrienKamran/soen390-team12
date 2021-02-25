@@ -221,13 +221,13 @@ def orderRawMaterial(request):
             # for the sake of this sprint, the order is automatically shipped and appears in the warehouse inventory
 
             #first, check if there is existing raw material in the warehouse inventory
-            rm = Contains.objects.get(pk=new_order.p_FK.pk)
+            rm = Contains.objects.filter(p_FK=new_order.p_FK.pk, w_FK=new_order.w_FK.pk).first()
             if rm:
                 #this material already exists
                 rm.p_quantity = rm.p_quantity + new_order.order_quantity
                 rm.save()
             else:
-                new_rm = Contains(p_FK=new_order.p_FK.pk, w_FK=new_order.w_FK.pk, p_quantity=new_order.order_quantity)
+                new_rm = Contains(p_FK=new_order.p_FK, w_FK=new_order.w_FK, p_quantity=new_order.order_quantity)
                 new_rm.save()
 
             messages.success(request, 'Raw material ordered successfully.')
