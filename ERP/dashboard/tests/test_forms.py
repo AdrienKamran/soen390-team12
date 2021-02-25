@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.forms import UserCreationForm
-from sample.forms import CreateUserForm
+from dashboard.forms import CreateUserForm
 
 
 class TestCreateUserForm(TestCase):

@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'sample',
+    'dashboard',
     'utils',
     'inventory',
     'django.contrib.admin',
