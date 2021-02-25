@@ -220,7 +220,7 @@
                                             <div class="col">
                                                 <form id="manufacture-product"> {% csrf_token %}
                                                     <input type="hidden" id="dateTime" value="{{incident.created_date_time}}"></input>
-                                                    <fieldset><label for="choose-material-list">Choose a material list</label><select class="form-control" id="choose-material-list" name="choose material list">
+                                                    <fieldset><label for="choose-material-list">Choose a material list</label><select class="form-control" id="choose-material-list" name="choose-material-list">
                                                             <optgroup label="Material List For Part">
                                                                 {% if parts %}
                                                                     {% for p in parts%}
@@ -228,7 +228,7 @@
                                                                     {% endfor %}
                                                                 {% endif %}
                                                             </optgroup>
-                                                        </select><label for="warehouse-destination">Choose a warehouse destination</label><select class="form-control" id="warehouse-destination" name="warehouse destination">
+                                                        </select><label for="warehouse-destination">Choose a warehouse destination</label><select class="form-control" id="warehouse-destination" name="warehouse-destination">
                                                             <optgroup label="Active Warehouses">
                                                                 {% if warehouse %}
                                                                     {% for p in warehouse%}
@@ -236,7 +236,7 @@
                                                                     {% endfor %}
                                                                 {% endif %}
                                                             </optgroup>
-                                                        </select><label for="produce-quantity">Choose the quantity to produce</label><input class="form-control" type="number" id="produce-quantity" name="produce quantity">
+                                                        </select><label for="produce-quantity">Choose the quantity to produce</label><input class="form-control" type="number" id="produce-quantity" name="produce-quantity">
                                                         <legend>Choose a product to manufacture:</legend>
                                                     </fieldset>
                                                 </form>
@@ -317,7 +317,7 @@
         window.onclick = updateProductionMaterialList();
 
         function updateProductionMaterialList(){
-            JQuery.get("/produceMaterialList", function(data, status){
+            jQuery.get("/produceMaterialList", function(data, status){
                 console.log("Data: " + data + "\nStatus: " + status);
                 anchor = document.getElementById("partListHolder");
                 anchor.innerHTML = '';
@@ -329,7 +329,7 @@
                     else if(i=='1'){
                         document.getElementById("mulPrice").innerHTML = data['1'];
                     }
-                    else if(isEmpty(val)){
+                    else if(jQuery.isEmptyObject(val)){
                         row = document.createElement("TR");
                         name = document.createElement("TD");
                         name.appendChild(document.createTextNode(val["name"]));
