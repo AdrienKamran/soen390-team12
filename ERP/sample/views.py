@@ -16,6 +16,7 @@ import logging
 
 import io
 import csv
+import json
 
 
 from reportlab.pdfgen import canvas
@@ -189,7 +190,16 @@ def returnVendor(request):
     vendor = Vendor.objects.filter(pk=v_id).all()
     v_json = serializers.serialize('json', vendor)
     return HttpResponse(v_json)
-
+'''
+@login_required(login_url='login')
+def returnVendorOfPart(request):
+    p_id = request.GET.get('p_id')
+    vendors = SellsParts.objects.select_related().filter(p_FK=2).all()
+    v_list = []
+    for vendor in vendors:
+        v_list.append({'v_fk':vendor.v_FK, 'v_name':vendor.v_FK.v_name})
+    return json.dumps(v_list)
+'''
 @login_required(login_url='login')
 def orderRawMaterial(request):
     if request.method == 'POST':

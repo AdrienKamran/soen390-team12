@@ -443,22 +443,6 @@
                         totalCostElement.value = total;
                         orderRawMaterialUnitCost = uc;
 
-                        $.ajax({
-                            url: '/inventory/get-vendor-of-part/',
-                            data: {
-                                'p_id': raw_material_id
-                            },
-                            dataType: 'json',
-                            success: function(data) {
-                                var select = document.getElementById("purchase-vendor-name");
-                                var length = select.options.length;
-                                for (i = length-1; i >= 1; i--) {
-                                    select.options[i] = null;
-                                }
-
-
-                            }
-                        });
                     },
                     error: function(data) {
                         alert("Uh-oh");
