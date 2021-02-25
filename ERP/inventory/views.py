@@ -38,8 +38,6 @@ def produceMaterialList(request):
             if existing_rm:
                 matList = MadeOf.objects.filter(part_FK_parent=existing_rm).all()
                 if matList:
-                    # return to inventory with error message
-                    messages.success(request, 'Found Part.')
                     existing_wh = Warehouse.objects.filter(w_name=new_wh_name).first()
                     if existing_wh:
                         counter = 2
@@ -105,11 +103,10 @@ def createMaterialList(request):
                  # create a new raw material
                 existing_rm = Part.objects.filter(p_name=value).first()
                 if existing_rm:
-                    # return to inventory with error message
                     new_rel = MadeOf(part_FK_parent=parent_part, part_FK_child = existing_rm, quantity=counter)
                     new_rel.save()
                     #update price
-                    parent_part.p_unit_value+existing_rm.p_unit_value
+                    parent_part.p_unit_value = parent_part.p_unit_value+(existing_rm.p_unit_value * new_rel.quantity)
                     parent_part.save()
     return redirect('manufacturing')         
 
@@ -128,3 +125,36 @@ def manufacturingViewPage(request):
         'contain':contain,
     }
     return render(request, template_name='manufacturing.html', context=data)
+
+@login_required(login_url='login')
+def manufactureProduct(request):
+    if request.method == 'POST':
+        part_name = request.POST.get('choose-material-list')
+        warehouse_name = request.POST.get('warehouse-destination')
+        quantity = int(request.POST.get('produce-quantity'))
+
+        part = Part.objects.filter(p_name=part_name).first()
+        warehouse = Warehouse.objects.filter(w_name=warehouse_name).first()
+        # get all the raw material is the part is made of
+
+        sub_parts = MadeOf.objects.filter(part_FK_parent=part.pk).all()
+        for sub_part in sub_parts:
+            # remove the quantity from the warehouse
+            w_inventory = Contains.objects.filter(p_FK=sub_part.part_FK_child.pk, w_FK=warehouse.pk).first()
+            w_inventory.p_quantity = w_inventory.p_quantity - (sub_part.quantity * quantity)
+            w_inventory.save()
+
+        #check if new part already exists in warehouse
+        existing_part = Contains.objects.filter(p_FK=part, w_FK=warehouse).first()
+        if existing_part:
+            #modify quantity
+            existing_part.p_quantity = existing_part.p_quantity + quantity
+            existing_part.save()
+        else:
+            new_part = Contains(p_FK=part, w_FK=warehouse, p_quantity=quantity)
+            new_part.save()
+
+        messages.success(request, "Part successfully manufactured and placed in the warehouse.")
+        return redirect('inventory')
+    else:
+        return redirect('manufacturing')

@@ -218,7 +218,7 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col">
-                                                <form id="manufacture-product"> {% csrf_token %}
+                                                <form id="manufacture-product" method="POST" action="{% url 'manufacture-product' %}"> {% csrf_token %}
                                                     <input type="hidden" id="dateTime" value="{{incident.created_date_time}}"></input>
                                                     <fieldset><label for="choose-material-list">Choose a material list</label><select class="form-control" id="choose-material-list" name="choose-material-list">
                                                             <optgroup label="Material List For Part">
@@ -269,7 +269,7 @@
                                                         <!--Below should be temp and will be converted over to javascript based to be more dynamic-->
                                                         <p class="card-text">The product's value:</p>
                                                         <p id = "mulPrice" class="card-text" style="font-size: 32px;color: var(--blue);"></p>
-                                                        <p class="card-text">&nbsp;= <p id="basePrice"></p> x 105%</p><button class="btn btn-primary" type="button" form="manufacture-product">Manufacture</button>
+                                                        <p class="card-text">&nbsp;= <p id="basePrice"></p> x 105%</p><button class="btn btn-primary" type="submit" form="manufacture-product">Manufacture</button>
                                                     </div>
                                                 </div>
                                             </div>

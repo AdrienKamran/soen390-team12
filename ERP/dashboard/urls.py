@@ -14,6 +14,7 @@ urlpatterns = [
     path('manufacturing', inventoryViews.manufacturingViewPage, name='manufacturing'),
     path('createmateriallist', inventoryViews.createMaterialList, name='createMaterialList'),
     path('produceMaterialList', inventoryViews.produceMaterialList, name='produceMaterialList'),
+    path('manufacture/create-product/', inventoryViews.manufactureProduct, name='manufacture-product'),
     path('inventory', views.inventory, name="inventory"),
     path('inventory/get-raw-material/', views.returnRawMaterial, name='return-raw-material'),
     path('inventory/order-raw-material/', views.orderRawMaterial, name='order-raw-material'),
