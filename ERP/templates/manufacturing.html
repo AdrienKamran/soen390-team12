@@ -335,15 +335,18 @@
                         anchor = document.getElementById("partListHolder");
                         anchor.innerHTML = '';
                         row = document.createElement("TR");
-                        name = document.createElement("TD");
+                        //name = document.createElement("TD");
                         //name.appendChild(document.createTextNode(val["name"]));
-                        qty = document.createElement("TD");
+                        //qty = document.createElement("TD");
                         //qty.appendChild(document.createTextNode(val["quantity"]));
-                        avi = document.createElement("TD");
+                        //avi = document.createElement("TD");
                         //avi.appendChild(document.createTextNode(val["store"]));
-                        row.appendChild(name);
-                        row.appendChild(qty);
-                        row.appendChild(avi);
+                        //row.appendChild(name);
+                        //row.appendChild(qty);
+                        //row.appendChild(avi);
+
+                        row.innerHTML = "<td>"+val["name"]+"</td><td>"+val["quantity"]+"</td><td>"+val["store"]+"</td>"
+
                         anchor.appendChild(row);
                     }
                 });
