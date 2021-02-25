@@ -177,17 +177,10 @@
                                                         <div id="partsListRows">
                                                             <div class="form-row" style="padding: 5px;height: 48px;">
                                                                 <div class="col d-flex justify-content-center"><select class="form-control" id="chosen-component" name="chosen component">
-                                                                        <optgroup label="Products">
-                                                                            {%if products%}
-                                                                                {% for p in products%}
+                                                                        <optgroup label="Parts">
+                                                                            {%if parts%}
+                                                                                {% for p in parts%}
                                                                                     <option value="{{p.p_name}}" selected="">{{p.p_name}}</option>
-                                                                                {% endfor %}
-                                                                            {% endif %}
-                                                                        </optgroup>
-                                                                        <optgroup label="Raw Materials">
-                                                                            {%if materials%}
-                                                                                {% for p in materials%}
-                                                                                    <option value="{{p.rm_name}}" selected="">{{p.rm_name}} ({{p.rm_unit_cost}})</option>
                                                                                 {% endfor %}
                                                                             {% endif %}
                                                                         </optgroup>
@@ -228,9 +221,9 @@
                                                 <form id="manufacture-product"> {% csrf_token %}
                                                     <input type="hidden" id="dateTime" value="{{incident.created_date_time}}"></input>
                                                     <fieldset><label for="choose-material-list">Choose a material list</label><select class="form-control" id="choose-material-list" name="choose material list">
-                                                            <optgroup label="Products Material Lists">
-                                                                {% if products %}
-                                                                    {% for p in products%}
+                                                            <optgroup label="Material List For Part">
+                                                                {% if parts %}
+                                                                    {% for p in parts%}
                                                                         <option value="{{p.p_name}}" selected="">{{p.p_name}}</option>
                                                                     {% endfor %}
                                                                 {% endif %}
@@ -252,10 +245,9 @@
                                                 <div class="card">
                                                     <div class="card-body">
                                                         <h4 class="card-title">Your production request:</h4>
-                                                        <h6 class="text-muted card-subtitle mb-2">Placed on {{incident.created_date_time}}</h6>
+                                                        <h6 class="text-muted card-subtitle mb-2">Placed on {{ incident.created_date_time }}</h6>
                                                         <p class="card-text">The required components are:</p>
                                                         <div class="table-responsive">
-                                                            {%if productionRequest%}
                                                                 <table class="table">
                                                                     <thead>
                                                                         <tr>
@@ -264,22 +256,19 @@
                                                                             <th>Available</th>
                                                                         </tr>
                                                                     </thead>
-                                                                    <tbody>
-                                                                        {% for name, qty, avi in productionRequest.items%}
-                                                                        <tr>
+                                                                    <tbody id="partListHolder">
+                                                                        <!--<tr>
                                                                             <td>{{name}}</td>
                                                                             <td>{{qty}}</td>
                                                                             <td>{{avi}}</td>
-                                                                        </tr>
-                                                                        {% endfor %}
+                                                                        </tr>-->
                                                                     </tbody>
                                                                 </table>
-                                                            {% endif %}
                                                         </div>
                                                         <!--Below should be temp and will be converted over to javascript based to be more dynamic-->
                                                         <p class="card-text">The product's value:</p>
-                                                        <p class="card-text" style="font-size: 32px;color: var(--blue);">{{productionRequestValueMul}}</p>
-                                                        <p class="card-text">&nbsp;= {{productionRequestValue}} x 105%</p><button class="btn btn-primary" type="button" form="manufacture-product">Manufacture</button>
+                                                        <p id = "mulPrice" class="card-text" style="font-size: 32px;color: var(--blue);"></p>
+                                                        <p class="card-text">&nbsp;= <p id="basePrice"></p> x 105%</p><button class="btn btn-primary" type="button" form="manufacture-product">Manufacture</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -317,6 +306,37 @@
             target = document.getElementById("cRow"+num);
             anchor.removeChild(target);
         }
+
+        window.onclick= function updateProductionMaterialList();
+
+        function updateProductionMaterialList(){
+            $.get("/produceMaterialList", function(data, status){
+                console.log("Data: " + data + "\nStatus: " + status);
+                anchor = document.getElementById("partListHolder");
+                anchor.innerHTML = '';
+                jQuery.each(data, function(i, val) {
+                    if(i=='0'){
+                        document.getElementById("basePrice").innerHTML = data['0'];
+                    }
+                    else if(i=='1'){}
+                        document.getElementById("mulPrice").innerHTML = data['1'];
+                    else{
+                        row = document.createElement("TR");
+                        name = document.createElement("TD");
+                        name.appendChild(document.createTextNode(val["name"]));
+                        qty = document.createElement("TD");
+                        qty.appendChild(document.createTextNode(val["quantity"]));
+                        avi = document.createElement("TD");
+                        avi.appendChild(document.createTextNode(val["store"]));
+                        row.appendChild(name);
+                        row.appendChild(qty);
+                        row.appendChild(avi);
+                        anchor.appendChild(row);
+                    }
+                });
+            });
+        }
+
     </script>
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
