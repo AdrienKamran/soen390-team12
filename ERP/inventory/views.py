@@ -21,12 +21,12 @@ import json
 
 from django.http import JsonResponse
 
-@login_required(login_url='login')
+#@login_required(login_url='login')
 def produceMaterialList(request):
     if request.method == 'GET':
         new_rm_name = request.POST.get('product')
         new_wh_name = request.POST.get('warehouse')
-        mulQty = (int)request.POST.get('qty')
+        mulQty = int(request.POST.get('qty'))
         runTotal = 0
         resp = {'0':1, '1':1.05}
         if not new_rm_name == "":
@@ -71,7 +71,7 @@ def produceMaterialList(request):
         return JsonResponse(resp)
 
 
-@login_required(login_url='login')
+#@login_required(login_url='login')
 def createMaterialList(request):
     if request.method == 'POST':
         parent_part = None
@@ -103,7 +103,7 @@ def createMaterialList(request):
                     continue
                 #this is a generated component
                 value = request.POST[key]
-                counter = (int)request.POST[key+"-qty"]
+                counter = int(request.POST[key+"-qty"])
                  # create a new raw material
                 existing_rm = Part.objects.filter(rm_name=value).first()
                 if existing_rm:
@@ -116,7 +116,7 @@ def createMaterialList(request):
                     messages.error(request, 'Part not found.')
     return redirect('manufacturing')         
 
-@login_required(login_url='login')
+#@login_required(login_url='login')
 def manufacturingViewPage(request):
     #define everything as None to start to cover relation not found errors
     parts = Part.objects.all()
