@@ -271,8 +271,10 @@ def createRawMaterial(request):
                 return redirect('inventory')
         else:
             # edit existing raw material
+
+            #add validation
             rm = Part.objects.get(pk=request.POST.get('existing-raw-mat'))
-            rm.p_unit_cost = request.POST.get('new-mat-cost')
+            rm.p_unit_value = request.POST.get('new-mat-cost')
             rm.save()
 
             # edit who sells the raw material
