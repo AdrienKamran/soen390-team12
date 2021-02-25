@@ -10,13 +10,14 @@ urlpatterns = [
     path('register', views.register, name="register"),
     path('logout', views.logoutUser, name="logout"),
     path('generate', views.generateReport, name='generate'),
-    path('sales', inventoryViews.salesViewPage, name='sales'),
+    path('sales', views.salesViewPage, name='sales'),
     path('manufacturing', inventoryViews.manufacturingViewPage, name='manufacturing'),
     path('createmateriallist', inventoryViews.createMaterialList, name='createMaterialList'),
+    path('produceMaterialList', inventoryViews.produceMaterialList, name='produceMaterialList'),
     path('inventory', views.inventory, name="inventory"),
     path('inventory/get-raw-material/', views.returnRawMaterial, name='return-raw-material'),
     path('inventory/order-raw-material/', views.orderRawMaterial, name='order-raw-material'),
     path('inventory/create-raw-material/', views.createRawMaterial, name='create-raw-material'),
     path('inventory/check-unique/', views.checkUniqueRawMatName, name='check-unique'),
-    path('inventory/get-vendor/', views.returnVendor, name='return-vendor')
+    path('inventory/get-vendor/', views.returnVendor, name='return-vendor'),
 ]
