@@ -22,7 +22,7 @@ class Part(models.Model):
     p_color = models.CharField(null=True, blank=True, max_length=7, unique=True)
     p_finish = models.TextField(choices=finish_choices, null=True, blank=True, default='Glossy')
     p_grade = models.TextField(choices=grade_choices, null=True, blank=True, default='Aluminum')
-    p_type = models.TextField(choices=type_choices, null=True, blank=True, default='Part')
+    p_type = models.TextField(choices=type_choices, null=False, blank=False, default='Part')
 
 class Product(models.Model):
     type_choices = (
@@ -63,7 +63,7 @@ class Contains(models.Model):
 class SellsParts(models.Model):
     v_FK = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     p_FK = models.ForeignKey(Part, on_delete=models.CASCADE)
-    p_quantity = models.IntegerField(default=1, null=False, blank=False)
+    p_quantity = models.IntegerField(default=100, null=False, blank=False)
 
 class Orders(models.Model):
     status_choices = (
