@@ -147,8 +147,13 @@ def manufactureProduct(request):
         for sub_part in sub_parts:
             # remove the quantity from the warehouse
             w_inventory = Contains.objects.filter(p_FK=sub_part.part_FK_child.pk, w_FK=warehouse.pk).first()
-            w_inventory.p_quantity = w_inventory.p_quantity - (sub_part.quantity * quantity)
-            w_inventory.save()
+            new_quantity = w_inventory.p_quantity - (sub_part.quantity * quantity)
+            if new_quantity > 0:
+                w_inventory.p_quantity = new_quantity
+                w_inventory.save()
+            else:
+                # if the quantity is 0, delete from inventory
+                w_inventory.delete()
 
         #check if new part already exists in warehouse
         existing_part = Contains.objects.filter(p_FK=part, w_FK=warehouse).first()
