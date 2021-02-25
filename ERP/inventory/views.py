@@ -24,9 +24,9 @@ from django.http import JsonResponse
 #@login_required(login_url='login')
 def produceMaterialList(request):
     if request.method == 'GET':
-        new_rm_name = request.GET.get('choose-material-list')
-        new_wh_name = request.GET.get('warehouse-destination')
-        mulQty = int(request.GET.get('produce-quantity'))
+        new_rm_name = request.GET.get('product')
+        new_wh_name = request.GET.get('warehouse')
+        mulQty = int(request.GET.get('qty'))
         #new_rm_name = 'Product Test 4'
         #new_wh_name = 'Test Warehouse'
         #mulQty = 1

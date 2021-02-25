@@ -232,14 +232,15 @@
                                                             <optgroup label="Active Warehouses">
                                                                 {% if warehouse %}
                                                                     {% for p in warehouse%}
-                                                                        <option value="{{p.p_name}}" selected="">{{p.w_name}}</option>
+                                                                        <option value="{{p.w_name}}" selected="">{{p.w_name}}</option>
                                                                     {% endfor %}
                                                                 {% endif %}
                                                             </optgroup>
-                                                        </select><label for="produce-quantity">Choose the quantity to produce</label><input class="form-control" type="number" id="produce-quantity" name="produce-quantity">
+                                                        </select><label for="produce-quantity">Choose the quantity to produce</label><input class="form-control" type="number" id="produce-quantity" name="produce-quantity" value="1">
                                                         <legend>Choose a product to manufacture:</legend>
                                                     </fieldset>
                                                 </form>
+                                                <button class="btn btn-primary" onclick="updateProductionMaterialList()">Update</button>
                                             </div>
                                             <div class="col">
                                                 <div class="card">
@@ -314,13 +315,11 @@
             anchor.removeChild(target);
         }
 
-        window.onclick = updateProductionMaterialList();
-
         function updateProductionMaterialList(){
-             p = document.getElementById("choose-material-list").value; 
+            p = document.getElementById("choose-material-list").value;
             w = document.getElementById("warehouse-destination").value; 
             q = document.getElementById("produce-quantity").value; 
-            JQuery.get("/produceMaterialList",{ product: p, warehouse: w, qty: q }, function(data, status){
+            jQuery.get("/produceMaterialList",{ product: p, warehouse: w, qty: q }, function(data, status){
                 console.log("Data: " + data + "\nStatus: " + status);
                 anchor = document.getElementById("partListHolder");
                 anchor.innerHTML = '';
