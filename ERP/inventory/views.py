@@ -34,40 +34,43 @@ def produceMaterialList(request):
             existing_rm = Part.objects.filter(p_name=new_rm_name).first()
             if existing_rm:
                 matList = MadeOf.objects.filter(part_FK_parent=existing_rm).all()
-                # return to inventory with error message
-                messages.success(request, 'Found Part.')
-                existing_wh = Warehouse.objects.filter(w_name=new_wh_name).first()
                 if existing_wh:
-                    counter = 2
-                    qty=0
-                    prx=0
-                    tot =0
-                    sto=0
-                    nom=""
-                    for p in matList:
-                        qty = p.quantity
-                        prx = p.part_FK_child.p_unit_value
-                        nom = p.part_FK_child.p_name
-                        tot = qty*prx
-                        existing_wh_entry = Containsresp['0'] = resp['0']*runTotal.objects.filter(w_FK=existing_wh,p_FK=existing_rm).first()
-                        if existing_wh_entry:
-                            sto = existing_wh_entry.p_quantity
-                            resp[''+counter] = {
-                                "name":nom,
-                                "price":prx,
-                                "quantity":qty,
-                                "total":tot,
-                                "store":sto
-                            }
-                            counter=counter+1
-                            runTotal = runTotal +tot
-                        else:
-                            messages.error(request, 'warehouse does not have items.')
-                    resp['0'] = resp['0']*runTotal
-                    resp['1'] = resp['1']*runTotal
+                    # return to inventory with error message
+                    messages.success(request, 'Found Part.')
+                    existing_wh = Warehouse.objects.filter(w_name=new_wh_name).first()
+                    if existing_wh:
+                        counter = 2
+                        qty=0
+                        prx=0
+                        tot =0
+                        sto=0
+                        nom=""
+                        for p in matList:
+                            qty = p.quantity
+                            prx = p.part_FK_child.p_unit_value
+                            nom = p.part_FK_child.p_name
+                            tot = qty*prx
+                            existing_wh_entry = Containsresp['0'] = resp['0']*runTotal.objects.filter(w_FK=existing_wh,p_FK=existing_rm).first()
+                            if existing_wh_entry:
+                                sto = existing_wh_entry.p_quantity
+                                resp[''+counter] = {
+                                    "name":nom,
+                                    "price":prx,
+                                    "quantity":qty,
+                                    "total":tot,
+                                    "store":sto
+                                }
+                                counter=counter+1
+                                runTotal = runTotal +tot
+                            else:
+                                messages.error(request, 'warehouse does not have items.')
+                        resp['0'] = resp['0']*runTotal
+                        resp['1'] = resp['1']*runTotal
+                else:
+                    # material doesn't exist yet
+                    messages.error(request, 'Could not find list.')
             else:
-                # material doesn't exist yet
-                messages.error(request, 'Could not find list.')
+                messages.error(request, 'Could not find part.')
         return JsonResponse(resp)
 
 

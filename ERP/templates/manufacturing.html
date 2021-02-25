@@ -317,18 +317,19 @@
         window.onclick = updateProductionMaterialList();
 
         function updateProductionMaterialList(){
-            $.get("/produceMaterialList", function(data, status){
+            JQuery.get("/produceMaterialList", function(data, status){
                 console.log("Data: " + data + "\nStatus: " + status);
                 anchor = document.getElementById("partListHolder");
                 anchor.innerHTML = '';
                 jQuery.each(data, function(i, val) {
+                    
                     if(i=='0'){
                         document.getElementById("basePrice").innerHTML = data['0'];
                     }
                     else if(i=='1'){
                         document.getElementById("mulPrice").innerHTML = data['1'];
                     }
-                    else{
+                    else if(isEmpty(val)){
                         row = document.createElement("TR");
                         name = document.createElement("TD");
                         name.appendChild(document.createTextNode(val["name"]));
