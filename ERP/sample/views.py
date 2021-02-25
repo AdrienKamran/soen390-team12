@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user
 from inventory.models import *
-from .forms import CreateUserForm, OrderRawMaterialForm
+from .forms import CreateUserForm, OrderRawMaterialForm, CreateRawMaterialForm, CreateNewVendorOfPartForm
 #from .filters import OrderFilter
 from datetime import datetime
 from decimal import Decimal
@@ -73,20 +73,18 @@ def inventory(request):
     if request.method == 'POST':
         var = 0
     else:
-        raw_material_inventory = Contains.objects.select_related().all()
-        product_inventory = Contains.objects.select_related().all()
-        raw_material_all = Part.objects.all()
+        part_inventory = Contains.objects.select_related().all()
+        raw_material_all = Part.objects.filter(p_type='Raw Material').all()
         warehouse_all = Warehouse.objects.all()
         vendor_all = Vendor.objects.all()
-        rm_orders = Orders.objects.select_related().all().order_by('timestamp')
+        orders = Orders.objects.select_related().all().order_by('timestamp')
         date_of_day = datetime.now()
         context = {
-            'rm_inventory': raw_material_inventory,
-            'product_inventory': product_inventory,
+            'inventory': part_inventory,
             'raw_material_all': raw_material_all,
             'warehouse_all': warehouse_all,
             'vendor_all': vendor_all,
-            'rm_orders': rm_orders,
+            'rm_orders': orders,
             'date_of_day': date_of_day
         }
     return render(request, 'inventory.html', context=context)
@@ -201,25 +199,25 @@ def orderRawMaterial(request):
         form = OrderRawMaterialForm(data={
             'v_FK': request.POST.get('purchase-vendor-pk'),
             'w_FK': request.POST.get('warehouse-pk'),
-            'rm_FK': request.POST.get('raw-mat-pk'),
+            'p_FK': request.POST.get('raw-mat-pk'),
             'order_quantity': request.POST.get('purchase-order-quantity'),
             'order_total_cost': cost_rounded
         })
         if form.is_valid():
             # save the new record
             new_order = form.save()
-            new_order.order_status = 'SHIPPED'
+            new_order.order_status = 'RECEIVED'
             new_order.save()
             # for the sake of this sprint, the order is automatically shipped and appears in the warehouse inventory
 
             #first, check if there is existing raw material in the warehouse inventory
-            rm = Contains.objects.filter(rm_FK=new_order.rm_FK).first()
+            rm = Contains.objects.get(pk=new_order.p_FK.pk)
             if rm:
                 #this material already exists
-                rm.rm_quantity = rm.rm_quantity + new_order.order_quantity
+                rm.p_quantity = rm.p_quantity + new_order.order_quantity
                 rm.save()
             else:
-                new_rm = Contains(rm_FK=new_order.rm_FK, w_FK=new_order.w_FK, rm_quantity=new_order.order_quantity)
+                new_rm = Contains(p_FK=new_order.p_FK.pk, w_FK=new_order.w_FK.pk, p_quantity=new_order.order_quantity)
                 new_rm.save()
 
             messages.success(request, 'Raw material ordered successfully.')
@@ -236,22 +234,38 @@ def createRawMaterial(request):
         new_rm_name = request.POST.get('new-raw-mat-name')
         if not new_rm_name == "":
             # create a new raw material
-            existing_rm = Part.objects.filter(rm_name=new_rm_name).first()
-            if existing_rm:
+            rm_form = CreateRawMaterialForm(data={
+                'p_name': new_rm_name,
+                'p_unit_value': request.POST.get('new-mat-cost'),
+                'p_type': 'Raw Material'
+            })
+            if rm_form.is_valid():
+                # material does not exist yet
+                new_part = rm_form.save()
+
+                v_form = CreateNewVendorOfPartForm(data={
+                    'p_FK': new_part.pk,
+                    'v_FK':request.POST.get('new-mat-vendor')
+                })
+                if v_form.is_valid():
+                    v_form.save()
+                    messages.success(request, 'Raw material created.')
+                    return redirect('inventory')
+                else:
+                    # return to inventory with error message
+                    messages.error(request, 'Problem finding vendor to sell raw material.')
+                    return redirect('inventory')
+            else:
                 # return to inventory with error message
                 messages.error(request, 'This raw material already exists.')
-                return redirect('inventory')
-            else:
-                # material doesn't exist yet
-                new_rm = Part(rm_name=new_rm_name, rm_unit_cost=request.POST.get('new-mat-cost'))
-                new_rm.save()
-                messages.success(request, 'Raw material created.')
                 return redirect('inventory')
         else:
             # edit existing raw material
             rm = Part.objects.get(pk=request.POST.get('existing-raw-mat'))
-            rm.rm_unit_cost = request.POST.get('new-mat-cost')
+            rm.p_unit_cost = request.POST.get('new-mat-cost')
             rm.save()
+
+            # edit who sells the raw material
             messages.info(request, 'The raw material was modified.')
             return redirect('inventory')
     else:
@@ -260,7 +274,7 @@ def createRawMaterial(request):
 @login_required(login_url='login')
 def checkUniqueRawMatName(request):
     rm_name = request.GET.get('rm_name')
-    rm = Part.objects.filter(rm_name=rm_name).first()
+    rm = Part.objects.filter(p_name=rm_name).first()
     if rm:
         json = {
             'rm_pk':rm.pk
