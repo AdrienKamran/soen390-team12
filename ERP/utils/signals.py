@@ -16,15 +16,6 @@ def send_welcome_email(sender, instance, created, **kwargs):
         )
         email_notification.save()
 
-        email_notification_user = EmailNotificationUser(
-            user=user,
-            sent=False,
-            email_notification=email_notification
-        )
-        email_notification_user.save()
-
-        email_notification.users.add(user)
-
         sent = mail.send_mail(
             subject=email_notification.subject,
             message=email_notification.message,
@@ -32,6 +23,10 @@ def send_welcome_email(sender, instance, created, **kwargs):
             recipient_list=[user.email]
         )
 
-        email_notification_user.sent = sent
+        email_notification_user = EmailNotificationUser(
+            user=user,
+            sent=sent,
+            email_notification=email_notification
+        )
         email_notification_user.save()
 

@@ -32,8 +32,9 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'sample',
+    'dashboard',
     'utils',
+    'inventory',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -147,7 +148,8 @@ STATIC_URL = '/static/'
 #STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static')
+
 ]
 
 # Logging information
@@ -181,6 +183,9 @@ LOGGING = {
         '': {
             'level': 'DEBUG',
             'handlers': ['console', 'file']
+        },
+        'faker': {
+            'level': 'WARNING'
         }
     },
 }
@@ -192,4 +197,3 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'youremail@gmail.com'
 EMAIL_HOST_PASSWORD = 'email_password'
 EMAIL_PORT = 587
-
