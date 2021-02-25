@@ -183,6 +183,9 @@ LOGGING = {
         '': {
             'level': 'DEBUG',
             'handlers': ['console', 'file']
+        },
+        'faker': {
+            'level': 'WARNING'
         }
     },
 }
