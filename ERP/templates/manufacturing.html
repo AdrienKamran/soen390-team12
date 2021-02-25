@@ -167,7 +167,7 @@
                                                 <form id="create-material-list" method="POST" action="/createmateriallist">{% csrf_token %}
                                                     <fieldset>
                                                         <div class="form-row" style="padding: 5px;height: 48px;">
-                                                            <div class="col d-flex justify-content-left"><label for="product-name">Write a product name:</label><input class="form-control" type="text" id="product-name" style="margin: 0px 30px 0px 30px;width: 400px;" name="product name"></div>
+                                                            <div class="col d-flex justify-content-left"><label for="product-name">Write a product name:</label><input class="form-control" type="text" id="product-name" style="margin: 0px 30px 0px 30px;width: 400px;" name="product-name"></div>
                                                         </div>
                                                         <div class="form-row" style="padding: 5px;height: 48px;">
                                                             <div class="col d-flex justify-content-left">
@@ -176,7 +176,7 @@
                                                         </div>
                                                         <div id="partsListRows">
                                                             <div class="form-row" style="padding: 5px;height: 48px;">
-                                                                <div class="col d-flex justify-content-center"><select class="form-control" id="chosen-component" name="chosen component">
+                                                                <div class="col d-flex justify-content-center"><select class="form-control" id="chosen-component" name="chosen-component">
                                                                         <optgroup label="Parts">
                                                                             {%if parts%}
                                                                                 {% for p in parts%}
@@ -185,7 +185,7 @@
                                                                             {% endif %}
                                                                         </optgroup>
                                                                     </select></div>
-                                                                <div class="col d-flex justify-content-center"><input class="form-control" type="number" id="chosen-component-qty" name="chosen component qty"></div>
+                                                                <div class="col d-flex justify-content-center"><input class="form-control" type="number" id="chosen-component-qty" name="chosen-component-qty"></div>
                                                                 <div class="col d-flex justify-content-center"><!--<button class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button>--></div>
                                                             </div>
                                                             <!--Generated will be appended below here-->
@@ -345,7 +345,7 @@
                         //row.appendChild(qty);
                         //row.appendChild(avi);
 
-                        row.innerHTML = "<td>"+val["name"]+"</td><td>"+val["quantity"]+"</td><td>"+val["store"]+"</td>"
+                        row.innerHTML = "<td>"+val["name"]+"</td><td>"+val["quantity"]+"</td><td>"+val["store"]+"</td>";
 
                         anchor.appendChild(row);
                     }
