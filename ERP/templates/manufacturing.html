@@ -317,7 +317,10 @@
         window.onclick = updateProductionMaterialList();
 
         function updateProductionMaterialList(){
-            jQuery.get("/produceMaterialList", function(data, status){
+             p = document.getElementById("choose-material-list").value; 
+            w = document.getElementById("warehouse-destination").value; 
+            q = document.getElementById("produce-quantity").value; 
+            JQuery.get("/produceMaterialList",{ product: p, warehouse: w, qty: q }, function(data, status){
                 console.log("Data: " + data + "\nStatus: " + status);
                 anchor = document.getElementById("partListHolder");
                 anchor.innerHTML = '';
