@@ -321,24 +321,26 @@
             q = document.getElementById("produce-quantity").value; 
             jQuery.get("/produceMaterialList",{ product: p, warehouse: w, qty: q }, function(data, status){
                 console.log("Data: " + data + "\nStatus: " + status);
-                anchor = document.getElementById("partListHolder");
-                anchor.innerHTML = '';
                 jQuery.each(data, function(i, val) {
-                    
+
+
                     if(i=='0'){
                         document.getElementById("basePrice").innerHTML = data['0'];
                     }
                     else if(i=='1'){
                         document.getElementById("mulPrice").innerHTML = data['1'];
                     }
-                    else if(jQuery.isEmptyObject(val)){
+                    else if(!jQuery.isEmptyObject(val)){
+                        console.log(val);
+                        anchor = document.getElementById("partListHolder");
+                        anchor.innerHTML = '';
                         row = document.createElement("TR");
                         name = document.createElement("TD");
-                        name.appendChild(document.createTextNode(val["name"]));
+                        //name.appendChild(document.createTextNode(val["name"]));
                         qty = document.createElement("TD");
-                        qty.appendChild(document.createTextNode(val["quantity"]));
+                        //qty.appendChild(document.createTextNode(val["quantity"]));
                         avi = document.createElement("TD");
-                        avi.appendChild(document.createTextNode(val["store"]));
+                        //avi.appendChild(document.createTextNode(val["store"]));
                         row.appendChild(name);
                         row.appendChild(qty);
                         row.appendChild(avi);
