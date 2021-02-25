@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
-from sample.forms import CreateUserForm
+from dashboard.forms import CreateUserForm
 
 
 
