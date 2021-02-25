@@ -75,15 +75,21 @@ def createMaterialList(request):
     if request.method == 'POST':
         parent_part = None
         new_rm_name = request.POST.get('product-name')
+        is_bike = request.POST.get('bicycle-check')
         if not new_rm_name == "":
             # create a new raw material
             existing_rm = Part.objects.filter(p_name=new_rm_name).first()
             if existing_rm:
-                parent_part = existing_rm
+                messages.error(request, 'This material list already exists.')
+                return redirect('manufacturing')
             else:
                 # material doesn't exist yet
                 new_rm = Part(p_name=new_rm_name, p_type='Part', p_unit_value=0)
-                new_rm.save()
+                if is_bike:
+                    new_rm.p_type='Product'
+                    new_rm.save()
+                else:
+                    new_rm.save()
                 parent_part = new_rm
         bike = False
         parts = {}

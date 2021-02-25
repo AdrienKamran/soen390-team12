@@ -15,6 +15,7 @@ class Part(models.Model):
     type_choices = (
         ('Raw Material', 'Raw Material'),
         ('Part', 'Part'),
+        ('Product', 'Product')
     )
     p_name = models.CharField(null=False, blank=False, max_length=80, unique=True)
     p_unit_value = models.DecimalField(decimal_places=2, null=True, blank=True, max_digits=9)
