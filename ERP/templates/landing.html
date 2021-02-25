@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 {% load static %}
+{% load filters %}
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
@@ -23,7 +24,9 @@
                 <ul class="nav navbar-nav text-light" id="accordionSidebar">
                     <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user"></i><span>Profile</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'inventory' %}"><i class="fas fa-table"></i><span>Inventory</span></a></li>
+                    {% if request.user|group:"inventory_account" %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'inventory' %}"><i class="fas fa-table"></i><span>Inventory</span></a></li>
+                    {% endif %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="far fa-user-circle"></i><span>Login</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'register' %}"><i class="fas fa-user-circle"></i><span>Register</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-key"></i><span>Forgotten Password</span></a></li>
@@ -32,11 +35,15 @@
                     <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-list"></i><span>Planning</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-calendar-o"></i><span>Scheduling</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-shopping-bag"></i><span>Vendors</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'manufacturing' %}"><i class="fa fa-bar-chart-o"></i><span>Manufacturing</span></a></li>
+                    {% if request.user|group:"manufacturing_account" %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'manufacturing' %}"><i class="fa fa-bar-chart-o"></i><span>Manufacturing</span></a></li>
+                    {% endif %}
                     <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-search"></i><span>Quality Management</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-gift"></i><span>Packaging</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-truck"></i><span>Transport</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'sales' %}"><i class="fa fa-user"></i><span>Sales</span></a></li>
+                    {% if request.user|group:"sales_account" %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'sales' %}"><i class="fa fa-user"></i><span>Sales</span></a></li>
+                    {% endif %}
                     <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-money"></i><span>Accounting</span></a></li>
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
