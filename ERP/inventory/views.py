@@ -91,7 +91,7 @@ def createMaterialList(request):
                 messages.success(request, 'This part already exists.')
             else:
                 # material doesn't exist yet
-                new_rm = Part(p_name=new_rm_name, p_type='Part')
+                new_rm = Part(p_name=new_rm_name, p_type='Part', p_unit_value=0)
                 new_rm.save()
                 parent_part = new_rm
                 messages.success(request, 'Raw material created.')
@@ -116,6 +116,9 @@ def createMaterialList(request):
                     # return to inventory with error message
                     new_rel = MadeOf(part_FK_parent=parent_part, part_FK_child = existing_rm, quantity=counter)
                     new_rel.save()
+                    #update price
+                    parent_part.p_unit_value+existing_rm.p_unit_value
+                    parent_part.save()
                     messages.success(request, 'Part relation added.')
                 else:
                     # material doesn't exist yet
