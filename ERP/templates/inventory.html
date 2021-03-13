@@ -181,9 +181,9 @@
                                             </div>
                                         </div>
                                         <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
-                                            <table class="table my-0" id="dataTable">
+                                            <table class="table my-0 table-hover" id="dataTable">
                                                 <thead>
-                                                    <tr>
+                                                    <tr onselect="">
                                                         <th style="border-width: -10px;">Name</th>
                                                         <th>Type</th>
                                                         <th>Quantity</th>
@@ -194,7 +194,7 @@
                                                 <tbody>
                                                     {% for part in inventory %}
                                                         <tr>
-                                                            <td>{{ part }}</td>
+                                                            <td>{{ part.p_FK.p_name }}</td>
                                                             <td>{{ part.p_FK.p_type }}</td>
                                                             <td>{{ inventory_count|get_count:part.p_serial }}</td>
                                                             <td>{{ part.p_FK.p_unit_value }}</td>

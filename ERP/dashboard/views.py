@@ -70,6 +70,7 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 def inventory(request):
+    # this takes care of generating all the information for the inventory view.
     context = {}
     if request.method == 'POST':
         var = 0
@@ -77,14 +78,15 @@ def inventory(request):
         # filters for distinct values of the tuple warehouse and part.
         # eg. A part template will show only once for the same warehouse, but more than once
         # if in different warehouses.
-        part_inventory = Contains.objects.select_related().distinct('p_FK', 'w_FK')
-        raw_material_all = Part.objects.filter(p_type='Raw Material').all()
-        warehouse_all = Warehouse.objects.all()
-        vendor_all = Vendor.objects.all()
-        orders = Orders.objects.select_related().all().order_by('timestamp')
-        date_of_day = datetime.now()
+        part_inventory = Contains.objects.select_related().distinct('p_FK', 'w_FK') # inventory of the different part types in each warehouse
+        raw_material_all = Part.objects.filter(p_type='Raw Material').all() # list of all the raw materials in the parts list
+        warehouse_all = Warehouse.objects.all() # list of all the warehouses
+        vendor_all = Vendor.objects.all() # list of all the vendors
+        orders = Orders.objects.select_related().all().order_by('timestamp') # list of all the orders
+        date_of_day = datetime.now() # today's datetime
 
-        # figure out how to show the count for every object.
+        # for every part in the list, find how many of those parts exist in the warehouse and save in a dictionary to be
+        # accessible in the inventoy template
         part_inventory_count = {}
         for part in part_inventory:
             part_inventory_count[part.p_serial] = len(Contains.objects.filter(p_FK=part.p_FK, w_FK=part.w_FK).all())
@@ -97,7 +99,7 @@ def inventory(request):
             'rm_orders': orders,
             'date_of_day': date_of_day
         }
-    return render(request, 'inventory.html', context=context)
+    return render(request, 'inventory.html', context=context) # render the view
 
 #decided to combine the two endpoints together
 def generateReport(request):
@@ -199,16 +201,7 @@ def returnVendor(request):
     vendor = Vendor.objects.filter(pk=v_id).all()
     v_json = serializers.serialize('json', vendor)
     return HttpResponse(v_json)
-'''
-@login_required(login_url='login')
-def returnVendorOfPart(request):
-    p_id = request.GET.get('p_id')
-    vendors = SellsParts.objects.select_related().filter(p_FK=2).all()
-    v_list = []
-    for vendor in vendors:
-        v_list.append({'v_fk':vendor.v_FK, 'v_name':vendor.v_FK.v_name})
-    return json.dumps(v_list)
-'''
+
 @login_required(login_url='login')
 def orderRawMaterial(request):
     if request.method == 'POST':
@@ -229,15 +222,19 @@ def orderRawMaterial(request):
             new_order.save()
             # for the sake of this sprint, the order is automatically shipped and appears in the warehouse inventory
 
-            #first, check if there is existing raw material in the warehouse inventory
-            rm = Contains.objects.filter(p_FK=new_order.p_FK.pk, w_FK=new_order.w_FK.pk).first()
-            if rm:
-                #this material already exists
-                rm.p_quantity = rm.p_quantity + new_order.order_quantity
-                rm.save()
+            # before adding the new parts, query the contains list for the last index.
+            last_index_object = Contains.objects.order_by('-p_serial').first()
+            last_index = 0
+            if last_index_object is None:
+                last_index = 10000
             else:
-                new_rm = Contains(p_FK=new_order.p_FK, w_FK=new_order.w_FK, p_quantity=new_order.order_quantity)
+                last_index = last_index_object.p_serial
+            i = 0
+            while i < int(request.POST.get('purchase-order-quantity')):
+                last_index = last_index + 1
+                new_rm = Contains(p_FK=new_order.p_FK, w_FK=new_order.w_FK, p_serial=last_index, p_defective=False)
                 new_rm.save()
+                i = i + 1
 
             messages.success(request, 'Raw material ordered successfully.')
             return redirect('inventory')
@@ -249,6 +246,8 @@ def orderRawMaterial(request):
 
 @login_required(login_url='login')
 def createRawMaterial(request):
+    # this view takes care of creating raw materials so that they can be selected when creating order or material 
+    # lists and manufacturing products
     if request.method == 'POST':
         new_rm_name = request.POST.get('new-raw-mat-name')
         if not new_rm_name == "":
