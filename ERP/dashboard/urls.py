@@ -22,4 +22,5 @@ urlpatterns = [
     path('inventory/check-unique/', views.checkUniqueRawMatName, name='check-unique'),
     path('inventory/get-vendor/', views.returnVendor, name='return-vendor'),
     path('inventory/part/', views.inventoryPartView, name='inventory-part'),
+    path('inventory/toggle-inventory-part-status/', views.toggleInventoryPartStatus, name='toggle-inventory-part-status'),
 ]

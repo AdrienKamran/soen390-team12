@@ -246,8 +246,8 @@ def orderRawMaterial(request):
 
 @login_required(login_url='login')
 def createRawMaterial(request):
-    # this view takes care of creating raw materials so that they can be selected when creating order or material 
-    # lists and manufacturing products
+# this view takes care of creating raw materials so that they can be selected when creating order or material 
+# lists and manufacturing products
     if request.method == 'POST':
         new_rm_name = request.POST.get('new-raw-mat-name')
         if not new_rm_name == "":
@@ -318,6 +318,17 @@ def inventoryPartView(request):
         'inventory': inventory_parts,
     }
     return render(request, 'inventory-parts.html', context)
+
+@login_required(login_url='login')
+def toggleInventoryPartStatus(request):
+    p_serial = request.GET.get('p_serial')
+
+    part = Contains.objects.filter(p_serial=p_serial).first()
+    part.p_defective = not part.p_defective
+    part.save()
+
+    test = "success"
+    return JsonResponse(test, safe=False)
 
 
 
