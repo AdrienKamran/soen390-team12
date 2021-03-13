@@ -194,9 +194,9 @@
                                                 <tbody>
                                                     {% for part in inventory %}
                                                         <tr>
-                                                            <td>{{ part.p_FK.p_name }}</td>
+                                                            <td>{{ part }}</td>
                                                             <td>{{ part.p_FK.p_type }}</td>
-                                                            <td>{{ part.p_quantity }}</td>
+                                                            <td>{{ inventory_count|get_count:part.p_serial }}</td>
                                                             <td>{{ part.p_FK.p_unit_value }}</td>
                                                             <td>{{ part.w_FK.w_name }}</td>
                                                         </tr>

@@ -80,19 +80,6 @@ class Contains(models.Model):
     p_defective = models.BooleanField(null=False, blank=False, default=False)
     p_serial = models.BigIntegerField(default=10000)
 
-    def save(self, *args, **kwargs):
-        # This means that the model isn't saved to the database yet
-        if self._state.adding:
-            # Get the maximum serial value from the database
-            last_serial = self.objects.all().aggregate(largest=models.Max('p_serial'))['largest']
-
-            # aggregate can return None! Check it first.
-            # If it isn't none, just use the last ID specified (which should be the greatest) and add one to it
-            if last_serial is not None:
-                self.p_serial = last_serial + 1
-
-        super(Contains, self).save(*args, **kwargs)
-
 '''
 
 '''

@@ -74,14 +74,23 @@ def inventory(request):
     if request.method == 'POST':
         var = 0
     else:
-        part_inventory = Contains.objects.select_related().all()
+        # filters for distinct values of the tuple warehouse and part.
+        # eg. A part template will show only once for the same warehouse, but more than once
+        # if in different warehouses.
+        part_inventory = Contains.objects.select_related().distinct('p_FK', 'w_FK')
         raw_material_all = Part.objects.filter(p_type='Raw Material').all()
         warehouse_all = Warehouse.objects.all()
         vendor_all = Vendor.objects.all()
         orders = Orders.objects.select_related().all().order_by('timestamp')
         date_of_day = datetime.now()
+
+        # figure out how to show the count for every object.
+        part_inventory_count = {}
+        for part in part_inventory:
+            part_inventory_count[part.p_serial] = len(Contains.objects.filter(p_FK=part.p_FK, w_FK=part.w_FK).all())
         context = {
             'inventory': part_inventory,
+            'inventory_count': part_inventory_count,
             'raw_material_all': raw_material_all,
             'warehouse_all': warehouse_all,
             'vendor_all': vendor_all,
