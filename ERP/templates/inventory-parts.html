@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html>
-
+{% load static %}
+{% load filters %}
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Table - TEAM12 ERP</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
-    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
-    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
-    <link rel="stylesheet" href="assets/css/Billing-Table-with-Add-Row--Fixed-Header-Feature.css">
-    <link rel="stylesheet" href="assets/css/Bootstrap-DataTables.css">
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome5-overrides.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Billing-Table-with-Add-Row--Fixed-Header-Feature.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Bootstrap-DataTables.css' %}">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="assets/css/Toggle-Switch.css">
+    <link rel="stylesheet" href="{% static 'assets/css/Toggle-Switch.css' %}">
 </head>
 
 <body id="page-top">
@@ -25,14 +26,29 @@
                 </a>
                 <hr class="sidebar-divider my-0">
                 <ul class="navbar-nav text-light" id="accordionSidebar">
-                    <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="table.html"><i class="fas fa-table"></i><span>Table</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="login.html"><i class="far fa-user-circle"></i><span>Login</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="register.html"><i class="fas fa-user-circle"></i><span>Register</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="forgot-password.html"><i class="fas fa-key"></i><span>Forgotten Password</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="404.html"><i class="fas fa-exclamation-circle"></i><span>Page Not Found</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fas fa-window-maximize"></i><span>Blank Page</span></a><a class="nav-link" href="blank.html"><i class="fa fa-list"></i><span>Planning</span></a><a class="nav-link" href="blank.html"><i class="fa fa-calendar-o"></i><span>Scheduling</span></a><a class="nav-link" href="blank.html"><i class="fa fa-shopping-bag"></i><span>Vendors</span></a><a class="nav-link" href="blank.html"><i class="fa fa-bar-chart-o"></i><span>Production</span></a><a class="nav-link" href="blank.html"><i class="fa fa-search"></i><span>Quality Management</span></a><a class="nav-link" href="blank.html"><i class="fa fa-gift"></i><span>Packaging</span></a><a class="nav-link" href="blank.html"><i class="fa fa-truck"></i><span>Transport</span></a><a class="nav-link" href="blank.html"><i class="fa fa-user"></i><span>Sales (Customers)</span></a><a class="nav-link" href="blank.html"><i class="fa fa-money"></i><span>Accounting</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user"></i><span>Profile</span></a></li>
+                    {% if request.user|group:"inventory_account" %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'inventory' %}"><i class="fas fa-table"></i><span>Inventory</span></a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="far fa-user-circle"></i><span>Login</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'register' %}"><i class="fas fa-user-circle"></i><span>Register</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-key"></i><span>Forgotten Password</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-exclamation-circle"></i><span>Page Not Found</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-window-maximize"></i><span>Blank Page</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-list"></i><span>Planning</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-calendar-o"></i><span>Scheduling</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-shopping-bag"></i><span>Vendors</span></a></li>
+                    {% if request.user|group:"manufacturing_account" %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'manufacturing' %}"><i class="fa fa-bar-chart-o"></i><span>Manufacturing</span></a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-search"></i><span>Quality Management</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-gift"></i><span>Packaging</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-truck"></i><span>Transport</span></a></li>
+                    {% if request.user|group:"sales_account" %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'sales' %}"><i class="fa fa-user"></i><span>Sales</span></a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-money"></i><span>Accounting</span></a></li>
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
             </div>
@@ -144,34 +160,37 @@
                     <h3 class="text-dark mb-4">List of Products</h3>
                     <div class="card shadow" id="inventory-card">
                         <div class="card-header py-3">
-                            <p class="text-primary m-0 font-weight-bold">[PRODUCT/PART NAME HERE]</p>
+                            <p class="text-primary m-0 font-weight-bold">{{ part_name }}</p>
+                            <p class="text-primary m-0">{{ warehouse_name }}</p>
                         </div>
                         <div class="card-body">
                             <form>
                                 <fieldset>
                                     <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
-                                        <table class="table my-0" id="dataTable">
+                                        <input class="form-control mb-2 mr-auto" type="te" name="filter-table-textbox" id="filter-table-textbox" placeholder="Search by serial number" onkeyup="filterParts()">
+                                        <table class="table my-0 table-sm table-hover" id="dataTable">
                                             <thead>
                                                 <tr>
-                                                    <th style="border-width: -10px;">ID</th>
+                                                    <th>Serial Number</th>
                                                     <th>Status</th>
                                                     <th>Identify</th>
                                                     <th>Remove</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>4810982</td>
-                                                    <td><button class="btn btn-primary" type="button" style="background: var(--red);border-color: var(--red);">Defective</button></td>
-                                                    <td><a class="btn btn-primary" role="button">Mark Functional</a></td>
-                                                    <td><button class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Add new component"><i class="fa fa-minus"></i></button></td>
-                                                </tr>
-                                                <tr>
-                                                    <td data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" title="Made of: Steel (x3)">3241853</td>
-                                                    <td><button class="btn btn-primary" type="button" style="background: var(--success);border-color: var(--success);">Functional</button></td>
-                                                    <td><a class="btn btn-primary" role="button">Mark Defective</a></td>
-                                                    <td><button class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Add new component"><i class="fa fa-minus"></i></button></td>
-                                                </tr>
+                                                {% for part in inventory %}
+                                                    <tr>
+                                                        <td>{{ part.p_serial }}</td>
+                                                        {% if part.p_defective %}
+                                                            <td><span class="badge badge-danger">Defective</span></td>
+                                                            <td><button class="badge badge-primary" type="button" onclick="toggleDefective()">Mark Functional</button></td>
+                                                        {% else %}
+                                                            <td><span class="badge badge-success">Functional</span></td>
+                                                            <td><button class="badge badge-primary" type="button" onclick="toggleDefective()">Mark Defective</button></td>
+                                                        {% endif %}
+                                                        <td><button class="badge badge-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Add new component" type="button" onclick="toggleDefective()"><i class="fa fa-minus"></i></button></td>
+                                                    </tr>
+                                                {% endfor %}
                                             </tbody>
                                             <tfoot>
                                                 <tr>
@@ -197,16 +216,43 @@
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/js/bs-init.js"></script>
+    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/bs-init.js' %}"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-    <script src="assets/js/Bootstrap-DataTables.js"></script>
-    <script src="assets/js/Billing-Table-with-Add-Row--Fixed-Header-Feature.js"></script>
+    <script src="{% static 'assets/js/Bootstrap-DataTables.js' %}"></script>
+    <script src="{% static 'assets/js/Billing-Table-with-Add-Row--Fixed-Header-Feature.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="assets/js/theme.js"></script>
+    <script src="{% static 'assets/js/theme.js' %}"></script>
+    <script type="text/javascript">
+        function toggleDefective() {
+            alert("Test");
+        }
+
+        function filterParts() {
+            // Declare variables 
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("filter-table-textbox");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("dataTable");
+            tr = table.getElementsByTagName("tr");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                } 
+            }
+        }
+    </script>
 </body>
 
 </html>

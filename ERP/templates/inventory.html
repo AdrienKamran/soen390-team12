@@ -193,7 +193,7 @@
                                                 </thead>
                                                 <tbody>
                                                     {% for part in inventory %}
-                                                        <tr>
+                                                        <tr onclick="goToDetailView({{part.w_FK.pk}}, {{part.p_FK.pk}})">
                                                             <td>{{ part.p_FK.p_name }}</td>
                                                             <td>{{ part.p_FK.p_type }}</td>
                                                             <td>{{ inventory_count|get_count:part.p_serial }}</td>
@@ -519,44 +519,48 @@
         }
 
         function SelectOrderVendor(vendor_id) {
-                if (vendor_id == 0) {
-                    var quantity = document.getElementById("purchase-order-quantity").value;
-                    var updatedUnitCost = orderRawMaterialUnitCost * quantity;
-                    var element = document.getElementById("total-cost-here");
+            if (vendor_id == 0) {
+                var quantity = document.getElementById("purchase-order-quantity").value;
+                var updatedUnitCost = orderRawMaterialUnitCost * quantity;
+                var element = document.getElementById("total-cost-here");
 
-                    element.innerHTML = "$" + updatedUnitCost.toFixed(2);
-                    totalCostElement.value = updatedUnitCost;
-                }
-                else {
-                    $.ajax({
-                        url: '/inventory/get-vendor/',
-                        data: {
-                            'v_id': vendor_id
-                        },
-                        dataType: 'json',
-                        success: function(data) {
-                            var v_multiplier = data[0].fields.v_price_multiplier;
-                            var element = document.getElementById("total-cost-here");
+                element.innerHTML = "$" + updatedUnitCost.toFixed(2);
+                totalCostElement.value = updatedUnitCost;
+            }
+            else {
+                $.ajax({
+                    url: '/inventory/get-vendor/',
+                    data: {
+                        'v_id': vendor_id
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        var v_multiplier = data[0].fields.v_price_multiplier;
+                        var element = document.getElementById("total-cost-here");
 
-                            if (orderRawMaterialUnitCost >= 0) {
-                                var quantity = document.getElementById("purchase-order-quantity").value;
-                                var updatedUnitCost = orderRawMaterialUnitCost * v_multiplier * quantity;
-                                element.innerHTML = "$" + updatedUnitCost.toFixed(2);
-                                totalCostElement.value = updatedUnitCost;
-                                vendorMultiplier = v_multiplier;
-                            }
-                            else {
-                                alert("You must choose a raw material first");
-                                var select = document.getElementById("purchase-vendor-name");
-                                select.value = 0;
-                            }
-                        },
-                        error: function(data) {
-                            alert("Uh-oh");
+                        if (orderRawMaterialUnitCost >= 0) {
+                            var quantity = document.getElementById("purchase-order-quantity").value;
+                            var updatedUnitCost = orderRawMaterialUnitCost * v_multiplier * quantity;
+                            element.innerHTML = "$" + updatedUnitCost.toFixed(2);
+                            totalCostElement.value = updatedUnitCost;
+                            vendorMultiplier = v_multiplier;
                         }
-                    });
-                }
+                        else {
+                            alert("You must choose a raw material first");
+                            var select = document.getElementById("purchase-vendor-name");
+                            select.value = 0;
+                        }
+                    },
+                    error: function(data) {
+                        alert("Uh-oh");
+                    }
+                });
+            }
+        }
 
+        function goToDetailView(warehouse_id, part_id) {
+            window.location.href = 'inventory/part/?warehouse_id=' + warehouse_id + "&part_id=" + part_id;
+            return false;
         }
     </script>
 </body>

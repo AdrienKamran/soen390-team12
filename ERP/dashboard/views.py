@@ -302,3 +302,23 @@ def checkUniqueRawMatName(request):
     else:
         json = {}
     return JsonResponse(json)
+
+@login_required(login_url='login')
+def inventoryPartView(request):
+    warehouse_id = request.GET.get('warehouse_id')
+    part_id = request.GET.get('part_id')
+
+    part = Part.objects.get(pk=part_id)
+    warehouse = Warehouse.objects.get(pk=warehouse_id)
+    inventory_parts = Contains.objects.filter(w_FK=warehouse, p_FK=part).all()
+
+    context = {
+        'part_name': part.p_name,
+        'warehouse_name': warehouse.w_name,
+        'inventory': inventory_parts,
+    }
+    return render(request, 'inventory-parts.html', context)
+
+
+
+
