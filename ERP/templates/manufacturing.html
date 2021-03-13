@@ -225,7 +225,7 @@
                                             <div class="col">
                                                 <form id="manufacture-product" method="POST" action="{% url 'manufacture-product' %}"> {% csrf_token %}
                                                     <input type="hidden" id="dateTime" value="{{incident.created_date_time}}"></input>
-                                                    <fieldset><label for="choose-material-list">Choose a material list</label><select class="form-control" id="choose-material-list" name="choose-material-list">
+                                                    <fieldset><label for="choose-material-list">Choose a material list</label><select class="form-control" id="choose-material-list" name="choose-material-list" onchange="updateProductionMaterialList()">
                                                             <optgroup label="Material List For Part">
                                                                 {% if parts %}
                                                                     {% for p in parts%}
@@ -233,7 +233,7 @@
                                                                     {% endfor %}
                                                                 {% endif %}
                                                             </optgroup>
-                                                        </select><label for="warehouse-destination">Choose a warehouse destination</label><select class="form-control" id="warehouse-destination" name="warehouse-destination">
+                                                        </select><label for="warehouse-destination">Choose a warehouse destination</label><select class="form-control" id="warehouse-destination" name="warehouse-destination" onchange="updateProductionMaterialList()">
                                                             <optgroup label="Active Warehouses">
                                                                 {% if warehouse %}
                                                                     {% for p in warehouse%}
@@ -241,11 +241,11 @@
                                                                     {% endfor %}
                                                                 {% endif %}
                                                             </optgroup>
-                                                        </select><label for="produce-quantity">Choose the quantity to produce</label><input class="form-control" type="number" id="produce-quantity" name="produce-quantity" value="1">
+                                                        </select><label for="produce-quantity">Choose the quantity to produce</label><input class="form-control" type="number" id="produce-quantity" name="produce-quantity" value="1" onchange="updateProductionMaterialList()">
                                                         <legend>Choose a product to manufacture:</legend>
                                                     </fieldset>
                                                 </form>
-                                                <button class="btn btn-primary" onclick="updateProductionMaterialList()">Update</button>
+                                                <button class="btn btn-primary mt-2" onclick="updateProductionMaterialList()">Update</button>
                                             </div>
                                             <div class="col">
                                                 <div class="card">
