@@ -202,7 +202,22 @@
                                                 <div class="card">
                                                     <div class="card-body">
                                                         <h4 class="card-title">How to create a material list</h4>
-                                                        <p class="card-text">- Write a unique product name;<br>- Pick the product's components (raw materials, other products, and their respective quantities);<br>- Click the button below!</p><input class="btn btn-primary" type="submit" form="create-material-list" value="Create Material List"></input>
+                                                        <p class="card-text">- Write a unique product name;<br>- Pick the product's components (raw materials, other products, and their respective quantities);<br>- Click the button below!</p><input class="btn btn-primary" type="submit" form="create-material-list" value="Create Material List"></input><br>
+                                                        <h4 class="card-title">How to update or clone a material list</h4>
+                                                        <p class="card-text">- Select an existing material list from the dropdown;<br>- Pick the product's components which you wish to modify(raw materials, other products, and their respective quantities);<br>- To update, leave the name the same,to clone into a new part change the name;<br>- Get started with the dropdown below!</p>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                Load Material List
+                                                            </button>
+                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                {%if parts%}
+                                                                    {% for p in parts%}
+                                                                        <a class="dropdown-item" onclick="loadMaterialList('{{p.p_name}}');" href="#">{{p.p_name}}</a>
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            </div>
+                                                        </div><br>
+                                                        
                                                     </div>
                                                 </div>
                                             </div>
@@ -307,8 +322,32 @@
             //the below code could be converted over to DOMNODES or django based solution but should work fine for now
             componentTemplate.innerHTML =  '<div class="col d-flex justify-content-center"><select class="form-control" id="'+num+'chosen-component" name="'+num+'chosen-component"><optgroup label="Products">{%if parts%}{% for p in parts%}<option value="{{p.p_name}}" selected="">{{p.p_name}}</option>{% endfor %}{%endif%}</optgroup></select></div><div class="col d-flex justify-content-center"><input class="form-control" type="number" id="'+num+'chosen-component-qty" name="'+num+'chosen-component-qty"></div><div class="col d-flex justify-content-center"><button onclick="removeMaterial('+num+')" class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button></div>';
             anchor.appendChild(componentTemplate);
-
         }
+
+        //load a material list in from the database
+        function updateMaterialList(nom){
+            jQuery.get("/loadMaterialList",{ product: p }, function(data, status){
+                console.log("Data: " + data + "\nStatus: " + status);
+                anchor = document.getElementById("partListRows");
+                anchor.innerHTML = '';
+                jQuery.each(data, function(i, val) {
+                    if(!jQuery.isEmptyObject(val)){
+                        console.log(val);
+                        num = anchor.childNodes.length;
+                        componentTemplate = document.createElement("DIV");
+                        componentTemplate.setAttribute("class", "form-row");
+                        componentTemplate.setAttribute("style", "padding: 5px;height:48px;");
+                        componentTemplate.setAttribute("id","cRow"+num);
+                        //the below code could be converted over to DOMNODES or django based solution but should work fine for now
+                        //below shoudl correctly display the default value for both quantity and part by having selected on ONLY the mathed part name
+                        componentTemplate.innerHTML =  '<div class="col d-flex justify-content-center"><select class="form-control" id="'+num+'chosen-component" name="'+num+'chosen-component"><optgroup label="Products">{%if parts%}{% for p in parts%}<option value="{{p.p_name}}" {%if p.p_name == "'+val["name"]+'"%}selected{%endif%}>{{p.p_name}}</option>{% endfor %}{%endif%}</optgroup></select></div><div class="col d-flex justify-content-center"><input class="form-control" type="number" id="'+num+'chosen-component-qty" name="'+num+'chosen-component-qty" {%if p.p_name == "'+val["name"]+'"%}value="'+val["qty"]+'"{%endif%}></div><div class="col d-flex justify-content-center"><button onclick="removeMaterial('+num+')" class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button></div>';
+                        anchor.appendChild(componentTemplate);
+                        //row.innerHTML = "<td>"+val["name"]+"</td><td>"+val["quantity"]+"</td><td>"+val["store"]+"</td>";
+                    }
+                });
+            });
+        }
+
         //function to remove a row from the list of materials, autogenerated by addMaterial.
         function removeMaterial(num){
             anchor = document.getElementById("partsListRows");
