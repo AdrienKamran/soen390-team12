@@ -28,6 +28,9 @@ class Part(models.Model):
     p_grade = models.TextField(choices=grade_choices, null=True, blank=True, default='Aluminum')
     p_type = models.TextField(choices=type_choices, null=False, blank=False, default='Part')
 
+    def __str__(self):
+		    return self.p_name
+
 '''
 
 '''
@@ -42,6 +45,9 @@ class Product(models.Model):
     prod_type = models.TextField(choices=type_choices, null=False, blank=False, default='Hybrid Bike')
     prod_weight = models.DecimalField(decimal_places=2, null=False, blank=False, max_digits=9)
 
+    def __str__(self):
+		    return self.p_FK.p_name + " " + self.type_choices 
+
 '''
 
 '''
@@ -52,6 +58,8 @@ class Warehouse(models.Model):
     w_province = models.CharField(max_length=120)
     w_postal_code = models.CharField(max_length=6)
 
+    def __str__(self):
+		    return self.w_name
 '''
 
 '''
@@ -63,6 +71,8 @@ class Vendor(models.Model):
     v_province = models.CharField(max_length=120)
     v_postal_code = models.CharField(max_length=6)
 
+    def __str__(self):
+		    return self.v_name
 '''
 Table containing the material is that describes the sub-parts making up parts and products.
 '''
@@ -71,6 +81,8 @@ class MadeOf(models.Model):
     part_FK_child = models.ForeignKey(Part, on_delete=models.CASCADE, related_name='%(class)s_child_part')
     quantity = models.IntegerField()
 
+    def __str__(self):
+		    return self.part_FK_parent.p_name
 '''
 
 '''
@@ -80,6 +92,8 @@ class Contains(models.Model):
     p_defective = models.BooleanField(null=False, blank=False, default=False)
     p_serial = models.BigIntegerField(default=10000)
 
+    def __str__(self):
+		    return self.w_FK.w_name + " " + self.p_FK.p_name + " " + str(self.p_serial)
 '''
 
 '''
@@ -87,6 +101,9 @@ class SellsParts(models.Model):
     v_FK = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     p_FK = models.ForeignKey(Part, on_delete=models.CASCADE)
     p_quantity = models.IntegerField(default=100, null=False, blank=False)
+
+    def __str__(self):
+            return self.v_FK.v_name + " " + self.p_FK.p_name
 
 '''
 
@@ -104,3 +121,6 @@ class Orders(models.Model):
     order_quantity = models.IntegerField(default=1, null=False, blank=False)
     order_total_cost = models.DecimalField(decimal_places=2, null=False, blank=False, max_digits=9)
     timestamp = models.DateTimeField(auto_now_add=True, null=False, blank=False)
+
+    def __str__(self):
+            return self.v_FK.v_name + " " + self.p_FK.p_name + " " + str(self.order_quantity) + " " + self.order_status
