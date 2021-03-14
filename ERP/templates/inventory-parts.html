@@ -158,6 +158,11 @@
                 </nav>
                 <div class="container-fluid">
                     <h3 class="text-dark mb-4">List of Products</h3>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
                     <div class="card shadow" id="inventory-card">
                         <div class="card-header py-3">
                             <p class="text-primary m-0 font-weight-bold">{{ part_name }}</p>
@@ -188,7 +193,7 @@
                                                             <td><span class="badge badge-success" id="status-badge-{{ part.p_serial }}">Functional</span></td>
                                                             <td><button class="badge badge-primary" type="button" onclick="toggleDefective( '{{ part.p_serial }}', false)" id="status-btn-{{ part.p_serial }}">Mark Defective</button></td>
                                                         {% endif %}
-                                                        <td><button class="badge badge-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Add new component" type="button"><i class="fa fa-minus"></i></button></td>
+                                                        <td><button class="badge badge-primary" type="button" data-toggle="modal" data-target="#exampleModal" onclick="setDeletePartSerial('{{ part.p_serial }}')"><i class="fa fa-minus"></i></button></td>
                                                     </tr>
                                                 {% endfor %}
                                             </tbody>
@@ -216,6 +221,25 @@
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Deleting Part</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Are you sure you wish to delete the part/product from the inventory?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" onclick="deletePart()" data-dismiss="modal">Yes</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/chart.min.js' %}"></script>
@@ -223,6 +247,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
     <script src="{% static 'js/theme.js' %}"></script>
     <script type="text/javascript">
+        var deletePartSerial = 0;
+
+        function setDeletePartSerial(p_serial) {
+            deletePartSerial = p_serial;
+        }
+
+        function deletePart() {
+            if (deletePartSerial != 0) {
+                $.ajax({
+                    url: '/inventory/delete-inventory-part/',
+                    data: {
+                        'p_serial': deletePartSerial
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        location.reload();
+                    },
+                    error: function(data) {
+                        alert("Something went wrong delete this part.");
+                    }
+                });
+            }
+        }
+
         function toggleDefective(p_serial, p_defective) {
             var badge = document.getElementById("status-badge-" + p_serial);
             var button = document.getElementById("status-btn-" + p_serial);

@@ -23,4 +23,5 @@ urlpatterns = [
     path('inventory/get-vendor/', views.returnVendor, name='return-vendor'),
     path('inventory/part/', views.inventoryPartView, name='inventory-part'),
     path('inventory/toggle-inventory-part-status/', views.toggleInventoryPartStatus, name='toggle-inventory-part-status'),
+    path('inventory/delete-inventory-part/', views.deleteInventoryPart, name='delete-inventory-part'),
 ]

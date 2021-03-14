@@ -330,6 +330,16 @@ def toggleInventoryPartStatus(request):
     test = "success"
     return JsonResponse(test, safe=False)
 
+@login_required(login_url='login')
+def deleteInventoryPart(request):
+    p_serial = request.GET.get('p_serial')
+
+    part = Contains.objects.filter(p_serial=p_serial).first()
+    part.delete()
+
+    test = "success"
+    messages.success(request, f"Part [{p_serial}] successfully deleted.")
+    return JsonResponse(test, safe=False)
 
 
 
