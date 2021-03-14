@@ -183,10 +183,10 @@
                                                         <td>{{ part.p_serial }}</td>
                                                         {% if part.p_defective %}
                                                             <td><span class="badge badge-danger" id="status-badge-{{ part.p_serial }}">Defective</span></td>
-                                                            <td><button class="badge badge-primary" type="button" onclick="toggleDefective({{ part.p_serial }}, true)" id="status-btn-{{ part.p_serial }}">Mark Functional</button></td>
+                                                            <td><button class="badge badge-primary" type="button" onclick="toggleDefective( '{{ part.p_serial }}', true)" id="status-btn-{{ part.p_serial }}">Mark Functional</button></td>
                                                         {% else %}
                                                             <td><span class="badge badge-success" id="status-badge-{{ part.p_serial }}">Functional</span></td>
-                                                            <td><button class="badge badge-primary" type="button" onclick="toggleDefective({{ part.p_serial }}, false)" id="status-btn-{{ part.p_serial }}">Mark Defective</button></td>
+                                                            <td><button class="badge badge-primary" type="button" onclick="toggleDefective( '{{ part.p_serial }}', false)" id="status-btn-{{ part.p_serial }}">Mark Defective</button></td>
                                                         {% endif %}
                                                         <td><button class="badge badge-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Add new component" type="button"><i class="fa fa-minus"></i></button></td>
                                                     </tr>

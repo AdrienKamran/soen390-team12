@@ -193,7 +193,7 @@
                                                 </thead>
                                                 <tbody>
                                                     {% for part in inventory %}
-                                                        <tr onclick="goToDetailView({{part.w_FK.pk}}, {{part.p_FK.pk}})">
+                                                        <tr onclick="goToDetailView( '{{part.w_FK.pk}}', '{{part.p_FK.pk}}')">
                                                             <td>{{ part.p_FK.p_name }}</td>
                                                             <td>{{ part.p_FK.p_type }}</td>
                                                             <td>{{ inventory_count|get_count:part.p_serial }}</td>
