@@ -175,7 +175,7 @@ def writeTestReport():
 
 @login_required(login_url='login')
 def salesViewPage(request):
-    return render(request, template_name='sales.html', context={})
+    return render(request, template_name='sales-tmp.html', context={})
 
 @login_required(login_url='login')
 def returnRawMaterial(request):
