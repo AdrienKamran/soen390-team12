@@ -4,8 +4,8 @@ from inventory.models import Product, Warehouse
 
 class Customer(models.Model):
     type_choice = (
-        ('company', 'company'),
-        ('individual', 'individual')
+        ('Company', 'Company'),
+        ('Individual', 'Individual')
     )
     name = models.TextField(max_length=256)
     type = models.TextField(choices=type_choice)

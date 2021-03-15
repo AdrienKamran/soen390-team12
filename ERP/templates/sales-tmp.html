@@ -396,16 +396,16 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col">
-                                                <form id="sell-product">
+                                                <form id="add-customer" method="POST" action="{% url 'add-customer' %}">
+													{% csrf_token %}
                                                     <!-- Start: #customer_information -->
-                                                    <fieldset><label for="select-recipient">Customer Name</label><!-- Start: #customer_name --><input class="form-control" type="text" id="select-recipient" name="select recipient"><!-- End: #customer_name --><label for="warehouse-source">Customer Type</label><!-- Start: #customer_type --><select class="form-control" id="warehouse-source" name="warehouse source">
-                                                            <optgroup label="This is a group">
-                                                                <option value="12" selected="">This is item 1</option>
-                                                                <option value="13">This is item 2</option>
-                                                                <option value="14">This is item 3</option>
+                                                    <fieldset><label for="customer-name">Customer Name</label><!-- Start: #customer_name --><input class="form-control" type="text" id="customer-name" name="customer-name"><!-- End: #customer_name --><label for="customer-type">Customer Type</label><!-- Start: #customer_type --><select class="form-control" id="customer-type" name="customer-type">
+                                                            <optgroup label="Choose a customer type">
+                                                                <option value="12" selected="">Company</option>
+                                                                <option value="13">Individual</option>
                                                             </optgroup>
-                                                        </select><!-- End: #customer_type --><label for="select-product">Email</label><!-- Start: #customer_email --><input class="form-control" type="text" id="select-product" name="select product"><!-- End: #customer_email --><label for="sale-quantity">Phone Number</label><!-- Start: #customer_phone_number --><input class="form-control" type="tel" id="sale-quantity" name="sale quantity"><!-- End: #customer_phone_number --><label for="commission-rate">Address</label><!-- Start: #customer_address --><input class="form-control" type="text" id="commission-rate" name="commission rate"><!-- End: #customer_address --><label for="sale-quantity">Province/State</label><!-- Start: #customer_province --><input class="form-control" type="tel" id="sale-quantity-1" name="sale quantity"><!-- End: #customer_province --><label for="commission-rate">Postal/Zip Code</label><!-- Start: #customer_postal --><input class="form-control" type="text" id="commission-rate-1" name="commission rate"><!-- End: #customer_postal --><label for="commission-rate">Country</label><!-- Start: #customer_country --><input class="form-control" type="text" id="commission-rate-2" name="commission rate"><!-- End: #customer_country -->
-                                                        <!-- Start: #customer_add --><button class="btn btn-primary" type="button">ADD</button><!-- End: #customer_add -->
+                                                        </select><!-- End: #customer_type --><label for="customer-email">Email</label><!-- Start: #customer_email --><input class="form-control" type="text" id="customer-email" name="customer-email"><!-- End: #customer_email --><label for="customer-phone-number">Phone Number</label><!-- Start: #customer_phone_number --><input class="form-control" type="tel" id="customer-phone-number" name="customer-phone-number"><!-- End: #customer_phone_number --><label for="customer-address">Address</label><!-- Start: #customer_address --><input class="form-control" type="text" id="customer-address" name="customer-address"><!-- End: #customer_address --><label for="customer-province">Province/State</label><!-- Start: #customer_province --><input class="form-control" type="tel" id="customer-province" name="customer-province"><!-- End: #customer_province --><label for="customer-postal">Postal/Zip Code</label><!-- Start: #customer_postal --><input class="form-control" type="text" id="customer-postal" name="customer-postal"><!-- End: #customer_postal --><label for="customer-country">Country</label><!-- Start: #customer_country --><input class="form-control" type="text" id="customer-country" name="customer-country"><!-- End: #customer_country -->
+                                                        <!-- Start: #customer_add --><button class="btn btn-primary" type="submit" value="Click" name="add-customer-button" form="add-customer">ADD</button><!-- End: #customer_add -->
                                                         <legend>Add a Customer</legend>
                                                     </fieldset><!-- End: #customer_information -->
                                                 </form>
@@ -433,6 +433,19 @@
     <script src="{% static 'js/bs-init.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
     <script src="{% static 'js/theme.js' %}"></script>
+	<script>
+		//function to add a customer
+		function addCustomer(){
+		customer-name = document.getElementById("customer-name").value;
+		customer-type = document.getElementById("customer-type").value;
+		customer-email = document.getElementById("customer-email").value;
+		customer-phone-number = document.getElementById("customer-phone-number").value;
+		customer-address = document.getElementById("customer-address").value;
+		customer-province = document.getElementById("customer-province").value;
+		customer-postal = document.getElementById("customer-postal").value;
+		customer-country = document.getElementById("customer-country").value;
+		}
+	</script>
 </body>
 
 </html>

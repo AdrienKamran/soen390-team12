@@ -12,6 +12,7 @@ from .forms import CreateUserForm, OrderRawMaterialForm, CreateRawMaterialForm, 
 #from .filters import OrderFilter
 from datetime import datetime
 from decimal import Decimal
+from sales.models import *
 import logging
 
 import io
@@ -294,3 +295,22 @@ def checkUniqueRawMatName(request):
     else:
         json = {}
     return JsonResponse(json)
+@login_required(login_url='login')
+def addCustomer(request):
+    if request.method == 'POST':
+        customer_name = request.POST.get('customer-name')
+        customer_type = request.POST.get('customer-type')
+        customer_email = request.POST.get('customer-email')
+        customer_phone_number = request.POST.get('customer-phone-number')
+        customer_address = request.POST.get('customer-address')
+        customer_province = request.POST.get('customer-province')
+        customer_postal = request.POST.get('customer-postal')
+        customer_country = request.POST.get('customer-country')
+        #City not included in HTML and the type does not function properly
+        customer = Customer(name=customer_name, type=customer_type, email=customer_email,
+                            phone_number=customer_phone_number, address_line=customer_address, state=customer_province,
+                            zip_code=customer_postal, country=customer_country, city='Montreal')
+        customer.save()
+    return redirect('sales')
+def addCustomer2(request):
+    return HttpResponse('from ')
