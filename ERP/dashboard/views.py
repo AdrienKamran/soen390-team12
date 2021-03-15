@@ -256,7 +256,7 @@ def createRawMaterial(request):
 
                 v_form = CreateNewVendorOfPartForm(data={
                     'p_FK': new_part.pk,
-                    'v_FK':request.POST.get('new-mat-vendor')
+                    'v_FK': request.POST.get('new-mat-vendor')
                 })
                 if v_form.is_valid():
                     v_form.save()
@@ -298,6 +298,7 @@ def checkUniqueRawMatName(request):
 @login_required(login_url='login')
 def addCustomer(request):
     if request.method == 'POST':
+        #Creates the customer object
         customer_name = request.POST.get('customer-name')
         customer_type = request.POST.get('customer-type')
         customer_email = request.POST.get('customer-email')
@@ -306,11 +307,15 @@ def addCustomer(request):
         customer_province = request.POST.get('customer-province')
         customer_postal = request.POST.get('customer-postal')
         customer_country = request.POST.get('customer-country')
-        #if Contains.objects.filter(name='customer-name', address_line='customer_address'):
-        #    return redirect('sales')
-        #City not included in HTML and the type does not function properly
         customer = Customer(name=customer_name, type=customer_type, email=customer_email,
                             phone_number=customer_phone_number, address_line=customer_address, state=customer_province,
                             zip_code=customer_postal, country=customer_country, city='Montreal')
-        customer.save()
+        #If a customer with the same name, address and type exists, then it won't be saved into the database
+        if Customer.objects.filter(name=customer.name, address_line=customer.address_line, type=customer.type).first():
+            return redirect('sales')
+        else:
+            #Checks to see all the fields are not empty and if they are all filled, saves the customer
+            if customer_name and customer_type and customer_email and customer_phone_number and customer_address and \
+                    customer_province and customer_postal and customer_country:
+                customer.save()
     return redirect('sales')
