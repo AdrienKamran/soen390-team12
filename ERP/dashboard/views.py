@@ -306,11 +306,11 @@ def addCustomer(request):
         customer_province = request.POST.get('customer-province')
         customer_postal = request.POST.get('customer-postal')
         customer_country = request.POST.get('customer-country')
+        #if Contains.objects.filter(name='customer-name', address_line='customer_address'):
+        #    return redirect('sales')
         #City not included in HTML and the type does not function properly
         customer = Customer(name=customer_name, type=customer_type, email=customer_email,
                             phone_number=customer_phone_number, address_line=customer_address, state=customer_province,
                             zip_code=customer_postal, country=customer_country, city='Montreal')
         customer.save()
     return redirect('sales')
-def addCustomer2(request):
-    return HttpResponse('from ')
