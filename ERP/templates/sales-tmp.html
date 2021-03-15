@@ -144,6 +144,7 @@
                                 <li class="nav-item"><a class="nav-link active" href="#tab1" data-toggle="tab">Sell</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#tab2" data-toggle="tab">History</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#tab3" data-toggle="tab">Shipping</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#tab4" data-toggle="tab">Customers</a></li>
                             </ul>
                         </div>
                         <div class="card-body tab-content">
@@ -387,6 +388,34 @@
                                     </fieldset>
                                 </form>
                             </div>
+                            <div id="tab4" class="tab-pane fade show active">
+                                <div class="card shadow" id="sell-product-card">
+                                    <div class="card-header py-3">
+                                        <p class="text-primary m-0 font-weight-bold">Customer</p>
+                                    </div><!-- Start: customer_body -->
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <form id="sell-product">
+                                                    <!-- Start: #customer_information -->
+                                                    <fieldset><label for="select-recipient">Customer Name</label><!-- Start: #customer_name --><input class="form-control" type="text" id="select-recipient" name="select recipient"><!-- End: #customer_name --><label for="warehouse-source">Customer Type</label><!-- Start: #customer_type --><select class="form-control" id="warehouse-source" name="warehouse source">
+                                                            <optgroup label="This is a group">
+                                                                <option value="12" selected="">This is item 1</option>
+                                                                <option value="13">This is item 2</option>
+                                                                <option value="14">This is item 3</option>
+                                                            </optgroup>
+                                                        </select><!-- End: #customer_type --><label for="select-product">Email</label><!-- Start: #customer_email --><input class="form-control" type="text" id="select-product" name="select product"><!-- End: #customer_email --><label for="sale-quantity">Phone Number</label><!-- Start: #customer_phone_number --><input class="form-control" type="tel" id="sale-quantity" name="sale quantity"><!-- End: #customer_phone_number --><label for="commission-rate">Address</label><!-- Start: #customer_address --><input class="form-control" type="text" id="commission-rate" name="commission rate"><!-- End: #customer_address --><label for="sale-quantity">Province/State</label><!-- Start: #customer_province --><input class="form-control" type="tel" id="sale-quantity-1" name="sale quantity"><!-- End: #customer_province --><label for="commission-rate">Postal/Zip Code</label><!-- Start: #customer_postal --><input class="form-control" type="text" id="commission-rate-1" name="commission rate"><!-- End: #customer_postal --><label for="commission-rate">Country</label><!-- Start: #customer_country --><input class="form-control" type="text" id="commission-rate-2" name="commission rate"><!-- End: #customer_country -->
+                                                        <!-- Start: #customer_add --><button class="btn btn-primary" type="button">ADD</button><!-- End: #customer_add -->
+                                                        <legend>Add a Customer</legend>
+                                                    </fieldset><!-- End: #customer_information -->
+                                                </form>
+                                            </div>
+                                            <div class="col">
+                                                <div class="card"></div>
+                                            </div>
+                                        </div>
+                                    </div><!-- End: customer_body -->
+                                </div>
                         </div>
                     </div>
                 </div>
