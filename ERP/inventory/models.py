@@ -91,6 +91,7 @@ class Contains(models.Model):
     p_FK = models.ForeignKey(Part, on_delete=models.CASCADE)
     p_defective = models.BooleanField(null=False, blank=False, default=False)
     p_serial = models.BigIntegerField(default=10000)
+    p_in_inventory = models.BooleanField(default=False)
 
     def __str__(self):
 		    return self.w_FK.w_name + " " + self.p_FK.p_name + " " + str(self.p_serial)
@@ -124,3 +125,26 @@ class Orders(models.Model):
 
     def __str__(self):
             return self.v_FK.v_name + " " + self.p_FK.p_name + " " + str(self.order_quantity) + " " + self.order_status
+
+
+class OrderPart(models.Model):
+    o_FK = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    c_FK = models.ForeignKey(Contains, on_delete=models.CASCADE)
+
+
+class Manufactures(models.Model):
+    p_FK = models.ForeignKey(Part, on_delete=models.CASCADE)
+    w_FK = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
+    manufacture_quantity = models.IntegerField(default=1, null=False, blank=False)
+    manufacture_total_cost = models.DecimalField(decimal_places=2, null=False, blank=False, max_digits=9)
+    timestamp = models.DateTimeField(auto_now_add=True, null=False, blank=False)
+
+    def __str__(self):
+            return self.w_FK.w_name + " " + self.p_FK.p_name + " " + str(self.manufacture_quantity) + " "
+
+
+class ManufacturePart(models.Model):
+    m_FK = models.ForeignKey(Manufactures, on_delete=models.CASCADE)
+    c_FK = models.ForeignKey(Contains, on_delete=models.CASCADE)
+
+

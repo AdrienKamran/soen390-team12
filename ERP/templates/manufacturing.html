@@ -225,6 +225,7 @@
                                             <div class="col">
                                                 <form id="manufacture-product" method="POST" action="{% url 'manufacture-product' %}"> {% csrf_token %}
                                                     <input type="hidden" id="dateTime" value="{{incident.created_date_time}}"></input>
+                                                    <input type="hidden" name="final-price" value="0" id="final-price">
                                                     <fieldset><label for="choose-material-list">Choose a material list</label><select class="form-control" id="choose-material-list" name="choose-material-list" onchange="updateProductionMaterialList()">
                                                             <optgroup label="Material List For Part">
                                                                 {% if parts %}
@@ -273,7 +274,7 @@
                                                         </div>
                                                         <!--Below should be temp and will be converted over to javascript based to be more dynamic-->
                                                         <p class="card-text">The product's value:</p>
-                                                        <p id = "mulPrice" class="card-text" style="font-size: 32px;color: var(--blue);"></p>
+                                                        <p id = "mulPrice" class="card-text" style="font-size: 32px;color: var(--blue);" name="mulPrice"></p>
                                                         <p class="card-text">&nbsp;= <p id="basePrice"></p> x 105%</p><button class="btn btn-primary" type="submit" form="manufacture-product">Manufacture</button>
                                                     </div>
                                                 </div>
@@ -335,6 +336,7 @@
                     }
                     else if(i=='1'){
                         document.getElementById("mulPrice").innerHTML = data['1'];
+                        document.getElementById("final-price").value = data['1'];
                     }
                     else if(!jQuery.isEmptyObject(val)){
                         console.log(val);

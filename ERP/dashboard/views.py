@@ -78,7 +78,7 @@ def inventory(request):
         # filters for distinct values of the tuple warehouse and part.
         # eg. A part template will show only once for the same warehouse, but more than once
         # if in different warehouses.
-        part_inventory = Contains.objects.select_related().distinct('p_FK', 'w_FK') # inventory of the different part types in each warehouse
+        part_inventory = Contains.objects.select_related().filter(p_in_inventory=True).distinct('p_FK', 'w_FK') # inventory of the different part types in each warehouse
         raw_material_all = Part.objects.filter(p_type='Raw Material').all() # list of all the raw materials in the parts list
         warehouse_all = Warehouse.objects.all() # list of all the warehouses
         vendor_all = Vendor.objects.all() # list of all the vendors
@@ -89,7 +89,7 @@ def inventory(request):
         # accessible in the inventoy template
         part_inventory_count = {}
         for part in part_inventory:
-            part_inventory_count[part.p_serial] = len(Contains.objects.filter(p_FK=part.p_FK, w_FK=part.w_FK).all())
+            part_inventory_count[part.p_serial] = len(Contains.objects.filter(p_FK=part.p_FK, w_FK=part.w_FK, p_in_inventory=True).all())
         context = {
             'inventory': part_inventory,
             'inventory_count': part_inventory_count,
@@ -310,7 +310,7 @@ def inventoryPartView(request):
 
     part = Part.objects.get(pk=part_id)
     warehouse = Warehouse.objects.get(pk=warehouse_id)
-    inventory_parts = Contains.objects.filter(w_FK=warehouse, p_FK=part).all()
+    inventory_parts = Contains.objects.filter(w_FK=warehouse, p_FK=part, p_in_inventory=True).all()
 
     context = {
         'part_name': part.p_name,
