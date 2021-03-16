@@ -230,10 +230,14 @@ def orderRawMaterial(request):
             else:
                 last_index = last_index_object.p_serial
             i = 0
+
             while i < int(request.POST.get('purchase-order-quantity')):
                 last_index = last_index + 1
-                new_rm = Contains(p_FK=new_order.p_FK, w_FK=new_order.w_FK, p_serial=last_index, p_defective=False)
+                new_rm = Contains(p_FK=new_order.p_FK, w_FK=new_order.w_FK, p_serial=last_index, p_defective=False, p_in_inventory=True)
                 new_rm.save()
+
+                new_order_part = OrderPart(o_FK=new_order, c_FK=new_rm)
+                new_order_part.save()
                 i = i + 1
 
             messages.success(request, 'Raw material ordered successfully.')
