@@ -3,6 +3,7 @@
 from django.urls import path
 from . import views
 from inventory import views as inventoryViews
+from accounting import views as accountingViews
 
 urlpatterns = [
     path('', views.home, name="home"),
@@ -24,4 +25,5 @@ urlpatterns = [
     path('inventory/part/', views.inventoryPartView, name='inventory-part'),
     path('inventory/toggle-inventory-part-status/', views.toggleInventoryPartStatus, name='toggle-inventory-part-status'),
     path('inventory/delete-inventory-part/', views.deleteInventoryPart, name='delete-inventory-part'),
+    path('accounting', accountingViews.accounting, name="accounting"),
 ]
