@@ -176,7 +176,7 @@ def writeTestReport():
 
 @login_required(login_url='login')
 def salesViewPage(request):
-    return render(request, template_name='sales-tmp.html', context={})
+    return render(request, template_name='sales.html', context={})
 
 @login_required(login_url='login')
 def returnRawMaterial(request):
@@ -295,27 +295,3 @@ def checkUniqueRawMatName(request):
     else:
         json = {}
     return JsonResponse(json)
-@login_required(login_url='login')
-def addCustomer(request):
-    if request.method == 'POST':
-        #Creates the customer object
-        customer_name = request.POST.get('customer-name')
-        customer_type = request.POST.get('customer-type')
-        customer_email = request.POST.get('customer-email')
-        customer_phone_number = request.POST.get('customer-phone-number')
-        customer_address = request.POST.get('customer-address')
-        customer_province = request.POST.get('customer-province')
-        customer_postal = request.POST.get('customer-postal')
-        customer_country = request.POST.get('customer-country')
-        customer = Customer(name=customer_name, type=customer_type, email=customer_email,
-                            phone_number=customer_phone_number, address_line=customer_address, state=customer_province,
-                            zip_code=customer_postal, country=customer_country, city='Montreal')
-        #If a customer with the same name, address and type exists, then it won't be saved into the database
-        if Customer.objects.filter(name=customer.name, address_line=customer.address_line, type=customer.type).first():
-            return redirect('sales')
-        else:
-            #Checks to see all the fields are not empty and if they are all filled, saves the customer
-            if customer_name and customer_type and customer_email and customer_phone_number and customer_address and \
-                    customer_province and customer_postal and customer_country:
-                customer.save()
-    return redirect('sales')
