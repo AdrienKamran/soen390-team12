@@ -12,6 +12,7 @@ from .forms import CreateUserForm, OrderRawMaterialForm, CreateRawMaterialForm, 
 #from .filters import OrderFilter
 from datetime import datetime
 from decimal import Decimal
+from accounting.models import Transaction
 import logging
 
 import io
@@ -221,6 +222,18 @@ def orderRawMaterial(request):
             new_order.order_status = 'RECEIVED'
             new_order.save()
             # for the sake of this sprint, the order is automatically shipped and appears in the warehouse inventory
+
+            t_last_index_object = Transaction.objects.order_by('-t_serial').first()
+            t_last_index = 0
+            if t_last_index_object is None:
+                t_last_index = 500000
+            else:
+                t_last_index = t_last_index_object.t_serial
+
+            # create transaction
+            new_transaction = Transaction(t_type='ORDER', t_balance=-cost_rounded, t_item_name=new_order.p_FK.p_name, t_serial=t_last_index, t_quantity=new_order.order_quantity)
+            new_transaction.save()
+        
 
             # before adding the new parts, query the contains list for the last index.
             last_index_object = Contains.objects.order_by('-p_serial').first()

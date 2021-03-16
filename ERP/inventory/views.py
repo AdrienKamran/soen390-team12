@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import *
+from accounting.models import Transaction
 # Create your views here.
 from django.shortcuts import render, redirect 
 from django.http import HttpResponse, FileResponse, HttpResponseNotFound
@@ -176,6 +177,18 @@ def manufactureProduct(request):
         # create manufacture history record
         new_manufacture = Manufactures(p_FK=part, w_FK=warehouse, manufacture_quantity=quantity, manufacture_total_cost=price)
         new_manufacture.save()
+
+        t_last_index_object = Transaction.objects.order_by('-t_serial').first()
+        t_last_index = 0
+        if t_last_index_object is None:
+            t_last_index = 500000
+        else:
+            t_last_index = t_last_index_object.t_serial
+
+        # create transaction
+        new_transaction = Transaction(t_type='MANUFACTURE', t_balance=-price, t_item_name=part.p_name, t_serial=t_last_index, t_quantity=quantity)
+        new_transaction.save()
+        
 
         i = 0
         while i < quantity:
