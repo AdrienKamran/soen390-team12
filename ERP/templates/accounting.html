@@ -305,14 +305,18 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td>28714</td>
-                                                        <td>3/15/2021</td>
-                                                        <td>Manufacturing</td>
-                                                        <td>MTN-MK2</td>
-                                                        <td>3</td>
-                                                        <td>24 $</td>
-                                                    </tr>
+                                                    {% for transaction in t_query %}
+                                                        {% if transaction.t_balance < 0 %}
+                                                            <tr>
+                                                                <td>{{transaction.t_serial}}</td>
+                                                                <td>{{transaction.t_date}}</td>
+                                                                <td>{{transaction.t_type}}</td>
+                                                                <td>{{transaction.t_item_name}}</td>
+                                                                <td>{{transaction.t_quantity}}</td>
+                                                                <td>{{transaction.t_balance}}</td>
+                                                            </tr>
+                                                        {% endif %}    
+                                                    {% endfor %}
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
