@@ -1,17 +1,21 @@
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 
 from .forms import OrderForm, CustomerForm
 from .models import *
 
 @login_required(login_url='login')
-def sales_view(request):
-    order_form = OrderForm()
-    customer_form = CustomerForm()
-    order_history = SalesOrder.objects.all().order_by('date_created');
-    return render(request, 'sales.html', {'order_form' : order_form, 'customer_form' : customer_form, 'order_history' : order_history})
+def sales_view(request, order_form=None, customer_form=None):
+    tab = 'sell-tab'
+    if order_form is None:
+        order_form = OrderForm()
+    if customer_form is None:
+        customer_form = CustomerForm()
+    else:
+        tab = 'customer-tab'
+    order_history = SalesOrder.objects.all().order_by('-date_created')
+    return render(request, 'sales.html', {'order_form' : order_form, 'customer_form' : customer_form, 'order_history' : order_history, 'tab' : tab})
 
 @login_required(login_url='login')
 def add_customer(request):
@@ -42,17 +46,18 @@ def add_customer(request):
                 customer.save()
                 return HttpResponseRedirect('/sales')
             else:
-                messages.error(request, "The customer already exists")
-        return render(request, 'sales.html', {'customer_form' : customer_form})
+                customer_form.add_error('name',"Customer already exists.")
+        return sales_view(request, customer_form=customer_form)
+    return HttpResponseRedirect('/sales')
 
 @login_required(login_url='login')
 def add_sale_order(request):
     if request.method == 'POST':
         order_form = OrderForm(request.POST)
         if order_form.is_valid():
-            customer = Customer.objects.get(pk=order_form.cleaned_data['customer'])
-            product = Product.objects.get(pk=order_form.cleaned_data['product'])
-            warehouse = Warehouse.objects.get(pk=order_form.cleaned_data['warehouse'])
+            customer = order_form.cleaned_data['customer']
+            product = order_form.cleaned_data['product']
+            warehouse = order_form.cleaned_data['warehouse']
             if customer and product:
                 delivery_date = order_form.cleaned_data['delivery_date']
                 quantity = order_form.cleaned_data['quantity']
@@ -70,5 +75,5 @@ def add_sale_order(request):
                 order.save()
                 return HttpResponseRedirect('/sales')
             else:
-                messages.error(request, "Invalid customer or product.")
-        return render(request, 'sales.html', {'order_form' : order_form})
+                order_form.add_error(None, "Customer or product is invalid")
+        return render(request, 'sales.html', {'order_form' : order_form, 'tab' : 'sell-tab'})

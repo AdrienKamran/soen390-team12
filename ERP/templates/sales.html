@@ -151,14 +151,14 @@
                     <div class="card">
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs">
-                                <li class="nav-item"><a class="nav-link active" href="#sell-tab" data-toggle="tab">Sell</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#history-tab" data-toggle="tab">History</a></li>
+                                <li class="nav-item"><a class="nav-link{%  if tab == 'sell-tab' %} active{%  endif %}" href="#sell-tab" data-toggle="tab">Sell</a></li>
+                                <li class="nav-item"><a class="nav-link{%  if tab == 'history-tab' %} active{%  endif %}" href="#history-tab" data-toggle="tab">History</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#shipping-tab" data-toggle="tab">Shipping</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#customer-tab" data-toggle="tab">Customers</a></li>
+                                <li class="nav-item"><a class="nav-link{%  if tab == 'customer-tab' %} active{%  endif %}" href="#customer-tab" data-toggle="tab">Customers</a></li>
                             </ul>
                         </div>
                         <div class="card-body tab-content">
-                            <div id="sell-tab" class="tab-pane fade show active">
+                            <div id="sell-tab" class="tab-pane fade show{%  if tab == 'sell-tab' %} active{%  endif %}">
                                 <div class="card shadow" id="sell-product-card">
                                     <div class="card-header py-3">
                                         <p class="text-primary m-0 font-weight-bold">Sell Products</p>
@@ -172,7 +172,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="history-tab" class="tab-pane fade show">
+                            <div id="history-tab" class="tab-pane fade show{%  if tab == 'history-tab' %} active{%  endif %}">
                                 <div class="card shadow" id="sales-history-card">
                                     <div class="card-header py-3">
                                         <p class="text-primary m-0 font-weight-bold">History of Sales</p>
@@ -248,7 +248,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="customer-tab" class="tab-pane fade show">
+                            <div id="customer-tab" class="tab-pane fade show{%  if tab == 'customer-tab' %} active{%  endif %}">
                                 <div class="card shadow" id="sell-product-card">
                                     <div class="card-header py-3">
                                         <p class="text-primary m-0 font-weight-bold">Customer</p>

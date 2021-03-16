@@ -2,7 +2,6 @@
 
 from django.urls import path
 
-from sales.views import sales_view, add_sale_order, add_customer
 from . import views
 from inventory import views as inventoryViews
 
@@ -21,8 +20,5 @@ urlpatterns = [
     path('inventory/order-raw-material/', views.orderRawMaterial, name='order-raw-material'),
     path('inventory/create-raw-material/', views.createRawMaterial, name='create-raw-material'),
     path('inventory/check-unique/', views.checkUniqueRawMatName, name='check-unique'),
-    path('inventory/get-vendor/', views.returnVendor, name='return-vendor'),
-    path('sales', sales_view, name='sales'),
-    path('sales/add-customer', add_customer, name='add-customer'),
-    path('sales/add-order', add_sale_order, name='add-order')
+    path('inventory/get-vendor/', views.returnVendor, name='return-vendor')
 ]

@@ -1,24 +1,38 @@
 from django import forms
+from django.forms import ModelChoiceField
 
 from inventory.models import Warehouse, Product
 from sales.models import Customer
 
+#To render prod_type for the label for Product in OrderForm
+class ProductModelChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.prod_type
+
+#To render w_name for label for Warehouse in OrderForm
+class WarehouseModelChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.w_name
 
 class OrderForm(forms.Form):
-    customer_list = Customer.objects.all().values_list('id', 'name')
-    product_list = Product.objects.all().values_list('id', 'prod_type')
-    warehouse_list = Warehouse.objects.all().values_list('id', 'w_name')
     status_choice = (
         ('PENDING', 'PENDING'),
         ('SHIPPED', 'SHIPPED'),
         ('RECEIVED', 'RECEIVED')
     )
-    customer = forms.IntegerField(label='Customer', widget=forms.Select(choices=customer_list))
+
+    customer = forms.ModelChoiceField(label='Customer Name', queryset=None)
     delivery_date = forms.DateField(label='Delivery Date', widget=forms.SelectDateWidget)
-    product = forms.IntegerField(label='Product', widget=forms.Select(choices=product_list))
+    product = ProductModelChoiceField(label='Product', queryset=None, )
     quantity = forms.IntegerField(label='Quantity')
-    warehouse = forms.IntegerField(label='Warehouse Source', widget=forms.Select(choices=warehouse_list))
+    warehouse = WarehouseModelChoiceField(label='Warehouse Source', queryset=None)
     status = forms.CharField(label='Status', widget=forms.Select(choices=status_choice))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['customer'].queryset = Customer.objects.all()
+        self.fields['product'].queryset = Product.objects.all()
+        self.fields['warehouse'].queryset = Warehouse.objects.all()
 
 class CustomerForm(forms.ModelForm):
     class Meta:
