@@ -328,7 +328,7 @@
         function loadMaterialList(nom){
             jQuery.get("/loadMaterialList",{ product: nom }, function(data, status){
                 console.log("Data: " + data + "\nStatus: " + status);
-                anchor = document.getElementById("partListRows");
+                anchor = document.getElementById("partsListRows");
                 anchor.innerHTML = '';
                 jQuery.each(data, function(i, val) {
                     if(!jQuery.isEmptyObject(val)){
