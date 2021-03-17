@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 {% load static %}
-{% load filters %}
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
@@ -11,14 +10,18 @@
     <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-all.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome5-overrides.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Billing-Table-with-Add-Row--Fixed-Header-Feature.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Bootstrap-DataTables.css' %}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'assets/css/Toggle-Switch.css' %}">
 </head>
 
 <body id="page-top">
     <div id="wrapper">
         <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
-            <div class="container-fluid d-flex flex-column p-0">
-                <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
-                    <div class="sidebar-icon"><img src="../static/img/logo.svg" width= 210 height= 165 style="margin: 10px 0px 0px -15px;" alt="logo"/></div>
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon"><img src="assets/img/logo-icon.svg" height="60"></div>
+                    <div class="sidebar-brand-text"><img src="assets/img/logo-text.svg" height="60"></div>
                 </a>
                 <hr class="sidebar-divider my-0">
                 <ul class="navbar-nav text-light" id="accordionSidebar">
@@ -147,68 +150,58 @@
                     </div>
                 </nav>
                 <div class="container-fluid">
-                    <h3 class="text-dark mb-4">Inventory</h3>
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                    {% endfor %}
+                    <h3 class="text-dark mb-4">Accounting</h3>
                     <div class="card">
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs">
-                                <li class="nav-item"><a class="nav-link active" href="#tab1" data-toggle="tab">Inventory</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#tab2" data-toggle="tab">Order</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#tab3" data-toggle="tab">Create</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#tab4" data-toggle="tab">Order History</a></li>
+                                <li class="nav-item"><a class="nav-link active" href="#tab1" data-toggle="tab">All</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#tab2" data-toggle="tab">Profits</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#tab3" data-toggle="tab">Expenses</a></li>
                             </ul>
                         </div>
                         <div class="card-body tab-content">
                             <div id="tab1" class="tab-pane fade show active">
-                                <div class="card shadow" id="inventory-card">
+                                <div class="card shadow" id="all-card">
                                     <div class="card-header py-3">
-                                        <p class="text-primary m-0 font-weight-bold">Inventory by warehouse</p>
+                                        <p class="text-primary m-0 font-weight-bold">Full Record of Profits and Expenses</p>
                                     </div>
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6 text-nowrap">
-                                                <div id="dataTable_length" class="dataTables_length" aria-controls="dataTable"><label>Warehouse&nbsp;</label><select class="form-control form-control-sm custom-select custom-select-sm">
-                                                        <option value="10" selected="">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
-                                                    </select></div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="text-md-right dataTables_filter" id="dataTable_filter"><label><input type="search" class="form-control form-control-sm" aria-controls="dataTable" placeholder="Search"></label></div>
-                                            </div>
-                                        </div>
                                         <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
-                                            <table class="table my-0 table-hover" id="dataTable">
+                                            <table class="table my-0" id="dataTable">
                                                 <thead>
-                                                    <tr onselect="">
-                                                        <th style="border-width: -10px;">Name</th>
+                                                    <tr>
+                                                        <th style="border-width: -10px;">ID</th>
+                                                        <th>Date</th>
                                                         <th>Type</th>
+                                                        <th>Item</th>
                                                         <th>Quantity</th>
-                                                        <th>Unit Value ($)</th>
-                                                        <th>Warehouse</th>
+                                                        <th>Balance</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {% for part in inventory %}
-                                                        <tr onclick="goToDetailView( '{{part.w_FK.pk}}', '{{part.p_FK.pk}}')">
-                                                            <td>{{ part.p_FK.p_name }}</td>
-                                                            <td>{{ part.p_FK.p_type }}</td>
-                                                            <td>{{ inventory_count|get_count:part.p_serial }}</td>
-                                                            <td>{{ part.p_FK.p_unit_value }}</td>
-                                                            <td>{{ part.w_FK.w_name }}</td>
+                                                    {% for transaction in t_query %}
+                                                        <tr>
+                                                            <td>{{transaction.t_serial}}</td>
+                                                            <td>{{transaction.t_date}}</td>
+                                                            <td>{{transaction.t_type}}</td>
+                                                            <td>{{transaction.t_item_name}}</td>
+                                                            <td>{{transaction.t_quantity}}</td>
+                                                            {% if transaction.t_balance < 0 %}
+                                                                <td style="color: var(--danger);">{{transaction.t_balance}}</td>
+                                                            {% else %}
+                                                                <td style="color: var(--success);">{{transaction.t_balance}}</td>
+                                                            {% endif %}
                                                         </tr>
                                                     {% endfor %}
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td><strong>Name</strong></td>
+                                                        <td><strong>ID</strong></td>
+                                                        <td><strong>Date</strong></td>
                                                         <td><strong>Type</strong></td>
+                                                        <td><strong>Item</strong></td>
                                                         <td><strong>Quantity</strong></td>
-                                                        <td><strong>Unit Value</strong></td>
-                                                        <td><strong>Warehouse</strong></td>
+                                                        <td><strong>Balance</strong></td>
                                                         <td></td>
                                                     </tr>
                                                 </tfoot>
@@ -234,142 +227,42 @@
                                 </div>
                             </div>
                             <div id="tab2" class="tab-pane fade show">
-                                <div class="card shadow" id="purchase-raw-mats-card">
+                                <div class="card shadow" id="profits-card">
                                     <div class="card-header py-3">
-                                        <p class="text-primary m-0 font-weight-bold">Purchase raw materials</p>
+                                        <p class="text-primary m-0 font-weight-bold">Record of Profits</p>
                                     </div>
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="col">
-                                                <form id="purchase-raw-mats" method="POST" action="{% url 'order-raw-material' %}">
-                                                    {% csrf_token %}
-                                                    <fieldset><label for="purchase-raw-mat">Choose a raw material</label><select class="form-control" id="purchase-raw-mat" name="raw-mat-pk" onchange="DisplayPrice(this.value)">
-                                                            <optgroup label="This is a group">
-                                                                <option value="0" selected="">Select a raw material</option>
-                                                                {% for rm in raw_material_all %}
-                                                                    <option value="{{ rm.pk }}">{{ rm.p_name }}</option>
-                                                                {% endfor %}
-                                                            </optgroup>
-                                                        </select><label for="warehouse-destination">Choose a warehouse destination</label><select class="form-control" id="warehouse-destination" name="warehouse-pk">
-                                                            <optgroup label="This is a group">
-                                                                <option value="0" selected="">Select a warehouse destination</option>
-                                                                {% for warehouse in warehouse_all %}
-                                                                    <option value="{{ warehouse.pk }}">{{ warehouse.w_name }}</option>
-                                                                {% endfor %}
-                                                            </optgroup>
-                                                        </select><label for="purchase-vendor-name">Choose a vendor to buy from</label><select class="form-control" id="purchase-vendor-name" name="purchase-vendor-pk" onchange="SelectOrderVendor(this.value)">
-                                                            <optgroup label="This is a group">
-                                                                <option value="0" selected="">Select a vendor</option>
-                                                                {% for vendor in vendor_all %}
-                                                                    <option value="{{ vendor.pk }}">{{ vendor.v_name }}</option>
-                                                                {% endfor %}
-                                                            </optgroup>
-                                                        </select><label for="purchase-order-quantity">Choose the quantity to receive</label><input class="form-control" type="number" id="purchase-order-quantity" name="purchase-order-quantity" value="1" onchange="UpdatePrice(this.value)"><input id="total-cost" name="total-cost" value="0" step=".01" hidden>
-                                                        <legend>Place your order here:</legend>
-                                                    </fieldset>
-                                                </form>
-                                            </div>
-                                            <div class="col">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <h4 class="card-title">Your order:</h4>
-                                                        <h6 class="text-muted card-subtitle mb-2">Placed on {{ date_of_day }}</h6>
-                                                        <p class="card-text">Your total is:</p>
-                                                        <p class="card-text" style="font-size: 32px;color: var(--blue);" id="total-cost-here">$ --</p><button class="btn btn-primary" type="submit" form="purchase-raw-mats">Confirm order</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="tab3" class="tab-pane fade show">
-                                <div class="card shadow" id="create-new-mats-card">
-                                    <div class="card-header py-3">
-                                        <p class="text-primary m-0 font-weight-bold">Create/edit raw materials</p>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col">
-                                                <form id="create-raw-mats" method="POST" action="{% url 'create-raw-material' %}">
-                                                    {% csrf_token %}
-                                                    <fieldset><label for="new-raw-mat-name">Write a name:</label><label id="new-raw-mat-name-error" style="color: red;display: none;">&nbsp;This raw material already exists.</label><input class="form-control" type="text" id="new-raw-mat-name" name="new-raw-mat-name" onchange="CheckIfUnique()"><label for="existing-raw-mat">OR pick an existing raw material:</label><select class="form-control" id="existing-raw-mat" name="existing-raw-mat" onchange="SelectExistingRM()">
-                                                            <optgroup label="This is a group">
-                                                                <option value="0" selected="">Select a raw material</option>
-                                                                {% for rm in raw_material_all %}
-                                                                    <option value="{{ rm.pk }}">{{ rm.p_name }}</option>
-                                                                {% endfor %}
-                                                            </optgroup>
-                                                        </select><label for="new-mat-cost">Choose the material's unit cost:</label><input class="form-control" type="number" step=".01" id="new-mat-cost" name="new-mat-cost"><label for="new-mat-vendor">Pick the material's vendor:</label><select class="form-control" id="new-mat-vendor" name="new-mat-vendor">
-                                                            <optgroup label="This is a group">
-                                                                <option value="12" selected="">Select a vendor</option>
-                                                                {% for vendor in vendor_all %}
-                                                                    <option value="{{ vendor.pk }}">{{ vendor.v_name }}</option>
-                                                                {% endfor %}
-                                                            </optgroup>
-                                                        </select>
-                                                        <legend>Specify the material details:</legend>
-                                                    </fieldset>
-                                                </form>
-                                            </div>
-                                            <div class="col">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <h4 class="card-title">If you select an existing raw material, the name you enter will not be considered. Furthermore, the name of a new raw material must not already exist.<br><br>If you understand the above, please confirm your entry:</h4><button class="btn btn-primary" type="submit" form="create-raw-mats">Create / Edit</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="tab4" class="tab-pane fade show">
-                                <div class="card shadow" id="sales-history-card">
-                                    <div class="card-header py-3">
-                                        <p class="text-primary m-0 font-weight-bold">Order History</p>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6 text-nowrap"><input type="search" class="form-control form-control-sm" aria-controls="dataTable" placeholder="Search"></div>
-                                            <div class="col-md-6">
-                                                <div class="text-md-right dataTables_filter" id="dataTable_filter"><label></label></div>
-                                            </div>
-                                        </div>
                                         <div class="table-responsive table mt-2" id="dataTable-1" role="grid" aria-describedby="dataTable_info">
                                             <table class="table my-0" id="dataTable">
                                                 <thead>
                                                     <tr>
+                                                        <th style="border-width: -10px;">ID</th>
                                                         <th>Date</th>
-                                                        <th>Raw Material</th>
+                                                        <th>Type</th>
+                                                        <th>Item</th>
                                                         <th>Quantity</th>
-                                                        <th>Warehouse</th>
-                                                        <th>Vendor</th>
-                                                        <th>Cost ($)</th>
-                                                        <th>Status</th>
+                                                        <th>Profit</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {% for order in rm_orders %}
-                                                        <tr>
-                                                            <td>{{ order.timestamp }}</td>
-                                                            <td>{{ order.p_FK.p_name }}</td>
-                                                            <td>{{ order.order_quantity }}</td>
-                                                            <td>{{ order.w_FK.w_name }}</td>
-                                                            <td>{{ order.v_FK.v_name }}</td>
-                                                            <td>{{ order.order_total_cost }}</td>
-                                                            <td>{{ order.order_status }}</td>
-                                                        </tr>
-                                                    {% endfor %}
+                                                    <tr>
+                                                        <td data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" title="Made of: Steel (x3)">49129</td>
+                                                        <td>3/16/2021</td>
+                                                        <td>Sale</td>
+                                                        <td>MTN-MK2</td>
+                                                        <td>2</td>
+                                                        <td>342 $</td>
+                                                    </tr>
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
+                                                        <td><strong>ID</strong></td>
                                                         <td><strong>Date</strong></td>
-                                                        <td><strong>Raw Material</strong></td>
+                                                        <td><strong>Type</strong></td>
+                                                        <td><strong>Item</strong></td>
                                                         <td><strong>Quantity</strong></td>
-                                                        <td><strong>Warehouse</strong></td>
-                                                        <td><strong>Vendor</strong></td>
-                                                        <td><strong>Cost ($)</strong></td>
-                                                        <td><strong>Status</strong></td>
+                                                        <td><strong>Balance</strong></td>
+                                                        <td></td>
                                                     </tr>
                                                 </tfoot>
                                             </table>
@@ -377,6 +270,70 @@
                                         <div class="row">
                                             <div class="col-md-6 align-self-center">
                                                 <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 27</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                                    <ul class="pagination">
+                                                        <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab3" class="tab-pane fade show">
+                                <div class="card shadow" id="expenses-card">
+                                    <div class="card-header py-3">
+                                        <p class="text-primary m-0 font-weight-bold">Record of Expenses</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive table mt-2" id="dataTable-1" role="grid" aria-describedby="dataTable_info">
+                                            <table class="table my-0" id="dataTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="border-width: -10px;">ID</th>
+                                                        <th>Date</th>
+                                                        <th>Type</th>
+                                                        <th>Item</th>
+                                                        <th>Quantity</th>
+                                                        <th>Expense</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for transaction in t_query %}
+                                                        {% if transaction.t_balance < 0 %}
+                                                            <tr>
+                                                                <td>{{transaction.t_serial}}</td>
+                                                                <td>{{transaction.t_date}}</td>
+                                                                <td>{{transaction.t_type}}</td>
+                                                                <td>{{transaction.t_item_name}}</td>
+                                                                <td>{{transaction.t_quantity}}</td>
+                                                                <td>{{transaction.t_balance}}</td>
+                                                            </tr>
+                                                        {% endif %}    
+                                                    {% endfor %}
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td><strong>ID</strong></td>
+                                                        <td><strong>Date</strong></td>
+                                                        <td><strong>Type</strong></td>
+                                                        <td><strong>Item</strong></td>
+                                                        <td><strong>Quantity</strong></td>
+                                                        <td><strong>Balance</strong></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 align-self-center">
+                                                <p id="dataTable_info-1" class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 27</p>
                                             </div>
                                             <div class="col-md-6">
                                                 <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
@@ -404,165 +361,16 @@
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/chart.min.js' %}"></script>
-    <script src="{% static 'js/bs-init.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/bs-init.js' %}"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script src="{% static 'assets/js/Bootstrap-DataTables.js' %}"></script>
+    <script src="{% static 'assets/js/Billing-Table-with-Add-Row--Fixed-Header-Feature.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
-    <script src="{% static 'js/theme.js' %}"></script>
-    <script type="text/javascript">
-        var orderRawMaterialUnitCost = -1;
-        var vendorMultiplier = -1;
-        var totalCostElement = document.getElementById("total-cost");
-
-        function test() {
-            alert("TEST");
-        }
-
-        function DisplayPrice(raw_material_id) {
-            if (raw_material_id == 0) {
-                var element = document.getElementById("total-cost-here");
-                element.innerHTML = "$ --";
-                totalCostElement.value = 0;
-                orderRawMaterialUnitCost = -1;
-            }
-            else {
-                $.ajax({
-                    url: '/inventory/get-raw-material/',
-                    data: {
-                        'rm_id': raw_material_id
-                    },
-                    dataType: 'json',
-                    success: function(data) {
-                        var uc = data[0].fields.p_unit_value;
-                        var element = document.getElementById("total-cost-here");
-                        var quantity = document.getElementById("purchase-order-quantity").value
-                        var total = uc * quantity
-
-                        element.innerHTML = "$" + total.toFixed(2);
-                        totalCostElement.value = total;
-                        orderRawMaterialUnitCost = uc;
-
-                    },
-                    error: function(data) {
-                        alert("Uh-oh");
-                    }
-                });
-            }
-        }
-
-        function UpdatePrice(quantity) {
-            if (orderRawMaterialUnitCost < 0) {
-                alert("Select a raw material before changing quantity.");
-            }
-            else {
-                if (vendorMultiplier < 0) {
-                    var total = orderRawMaterialUnitCost * quantity;
-                    var element = document.getElementById("total-cost-here");
-
-                    element.innerHTML = "$" + total.toFixed(2);
-                    totalCostElement.value = total;
-                }
-                else {
-                    var total = orderRawMaterialUnitCost * vendorMultiplier * quantity;
-                    var element = document.getElementById("total-cost-here");
-
-                    element.innerHTML = "$" + total.toFixed(2);
-                    totalCostElement.value = total;
-                }
-            }
-        }
-
-        function CheckIfUnique() {
-            element = document.getElementById("new-raw-mat-name");
-            $.ajax({
-                url: '/inventory/check-unique/',
-                data: {
-                    'rm_name': element.value
-                },
-                dataType: 'json',
-                success: function(data) {
-                    error_element = document.getElementById("new-raw-mat-name-error");
-                    if (data.rm_pk) {
-                        error_element.style.display = 'inline';
-                    }
-                    else {
-                        error_element.style.display = 'none';
-                    }
-                },
-                error: function(data) {
-                    alert("Uh-oh");
-                }
-            });
-        }
-
-        function SelectExistingRM() {
-            element = document.getElementById("new-raw-mat-name");
-            element.value = "";
-
-            existing_raw_material = document.getElementById("existing-raw-mat");
-            $.ajax({
-                url: '/inventory/get-raw-material/',
-                data: {
-                    'rm_id': existing_raw_material.value
-                },
-                dataType: 'json',
-                success: function(data) {
-                    var rm_unit_cost = data[0].fields.p_unit_value;
-                    var element = document.getElementById("new-mat-cost");
-                    element.value = rm_unit_cost
-                },
-                error: function(data) {
-                    alert("Uh-oh");
-                }
-            });
-        }
-
-        function SelectOrderVendor(vendor_id) {
-            if (vendor_id == 0) {
-                var quantity = document.getElementById("purchase-order-quantity").value;
-                var updatedUnitCost = orderRawMaterialUnitCost * quantity;
-                var element = document.getElementById("total-cost-here");
-
-                element.innerHTML = "$" + updatedUnitCost.toFixed(2);
-                totalCostElement.value = updatedUnitCost;
-            }
-            else {
-                $.ajax({
-                    url: '/inventory/get-vendor/',
-                    data: {
-                        'v_id': vendor_id
-                    },
-                    dataType: 'json',
-                    success: function(data) {
-                        var v_multiplier = data[0].fields.v_price_multiplier;
-                        var element = document.getElementById("total-cost-here");
-
-                        if (orderRawMaterialUnitCost >= 0) {
-                            var quantity = document.getElementById("purchase-order-quantity").value;
-                            var updatedUnitCost = orderRawMaterialUnitCost * v_multiplier * quantity;
-                            element.innerHTML = "$" + updatedUnitCost.toFixed(2);
-                            totalCostElement.value = updatedUnitCost;
-                            vendorMultiplier = v_multiplier;
-                        }
-                        else {
-                            alert("You must choose a raw material first");
-                            var select = document.getElementById("purchase-vendor-name");
-                            select.value = 0;
-                        }
-                    },
-                    error: function(data) {
-                        alert("Uh-oh");
-                    }
-                });
-            }
-        }
-
-        function goToDetailView(warehouse_id, part_id) {
-            window.location.href = 'inventory/part/?warehouse_id=' + warehouse_id + "&part_id=" + part_id;
-            return false;
-        }
-    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{% static 'assets/js/theme.js' %}"></script>
 </body>
 
 </html>

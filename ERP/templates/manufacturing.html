@@ -38,7 +38,7 @@
                     <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-gift"></i><span>Packaging</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-truck"></i><span>Transport</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'sales' %}"><i class="fa fa-user"></i><span>Sales</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-money"></i><span>Accounting</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'accounting' %}"><i class="fa fa-money"></i><span>Accounting</span></a></li>
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
             </div>
@@ -148,6 +148,11 @@
                 </nav>
                 <div class="container-fluid">
                     <h3 class="text-dark mb-4">Manufacturing</h3>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
                     <div class="card">
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs">
@@ -220,7 +225,8 @@
                                             <div class="col">
                                                 <form id="manufacture-product" method="POST" action="{% url 'manufacture-product' %}"> {% csrf_token %}
                                                     <input type="hidden" id="dateTime" value="{{incident.created_date_time}}"></input>
-                                                    <fieldset><label for="choose-material-list">Choose a material list</label><select class="form-control" id="choose-material-list" name="choose-material-list">
+                                                    <input type="hidden" name="final-price" value="0" id="final-price">
+                                                    <fieldset><label for="choose-material-list">Choose a material list</label><select class="form-control" id="choose-material-list" name="choose-material-list" onchange="updateProductionMaterialList()">
                                                             <optgroup label="Material List For Part">
                                                                 {% if parts %}
                                                                     {% for p in parts%}
@@ -228,7 +234,7 @@
                                                                     {% endfor %}
                                                                 {% endif %}
                                                             </optgroup>
-                                                        </select><label for="warehouse-destination">Choose a warehouse destination</label><select class="form-control" id="warehouse-destination" name="warehouse-destination">
+                                                        </select><label for="warehouse-destination">Choose a warehouse destination</label><select class="form-control" id="warehouse-destination" name="warehouse-destination" onchange="updateProductionMaterialList()">
                                                             <optgroup label="Active Warehouses">
                                                                 {% if warehouse %}
                                                                     {% for p in warehouse%}
@@ -236,11 +242,11 @@
                                                                     {% endfor %}
                                                                 {% endif %}
                                                             </optgroup>
-                                                        </select><label for="produce-quantity">Choose the quantity to produce</label><input class="form-control" type="number" id="produce-quantity" name="produce-quantity" value="1">
+                                                        </select><label for="produce-quantity">Choose the quantity to produce</label><input class="form-control" type="number" id="produce-quantity" name="produce-quantity" value="1" onchange="updateProductionMaterialList()">
                                                         <legend>Choose a product to manufacture:</legend>
                                                     </fieldset>
                                                 </form>
-                                                <button class="btn btn-primary" onclick="updateProductionMaterialList()">Update</button>
+                                                <button class="btn btn-primary mt-2" onclick="updateProductionMaterialList()">Update</button>
                                             </div>
                                             <div class="col">
                                                 <div class="card">
@@ -268,7 +274,7 @@
                                                         </div>
                                                         <!--Below should be temp and will be converted over to javascript based to be more dynamic-->
                                                         <p class="card-text">The product's value:</p>
-                                                        <p id = "mulPrice" class="card-text" style="font-size: 32px;color: var(--blue);"></p>
+                                                        <p id = "mulPrice" class="card-text" style="font-size: 32px;color: var(--blue);" name="mulPrice"></p>
                                                         <p class="card-text">&nbsp;= <p id="basePrice"></p> x 105%</p><button class="btn btn-primary" type="submit" form="manufacture-product">Manufacture</button>
                                                     </div>
                                                 </div>
@@ -330,6 +336,7 @@
                     }
                     else if(i=='1'){
                         document.getElementById("mulPrice").innerHTML = data['1'];
+                        document.getElementById("final-price").value = data['1'];
                     }
                     else if(!jQuery.isEmptyObject(val)){
                         console.log(val);

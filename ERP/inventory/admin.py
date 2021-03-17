@@ -10,3 +10,7 @@ admin.site.register(SellsParts)
 admin.site.register(Contains)
 admin.site.register(MadeOf)
 admin.site.register(Orders)
+admin.site.register(OrderPart)
+admin.site.register(Manufactures)
+admin.site.register(ManufacturePart)
+
