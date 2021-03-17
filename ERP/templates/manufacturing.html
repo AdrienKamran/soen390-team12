@@ -340,7 +340,12 @@
                         componentTemplate.setAttribute("id","cRow"+num);
                         //the below code could be converted over to DOMNODES or django based solution but should work fine for now
                         //below shoudl correctly display the default value for both quantity and part by having selected on ONLY the mathed part name
-                        componentTemplate.innerHTML =  '<div class="col d-flex justify-content-center"><select class="form-control" id="'+num+'chosen-component" name="'+num+'chosen-component"><optgroup label="Products">{%if parts%}{% for p in parts%}<option value="{{p.p_name}}" {%if p.p_name == "'+val["name"]+'"%}selected{%endif%}>{{p.p_name}}</option>{% endfor %}{%endif%}</optgroup></select></div><div class="col d-flex justify-content-center"><input class="form-control" type="number" id="'+num+'chosen-component-qty" name="'+num+'chosen-component-qty" {%if p.p_name == "'+val["name"]+'"%}value="'+val["qty"]+'"{%endif%}></div><div class="col d-flex justify-content-center"><button onclick="removeMaterial('+num+')" class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button></div>';
+                        componentTemplate.innerHTML =  '<div class="col d-flex justify-content-center"><select class="form-control" id="'+num+'chosen-component" name="'+num+'chosen-component"><optgroup label="Products">{%if parts%}{% for p in parts%}<option class="dummy{{p.p_name}}" value="{{p.p_name}}" >{{p.p_name}}</option>{% endfor %}{%endif%}</optgroup></select></div><div class="col d-flex justify-content-center"><input class="form-control" type="number" id="'+num+'chosen-component-qty" name="'+num+'chosen-component-qty" value="'+val["qty"]+'></div><div class="col d-flex justify-content-center"><button onclick="removeMaterial('+num+')" class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove this component"><i class="fa fa-minus"></i></button></div>';
+                        //run through the 
+                        hits = componentTemplate.getElementsByClassName("dummy"+val["name"]);
+                        if(hits.length>0){
+                            hits[0].selected = true;
+                        }
                         anchor.appendChild(componentTemplate);
                         //row.innerHTML = "<td>"+val["name"]+"</td><td>"+val["quantity"]+"</td><td>"+val["store"]+"</td>";
                     }
