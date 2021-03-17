@@ -73,16 +73,18 @@ def produceMaterialList(request):
 def loadMaterialList(request):
     if request.method == 'GET':
         new_rm_name = request.GET.get('product')
-        resp = {}
+        resp = {'0':False}
         if not new_rm_name == "":
             # find the part and get a material list for said part
             existing_rm = Part.objects.filter(p_name=new_rm_name).first()
             if existing_rm:
                 matList = MadeOf.objects.filter(part_FK_parent=existing_rm).all()
+                if existing_rm.p_type=='Product':
+                    resp['0']=True
                 if matList:
                     #existing_wh = Warehouse.objects.filter(w_name=new_wh_name).first()
                     #if existing_wh:
-                    counter = 0
+                    counter = 1
                     qty=0
                     nom=""
                     for p in matList:
