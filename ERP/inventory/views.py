@@ -88,7 +88,7 @@ def loadMaterialList(request):
                     qty=0
                     nom=""
                     for p in matList:
-                        qty = p.quantity
+                        qty = int(p.quantity)
                         nom = p.part_FK_child.p_name
                         resp [counter] = {
                             "name":nom,
