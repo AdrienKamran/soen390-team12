@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
 from inventory.models import Orders, Part, SellsParts
+from sales.models import Customer
 
 
 class CreateUserForm(UserCreationForm):

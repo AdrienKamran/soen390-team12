@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
-{% load static %}
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Table - TEAM12 ERP</title>
-    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css?h=9fc8cb0bffe353f9cda6088c773798d3">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
-    <link rel="stylesheet" href="{% static 'fonts/fontawesome-all.min.css' %}">
-    <link rel="stylesheet" href="{% static 'fonts/font-awesome.min.css' %}">
-    <link rel="stylesheet" href="{% static 'fonts/fontawesome5-overrides.min.css' %}">
+    <link rel="stylesheet" href="/assets/fonts/fontawesome-all.min.css?h=320bd0471c3e8d6b9dd55c98e185506c">
+    <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css?h=320bd0471c3e8d6b9dd55c98e185506c">
+    <link rel="stylesheet" href="/assets/fonts/fontawesome5-overrides.min.css?h=320bd0471c3e8d6b9dd55c98e185506c">
 </head>
 
 <body id="page-top">
@@ -21,24 +21,14 @@
                 </a>
                 <hr class="sidebar-divider my-0">
                 <ul class="navbar-nav text-light" id="accordionSidebar">
-                    <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'inventory' %}"><i class="fas fa-table"></i><span>Inventory</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="table.html"><i class="fas fa-table"></i><span>Table</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="login.html"><i class="far fa-user-circle"></i><span>Login</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="register.html"><i class="fas fa-user-circle"></i><span>Register</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="forgot-password.html"><i class="fas fa-key"></i><span>Forgotten Password</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="404.html"><i class="fas fa-exclamation-circle"></i><span>Page Not Found</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fas fa-window-maximize"></i><span>Blank Page</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-list"></i><span>Planning</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-calendar-o"></i><span>Scheduling</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-shopping-bag"></i><span>Vendors</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'manufacturing' %}"><i class="fa fa-bar-chart-o"></i><span>Manufacturing</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-search"></i><span>Quality Management</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-gift"></i><span>Packaging</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-truck"></i><span>Transport</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'sales' %}"><i class="fa fa-user"></i><span>Sales</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'accounting' %}"><i class="fa fa-money"></i><span>Accounting</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/profile.html"><i class="fas fa-user"></i><span>Profile</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/table.html"><i class="fas fa-table"></i><span>Table</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/login.html"><i class="far fa-user-circle"></i><span>Login</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/register.html"><i class="fas fa-user-circle"></i><span>Register</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/forgot-password.html"><i class="fas fa-key"></i><span>Forgotten Password</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/404.html"><i class="fas fa-exclamation-circle"></i><span>Page Not Found</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/blank.html"><i class="fas fa-window-maximize"></i><span>Blank Page</span></a><a class="nav-link" href="/blank.html"><i class="fa fa-list"></i><span>Planning</span></a><a class="nav-link" href="/blank.html"><i class="fa fa-calendar-o"></i><span>Scheduling</span></a><a class="nav-link" href="/blank.html"><i class="fa fa-shopping-bag"></i><span>Vendors</span></a><a class="nav-link" href="/blank.html"><i class="fa fa-bar-chart-o"></i><span>Production</span></a><a class="nav-link" href="/blank.html"><i class="fa fa-search"></i><span>Quality Management</span></a><a class="nav-link" href="/blank.html"><i class="fa fa-gift"></i><span>Packaging</span></a><a class="nav-link" href="/blank.html"><i class="fa fa-truck"></i><span>Transport</span></a><a class="nav-link" href="/blank.html"><i class="fa fa-user"></i><span>Sales (Customers)</span></a><a class="nav-link" href="/blank.html"><i class="fa fa-money"></i><span>Accounting</span></a></li>
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
             </div>
@@ -99,7 +89,7 @@
                                 <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-toggle="dropdown" href="#"><i class="fas fa-envelope fa-fw"></i><span class="badge badge-danger badge-counter">7</span></a>
                                     <div class="dropdown-menu dropdown-menu-right dropdown-list dropdown-menu-right animated--grow-in">
                                         <h6 class="dropdown-header">alerts center</h6><a class="d-flex align-items-center dropdown-item" href="#">
-                                            <div class="dropdown-list-image mr-3"><img class="rounded-circle" src="assets/img/avatars/avatar4.jpeg">
+                                            <div class="dropdown-list-image mr-3"><img class="rounded-circle" src="/assets/img/avatars/avatar4.jpeg?h=fefb30b61c8459a66bd338b7d790c3d5">
                                                 <div class="bg-success status-indicator"></div>
                                             </div>
                                             <div class="font-weight-bold">
@@ -107,7 +97,7 @@
                                                 <p class="small text-gray-500 mb-0">Emily Fowler - 58m</p>
                                             </div>
                                         </a><a class="d-flex align-items-center dropdown-item" href="#">
-                                            <div class="dropdown-list-image mr-3"><img class="rounded-circle" src="assets/img/avatars/avatar2.jpeg">
+                                            <div class="dropdown-list-image mr-3"><img class="rounded-circle" src="/assets/img/avatars/avatar2.jpeg?h=5d142be9441885f0935b84cf739d4112">
                                                 <div class="status-indicator"></div>
                                             </div>
                                             <div class="font-weight-bold">
@@ -115,7 +105,7 @@
                                                 <p class="small text-gray-500 mb-0">Jae Chun - 1d</p>
                                             </div>
                                         </a><a class="d-flex align-items-center dropdown-item" href="#">
-                                            <div class="dropdown-list-image mr-3"><img class="rounded-circle" src="assets/img/avatars/avatar3.jpeg">
+                                            <div class="dropdown-list-image mr-3"><img class="rounded-circle" src="/assets/img/avatars/avatar3.jpeg?h=c5166867f10a4e454b5b2ae8d63268b3">
                                                 <div class="bg-warning status-indicator"></div>
                                             </div>
                                             <div class="font-weight-bold">
@@ -123,7 +113,7 @@
                                                 <p class="small text-gray-500 mb-0">Morgan Alvarez - 2d</p>
                                             </div>
                                         </a><a class="d-flex align-items-center dropdown-item" href="#">
-                                            <div class="dropdown-list-image mr-3"><img class="rounded-circle" src="assets/img/avatars/avatar5.jpeg">
+                                            <div class="dropdown-list-image mr-3"><img class="rounded-circle" src="/assets/img/avatars/avatar5.jpeg?h=35dc45edbcda6b3fc752dab2b0f082ea">
                                                 <div class="bg-success status-indicator"></div>
                                             </div>
                                             <div class="font-weight-bold">
@@ -137,7 +127,7 @@
                             </li>
                             <div class="d-none d-sm-block topbar-divider"></div>
                             <li class="nav-item dropdown no-arrow">
-                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-toggle="dropdown" href="#"><span class="d-none d-lg-inline mr-2 text-gray-600 small">Valerie Luna</span><img class="border rounded-circle img-profile" src="assets/img/avatars/avatar1.jpeg"></a>
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-toggle="dropdown" href="#"><span class="d-none d-lg-inline mr-2 text-gray-600 small">Valerie Luna</span><img class="border rounded-circle img-profile" src="/assets/img/avatars/avatar1.jpeg?h=0ecc82101fb9a10ca459432faa8c0656"></a>
                                     <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in"><a class="dropdown-item" href="#"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Profile</a><a class="dropdown-item" href="#"><i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Settings</a><a class="dropdown-item" href="#"><i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Activity log</a>
                                         <div class="dropdown-divider"></div><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Logout</a>
                                     </div>
@@ -151,28 +141,43 @@
                     <div class="card">
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs">
-                                <li class="nav-item"><a class="nav-link{%  if tab == 'sell-tab' %} active{%  endif %}" href="#sell-tab" data-toggle="tab">Sell</a></li>
-                                <li class="nav-item"><a class="nav-link{%  if tab == 'history-tab' %} active{%  endif %}" href="#history-tab" data-toggle="tab">History</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#shipping-tab" data-toggle="tab">Shipping</a></li>
-                                <li class="nav-item"><a class="nav-link{%  if tab == 'customer-tab' %} active{%  endif %}" href="#customer-tab" data-toggle="tab">Customers</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#tab1" data-toggle="tab">Customers</a></li>
+                                <li class="nav-item"></li>
+                                <li class="nav-item"><a class="nav-link active" href="#tab2" data-toggle="tab">History</a></li>
+                                <li class="nav-item"></li>
                             </ul>
                         </div>
                         <div class="card-body tab-content">
-                            <div id="sell-tab" class="tab-pane fade show{%  if tab == 'sell-tab' %} active{%  endif %}">
+                            <div id="tab1" class="tab-pane fade show active">
                                 <div class="card shadow" id="sell-product-card">
                                     <div class="card-header py-3">
-                                        <p class="text-primary m-0 font-weight-bold">Sell Products</p>
-                                    </div>
+                                        <p class="text-primary m-0 font-weight-bold">Customer</p>
+                                    </div><!-- Start: customer_body -->
                                     <div class="card-body">
-                                        <form method="POST" action="{% url 'add-order' %}">
-                                            {%  csrf_token %}
-                                            {{ order_form.as_p }}
-                                            <button type="submit" class="btn btn-primary">Add Order</button>
-                                        </form>
-                                    </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <form id="sell-product">
+                                                    <!-- Start: #customer_information -->
+                                                    <fieldset><label for="select-recipient">Customer Name</label><!-- Start: #customer_name --><input class="form-control" type="text" id="select-recipient" name="select recipient"><!-- End: #customer_name --><label for="warehouse-source">Customer Type</label><!-- Start: #customer_type --><select class="form-control" id="warehouse-source" name="warehouse source">
+                                                            <optgroup label="This is a group">
+                                                                <option value="12" selected="">This is item 1</option>
+                                                                <option value="13">This is item 2</option>
+                                                                <option value="14">This is item 3</option>
+                                                            </optgroup>
+                                                        </select><!-- End: #customer_type --><label for="select-product">Email</label><!-- Start: #customer_email --><input class="form-control" type="text" id="select-product" name="select product"><!-- End: #customer_email --><label for="sale-quantity">Phone Number</label><!-- Start: #customer_phone_number --><input class="form-control" type="tel" id="sale-quantity" name="sale quantity"><!-- End: #customer_phone_number --><label for="commission-rate">Address</label><!-- Start: #customer_address --><input class="form-control" type="text" id="commission-rate" name="commission rate"><!-- End: #customer_address --><label for="sale-quantity">Province/State</label><!-- Start: #customer_province --><input class="form-control" type="tel" id="sale-quantity-1" name="sale quantity"><!-- End: #customer_province --><label for="commission-rate">Postal/Zip Code</label><!-- Start: #customer_postal --><input class="form-control" type="text" id="commission-rate-1" name="commission rate"><!-- End: #customer_postal --><label for="commission-rate">Country</label><!-- Start: #customer_country --><input class="form-control" type="text" id="commission-rate-2" name="commission rate"><!-- End: #customer_country -->
+                                                        <!-- Start: #customer_add --><button class="btn btn-primary" type="button">ADD</button><!-- End: #customer_add -->
+                                                        <legend>Add a Customer</legend>
+                                                    </fieldset><!-- End: #customer_information -->
+                                                </form>
+                                            </div>
+                                            <div class="col">
+                                                <div class="card"></div>
+                                            </div>
+                                        </div>
+                                    </div><!-- End: customer_body -->
                                 </div>
                             </div>
-                            <div id="history-tab" class="tab-pane fade show{%  if tab == 'history-tab' %} active{%  endif %}">
+                            <div id="tab2" class="tab-pane fade show">
                                 <div class="card shadow" id="sales-history-card">
                                     <div class="card-header py-3">
                                         <p class="text-primary m-0 font-weight-bold">History of Sales</p>
@@ -188,43 +193,44 @@
                                             <table class="table my-0" id="dataTable">
                                                 <thead>
                                                     <tr>
-                                                        <th>ID #</th>
-                                                        <th>Date Created</th>
-                                                        <th>Delivery Date</th>
+                                                        <th style="border-width: -10px;">ID #</th>
+                                                        <th>Date</th>
                                                         <th>Product Sold</th>
                                                         <th>Quantity</th>
                                                         <th>Warehouse Source</th>
                                                         <th>Sale Total</th>
-                                                        <th>Customer</th>
-                                                        <th>Status</th>
+                                                        <th>Recipient</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                {% for order in order_history %}
                                                     <tr>
-                                                        <td>{{ order.id }}</td>
-                                                        <td>{{ order.date_created }}</td>
-                                                        <td>{{ order.delivery_date }}</td>
-                                                        <td>{{ order.product.prod_type }}</td>
-                                                        <td>{{ order.quantity }}</td>
-                                                        <td>{{ order.warehouse.w_name }}</td>
-                                                        <td>{{ order.sale_total }}</td>
-                                                        <td>{{ order.customer.name }}</td>
-                                                        <td>{{ order.status }}</td>
+                                                        <td>10482</td>
+                                                        <td>13-02-21</td>
+                                                        <td>MTN-MK2</td>
+                                                        <td>3</td>
+                                                        <td>Laval</td>
+                                                        <td>575 $</td>
+                                                        <td>Mountain Equipment Co-Op</td>
                                                     </tr>
-                                                {% endfor %}
+                                                    <tr>
+                                                        <td title="Made of: Steel (x3)">54813</td>
+                                                        <td>14-02-21</td>
+                                                        <td>STR-MK5</td>
+                                                        <td>10</td>
+                                                        <td>Sherbrooke</td>
+                                                        <td>1840 $</td>
+                                                        <td>Street Spokes Inc.</td>
+                                                    </tr>
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
                                                         <td><strong>ID #</strong></td>
-                                                        <td><strong>Date Created</strong></td>
-                                                        <td><strong>Delivery Date</strong></td>
+                                                        <td><strong>Date</strong></td>
                                                         <td><strong>Product Sold</strong></td>
                                                         <td><strong>Quantity</strong></td>
                                                         <td><strong>Warehouse Source</strong></td>
                                                         <td><strong>Sale Total</strong></td>
-                                                        <td><strong>Customer</strong></td>
-                                                        <td><strong>Status</strong></td>
+                                                        <td><strong>Recipient</strong></td>
                                                     </tr>
                                                 </tfoot>
                                             </table>
@@ -248,27 +254,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="customer-tab" class="tab-pane fade show{%  if tab == 'customer-tab' %} active{%  endif %}">
-                                <div class="card shadow" id="sell-product-card">
-                                    <div class="card-header py-3">
-                                        <p class="text-primary m-0 font-weight-bold">Customer</p>
-                                    </div><!-- Start: customer_body -->
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col">
-                                                <form id="add-customer" method="POST" action="{% url 'add-customer' %}">
-													{% csrf_token %}
-                                                    {{ customer_form.as_p }}
-                                                    <button type="submit" class="btn btn-primary">Add Customer</button>
-                                                </form>
-                                            </div>
-                                            <div class="col">
-                                                <div class="card"></div>
-                                            </div>
-                                        </div>
-                                    </div><!-- End: customer_body -->
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -280,12 +265,12 @@
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/chart.min.js' %}"></script>
-    <script src="{% static 'js/bs-init.js' %}"></script>
+    <script src="/assets/js/jquery.min.js?h=89312d34339dcd686309fe284b3f226f"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js?h=ba42258394f86cd7822f0e850e2d60b1"></script>
+    <script src="/assets/js/chart.min.js?h=320bd0471c3e8d6b9dd55c98e185506c"></script>
+    <script src="/assets/js/bs-init.js?h=4c08518c7b3180bb9e4cd0bd074c3025"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
-    <script src="{% static 'js/theme.js' %}"></script>
+    <script src="/assets/js/theme.js?h=6d33b44a6dcb451ae1ea7efc7b5c5e30"></script>
 </body>
 
 </html>

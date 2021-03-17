@@ -12,6 +12,7 @@ from .forms import CreateUserForm, OrderRawMaterialForm, CreateRawMaterialForm, 
 #from .filters import OrderFilter
 from datetime import datetime
 from decimal import Decimal
+from sales.models import *
 from accounting.models import Transaction
 import logging
 
@@ -280,7 +281,7 @@ def createRawMaterial(request):
 
                 v_form = CreateNewVendorOfPartForm(data={
                     'p_FK': new_part.pk,
-                    'v_FK':request.POST.get('new-mat-vendor')
+                    'v_FK': request.POST.get('new-mat-vendor')
                 })
                 if v_form.is_valid():
                     v_form.save()

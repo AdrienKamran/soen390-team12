@@ -1,6 +1,7 @@
 # Paths to the index page are organized here.
 
 from django.urls import path
+
 from . import views
 from inventory import views as inventoryViews
 from accounting import views as accountingViews
@@ -11,7 +12,6 @@ urlpatterns = [
     path('register', views.register, name="register"),
     path('logout', views.logoutUser, name="logout"),
     path('generate', views.generateReport, name='generate'),
-    path('sales', views.salesViewPage, name='sales'),
     path('manufacturing', inventoryViews.manufacturingViewPage, name='manufacturing'),
     path('createmateriallist', inventoryViews.createMaterialList, name='createMaterialList'),
     path('produceMaterialList', inventoryViews.produceMaterialList, name='produceMaterialList'),
@@ -21,6 +21,7 @@ urlpatterns = [
     path('inventory/order-raw-material/', views.orderRawMaterial, name='order-raw-material'),
     path('inventory/create-raw-material/', views.createRawMaterial, name='create-raw-material'),
     path('inventory/check-unique/', views.checkUniqueRawMatName, name='check-unique'),
+    path('inventory/get-vendor/', views.returnVendor, name='return-vendor'),
     path('inventory/get-vendor/', views.returnVendor, name='return-vendor'),
     path('inventory/part/', views.inventoryPartView, name='inventory-part'),
     path('inventory/toggle-inventory-part-status/', views.toggleInventoryPartStatus, name='toggle-inventory-part-status'),
