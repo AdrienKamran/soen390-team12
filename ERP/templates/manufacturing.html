@@ -326,7 +326,7 @@
 
         //load a material list in from the database
         function loadMaterialList(nom){
-            jQuery.get("/loadMaterialList",{ product: p }, function(data, status){
+            jQuery.get("/loadMaterialList",{ product: nom }, function(data, status){
                 console.log("Data: " + data + "\nStatus: " + status);
                 anchor = document.getElementById("partListRows");
                 anchor.innerHTML = '';
