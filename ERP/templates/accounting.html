@@ -5,38 +5,41 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Table - TEAM12 ERP</title>
-    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
-    <link rel="stylesheet" href="{% static 'fonts/fontawesome-all.min.css' %}">
-    <link rel="stylesheet" href="{% static 'fonts/font-awesome.min.css' %}">
-    <link rel="stylesheet" href="{% static 'fonts/fontawesome5-overrides.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome5-overrides.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Billing-Table-with-Add-Row--Fixed-Header-Feature.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Bootstrap-DataTables.css' %}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'assets/css/Toggle-Switch.css' %}">
 </head>
 
 <body id="page-top">
     <div id="wrapper">
         <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
             <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
-                    <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
-                    <div class="sidebar-brand-text mx-3"><span>TEAM12 ERP</span></div>
+                    <div class="sidebar-brand-icon"><img src="assets/img/logo-icon.svg" height="60"></div>
+                    <div class="sidebar-brand-text"><img src="assets/img/logo-text.svg" height="60"></div>
                 </a>
                 <hr class="sidebar-divider my-0">
                 <ul class="navbar-nav text-light" id="accordionSidebar">
-                    <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user"></i><span>Profile</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'inventory' %}"><i class="fas fa-table"></i><span>Inventory</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="table.html"><i class="fas fa-table"></i><span>Table</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="login.html"><i class="far fa-user-circle"></i><span>Login</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="register.html"><i class="fas fa-user-circle"></i><span>Register</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="forgot-password.html"><i class="fas fa-key"></i><span>Forgotten Password</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="404.html"><i class="fas fa-exclamation-circle"></i><span>Page Not Found</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fas fa-window-maximize"></i><span>Blank Page</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-list"></i><span>Planning</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-calendar-o"></i><span>Scheduling</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-shopping-bag"></i><span>Vendors</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="far fa-user-circle"></i><span>Login</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'register' %}"><i class="fas fa-user-circle"></i><span>Register</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-key"></i><span>Forgotten Password</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-exclamation-circle"></i><span>Page Not Found</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-window-maximize"></i><span>Blank Page</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-list"></i><span>Planning</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-calendar-o"></i><span>Scheduling</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-shopping-bag"></i><span>Vendors</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'manufacturing' %}"><i class="fa fa-bar-chart-o"></i><span>Manufacturing</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-search"></i><span>Quality Management</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-gift"></i><span>Packaging</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-truck"></i><span>Transport</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-search"></i><span>Quality Management</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-gift"></i><span>Packaging</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-truck"></i><span>Transport</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'sales' %}"><i class="fa fa-user"></i><span>Sales</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'accounting' %}"><i class="fa fa-money"></i><span>Accounting</span></a></li>
                 </ul>
@@ -147,84 +150,59 @@
                     </div>
                 </nav>
                 <div class="container-fluid">
-                    <h3 class="text-dark mb-4">Sales</h3>
+                    <h3 class="text-dark mb-4">Accounting</h3>
                     <div class="card">
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs">
-                                <li class="nav-item"><a class="nav-link{%  if tab == 'sell-tab' %} active{%  endif %}" href="#sell-tab" data-toggle="tab">Sell</a></li>
-                                <li class="nav-item"><a class="nav-link{%  if tab == 'history-tab' %} active{%  endif %}" href="#history-tab" data-toggle="tab">History</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#shipping-tab" data-toggle="tab">Shipping</a></li>
-                                <li class="nav-item"><a class="nav-link{%  if tab == 'customer-tab' %} active{%  endif %}" href="#customer-tab" data-toggle="tab">Customers</a></li>
+                                <li class="nav-item"><a class="nav-link active" href="#tab1" data-toggle="tab">All</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#tab2" data-toggle="tab">Profits</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#tab3" data-toggle="tab">Expenses</a></li>
                             </ul>
                         </div>
                         <div class="card-body tab-content">
-                            <div id="sell-tab" class="tab-pane fade show{%  if tab == 'sell-tab' %} active{%  endif %}">
-                                <div class="card shadow" id="sell-product-card">
+                            <div id="tab1" class="tab-pane fade show active">
+                                <div class="card shadow" id="all-card">
                                     <div class="card-header py-3">
-                                        <p class="text-primary m-0 font-weight-bold">Sell Products</p>
+                                        <p class="text-primary m-0 font-weight-bold">Full Record of Profits and Expenses</p>
                                     </div>
                                     <div class="card-body">
-                                        <form method="POST" action="{% url 'add-order' %}">
-                                            {%  csrf_token %}
-                                            {{ order_form.as_p }}
-                                            <button type="submit" class="btn btn-primary">Add Order</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="history-tab" class="tab-pane fade show{%  if tab == 'history-tab' %} active{%  endif %}">
-                                <div class="card shadow" id="sales-history-card">
-                                    <div class="card-header py-3">
-                                        <p class="text-primary m-0 font-weight-bold">History of Sales</p>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6 text-nowrap"><input type="search" class="form-control form-control-sm" aria-controls="dataTable" placeholder="Search"></div>
-                                            <div class="col-md-6">
-                                                <div class="text-md-right dataTables_filter" id="dataTable_filter"><label></label></div>
-                                            </div>
-                                        </div>
-                                        <div class="table-responsive table mt-2" id="dataTable-1" role="grid" aria-describedby="dataTable_info">
+                                        <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
                                             <table class="table my-0" id="dataTable">
                                                 <thead>
                                                     <tr>
-                                                        <th>ID #</th>
-                                                        <th>Date Created</th>
-                                                        <th>Delivery Date</th>
-                                                        <th>Product Sold</th>
+                                                        <th style="border-width: -10px;">ID</th>
+                                                        <th>Date</th>
+                                                        <th>Type</th>
+                                                        <th>Item</th>
                                                         <th>Quantity</th>
-                                                        <th>Warehouse Source</th>
-                                                        <th>Sale Total</th>
-                                                        <th>Customer</th>
-                                                        <th>Status</th>
+                                                        <th>Balance</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                {% for order in order_history %}
-                                                    <tr>
-                                                        <td>{{ order.id }}</td>
-                                                        <td>{{ order.date_created }}</td>
-                                                        <td>{{ order.delivery_date }}</td>
-                                                        <td>{{ order.product.prod_type }}</td>
-                                                        <td>{{ order.quantity }}</td>
-                                                        <td>{{ order.warehouse.w_name }}</td>
-                                                        <td>{{ order.sale_total }}</td>
-                                                        <td>{{ order.customer.name }}</td>
-                                                        <td>{{ order.status }}</td>
-                                                    </tr>
-                                                {% endfor %}
+                                                    {% for transaction in t_query %}
+                                                        <tr>
+                                                            <td>{{transaction.t_serial}}</td>
+                                                            <td>{{transaction.t_date}}</td>
+                                                            <td>{{transaction.t_type}}</td>
+                                                            <td>{{transaction.t_item_name}}</td>
+                                                            <td>{{transaction.t_quantity}}</td>
+                                                            {% if transaction.t_balance < 0 %}
+                                                                <td style="color: var(--danger);">{{transaction.t_balance}}</td>
+                                                            {% else %}
+                                                                <td style="color: var(--success);">{{transaction.t_balance}}</td>
+                                                            {% endif %}
+                                                        </tr>
+                                                    {% endfor %}
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td><strong>ID #</strong></td>
-                                                        <td><strong>Date Created</strong></td>
-                                                        <td><strong>Delivery Date</strong></td>
-                                                        <td><strong>Product Sold</strong></td>
+                                                        <td><strong>ID</strong></td>
+                                                        <td><strong>Date</strong></td>
+                                                        <td><strong>Type</strong></td>
+                                                        <td><strong>Item</strong></td>
                                                         <td><strong>Quantity</strong></td>
-                                                        <td><strong>Warehouse Source</strong></td>
-                                                        <td><strong>Sale Total</strong></td>
-                                                        <td><strong>Customer</strong></td>
-                                                        <td><strong>Status</strong></td>
+                                                        <td><strong>Balance</strong></td>
+                                                        <td></td>
                                                     </tr>
                                                 </tfoot>
                                             </table>
@@ -248,25 +226,128 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="customer-tab" class="tab-pane fade show{%  if tab == 'customer-tab' %} active{%  endif %}">
-                                <div class="card shadow" id="sell-product-card">
+                            <div id="tab2" class="tab-pane fade show">
+                                <div class="card shadow" id="profits-card">
                                     <div class="card-header py-3">
-                                        <p class="text-primary m-0 font-weight-bold">Customer</p>
-                                    </div><!-- Start: customer_body -->
+                                        <p class="text-primary m-0 font-weight-bold">Record of Profits</p>
+                                    </div>
                                     <div class="card-body">
+                                        <div class="table-responsive table mt-2" id="dataTable-1" role="grid" aria-describedby="dataTable_info">
+                                            <table class="table my-0" id="dataTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="border-width: -10px;">ID</th>
+                                                        <th>Date</th>
+                                                        <th>Type</th>
+                                                        <th>Item</th>
+                                                        <th>Quantity</th>
+                                                        <th>Profit</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" title="Made of: Steel (x3)">49129</td>
+                                                        <td>3/16/2021</td>
+                                                        <td>Sale</td>
+                                                        <td>MTN-MK2</td>
+                                                        <td>2</td>
+                                                        <td>342 $</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td><strong>ID</strong></td>
+                                                        <td><strong>Date</strong></td>
+                                                        <td><strong>Type</strong></td>
+                                                        <td><strong>Item</strong></td>
+                                                        <td><strong>Quantity</strong></td>
+                                                        <td><strong>Balance</strong></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
                                         <div class="row">
-                                            <div class="col">
-                                                <form id="add-customer" method="POST" action="{% url 'add-customer' %}">
-													{% csrf_token %}
-                                                    {{ customer_form.as_p }}
-                                                    <button type="submit" class="btn btn-primary">Add Customer</button>
-                                                </form>
+                                            <div class="col-md-6 align-self-center">
+                                                <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 27</p>
                                             </div>
-                                            <div class="col">
-                                                <div class="card"></div>
+                                            <div class="col-md-6">
+                                                <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                                    <ul class="pagination">
+                                                        <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                                                    </ul>
+                                                </nav>
                                             </div>
                                         </div>
-                                    </div><!-- End: customer_body -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab3" class="tab-pane fade show">
+                                <div class="card shadow" id="expenses-card">
+                                    <div class="card-header py-3">
+                                        <p class="text-primary m-0 font-weight-bold">Record of Expenses</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive table mt-2" id="dataTable-1" role="grid" aria-describedby="dataTable_info">
+                                            <table class="table my-0" id="dataTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="border-width: -10px;">ID</th>
+                                                        <th>Date</th>
+                                                        <th>Type</th>
+                                                        <th>Item</th>
+                                                        <th>Quantity</th>
+                                                        <th>Expense</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for transaction in t_query %}
+                                                        {% if transaction.t_balance < 0 %}
+                                                            <tr>
+                                                                <td>{{transaction.t_serial}}</td>
+                                                                <td>{{transaction.t_date}}</td>
+                                                                <td>{{transaction.t_type}}</td>
+                                                                <td>{{transaction.t_item_name}}</td>
+                                                                <td>{{transaction.t_quantity}}</td>
+                                                                <td>{{transaction.t_balance}}</td>
+                                                            </tr>
+                                                        {% endif %}    
+                                                    {% endfor %}
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td><strong>ID</strong></td>
+                                                        <td><strong>Date</strong></td>
+                                                        <td><strong>Type</strong></td>
+                                                        <td><strong>Item</strong></td>
+                                                        <td><strong>Quantity</strong></td>
+                                                        <td><strong>Balance</strong></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 align-self-center">
+                                                <p id="dataTable_info-1" class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 27</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                                    <ul class="pagination">
+                                                        <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -280,12 +361,16 @@
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/chart.min.js' %}"></script>
-    <script src="{% static 'js/bs-init.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/bs-init.js' %}"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script src="{% static 'assets/js/Bootstrap-DataTables.js' %}"></script>
+    <script src="{% static 'assets/js/Billing-Table-with-Add-Row--Fixed-Header-Feature.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
-    <script src="{% static 'js/theme.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{% static 'assets/js/theme.js' %}"></script>
 </body>
 
 </html>

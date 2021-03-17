@@ -13,6 +13,7 @@ from .forms import CreateUserForm, OrderRawMaterialForm, CreateRawMaterialForm, 
 from datetime import datetime
 from decimal import Decimal
 from sales.models import *
+from accounting.models import Transaction
 import logging
 
 import io
@@ -71,25 +72,36 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 def inventory(request):
+    # this takes care of generating all the information for the inventory view.
     context = {}
     if request.method == 'POST':
         var = 0
     else:
-        part_inventory = Contains.objects.select_related().all()
-        raw_material_all = Part.objects.filter(p_type='Raw Material').all()
-        warehouse_all = Warehouse.objects.all()
-        vendor_all = Vendor.objects.all()
-        orders = Orders.objects.select_related().all().order_by('timestamp')
-        date_of_day = datetime.now()
+        # filters for distinct values of the tuple warehouse and part.
+        # eg. A part template will show only once for the same warehouse, but more than once
+        # if in different warehouses.
+        part_inventory = Contains.objects.select_related().filter(p_in_inventory=True).distinct('p_FK', 'w_FK') # inventory of the different part types in each warehouse
+        raw_material_all = Part.objects.filter(p_type='Raw Material').all() # list of all the raw materials in the parts list
+        warehouse_all = Warehouse.objects.all() # list of all the warehouses
+        vendor_all = Vendor.objects.all() # list of all the vendors
+        orders = Orders.objects.select_related().all().order_by('timestamp') # list of all the orders
+        date_of_day = datetime.now() # today's datetime
+
+        # for every part in the list, find how many of those parts exist in the warehouse and save in a dictionary to be
+        # accessible in the inventoy template
+        part_inventory_count = {}
+        for part in part_inventory:
+            part_inventory_count[part.p_serial] = len(Contains.objects.filter(p_FK=part.p_FK, w_FK=part.w_FK, p_in_inventory=True).all())
         context = {
             'inventory': part_inventory,
+            'inventory_count': part_inventory_count,
             'raw_material_all': raw_material_all,
             'warehouse_all': warehouse_all,
             'vendor_all': vendor_all,
             'rm_orders': orders,
             'date_of_day': date_of_day
         }
-    return render(request, 'inventory.html', context=context)
+    return render(request, 'inventory.html', context=context) # render the view
 
 #decided to combine the two endpoints together
 def generateReport(request):
@@ -191,16 +203,7 @@ def returnVendor(request):
     vendor = Vendor.objects.filter(pk=v_id).all()
     v_json = serializers.serialize('json', vendor)
     return HttpResponse(v_json)
-'''
-@login_required(login_url='login')
-def returnVendorOfPart(request):
-    p_id = request.GET.get('p_id')
-    vendors = SellsParts.objects.select_related().filter(p_FK=2).all()
-    v_list = []
-    for vendor in vendors:
-        v_list.append({'v_fk':vendor.v_FK, 'v_name':vendor.v_FK.v_name})
-    return json.dumps(v_list)
-'''
+
 @login_required(login_url='login')
 def orderRawMaterial(request):
     if request.method == 'POST':
@@ -221,15 +224,35 @@ def orderRawMaterial(request):
             new_order.save()
             # for the sake of this sprint, the order is automatically shipped and appears in the warehouse inventory
 
-            #first, check if there is existing raw material in the warehouse inventory
-            rm = Contains.objects.filter(p_FK=new_order.p_FK.pk, w_FK=new_order.w_FK.pk).first()
-            if rm:
-                #this material already exists
-                rm.p_quantity = rm.p_quantity + new_order.order_quantity
-                rm.save()
+            t_last_index_object = Transaction.objects.order_by('-t_serial').first()
+            t_last_index = 0
+            if t_last_index_object is None:
+                t_last_index = 500000
             else:
-                new_rm = Contains(p_FK=new_order.p_FK, w_FK=new_order.w_FK, p_quantity=new_order.order_quantity)
+                t_last_index = t_last_index_object.t_serial
+
+            # create transaction
+            new_transaction = Transaction(t_type='ORDER', t_balance=-cost_rounded, t_item_name=new_order.p_FK.p_name, t_serial=t_last_index, t_quantity=new_order.order_quantity)
+            new_transaction.save()
+        
+
+            # before adding the new parts, query the contains list for the last index.
+            last_index_object = Contains.objects.order_by('-p_serial').first()
+            last_index = 0
+            if last_index_object is None:
+                last_index = 10000
+            else:
+                last_index = last_index_object.p_serial
+            i = 0
+
+            while i < int(request.POST.get('purchase-order-quantity')):
+                last_index = last_index + 1
+                new_rm = Contains(p_FK=new_order.p_FK, w_FK=new_order.w_FK, p_serial=last_index, p_defective=False, p_in_inventory=True)
                 new_rm.save()
+
+                new_order_part = OrderPart(o_FK=new_order, c_FK=new_rm)
+                new_order_part.save()
+                i = i + 1
 
             messages.success(request, 'Raw material ordered successfully.')
             return redirect('inventory')
@@ -241,6 +264,8 @@ def orderRawMaterial(request):
 
 @login_required(login_url='login')
 def createRawMaterial(request):
+# this view takes care of creating raw materials so that they can be selected when creating order or material 
+# lists and manufacturing products
     if request.method == 'POST':
         new_rm_name = request.POST.get('new-raw-mat-name')
         if not new_rm_name == "":
@@ -295,3 +320,44 @@ def checkUniqueRawMatName(request):
     else:
         json = {}
     return JsonResponse(json)
+
+@login_required(login_url='login')
+def inventoryPartView(request):
+    warehouse_id = request.GET.get('warehouse_id')
+    part_id = request.GET.get('part_id')
+
+    part = Part.objects.get(pk=part_id)
+    warehouse = Warehouse.objects.get(pk=warehouse_id)
+    inventory_parts = Contains.objects.filter(w_FK=warehouse, p_FK=part, p_in_inventory=True).all()
+
+    context = {
+        'part_name': part.p_name,
+        'warehouse_name': warehouse.w_name,
+        'inventory': inventory_parts,
+    }
+    return render(request, 'inventory-parts.html', context)
+
+@login_required(login_url='login')
+def toggleInventoryPartStatus(request):
+    p_serial = request.GET.get('p_serial')
+
+    part = Contains.objects.filter(p_serial=p_serial).first()
+    part.p_defective = not part.p_defective
+    part.save()
+
+    test = "success"
+    return JsonResponse(test, safe=False)
+
+@login_required(login_url='login')
+def deleteInventoryPart(request):
+    p_serial = request.GET.get('p_serial')
+
+    part = Contains.objects.filter(p_serial=p_serial).first()
+    part.delete()
+
+    test = "success"
+    messages.success(request, f"Part [{p_serial}] successfully deleted.")
+    return JsonResponse(test, safe=False)
+
+
+

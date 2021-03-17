@@ -38,7 +38,7 @@
                     <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-gift"></i><span>Packaging</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-truck"></i><span>Transport</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'sales' %}"><i class="fa fa-user"></i><span>Sales</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-money"></i><span>Accounting</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'accounting' %}"><i class="fa fa-money"></i><span>Accounting</span></a></li>
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
             </div>
@@ -181,9 +181,9 @@
                                             </div>
                                         </div>
                                         <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
-                                            <table class="table my-0" id="dataTable">
+                                            <table class="table my-0 table-hover" id="dataTable">
                                                 <thead>
-                                                    <tr>
+                                                    <tr onselect="">
                                                         <th style="border-width: -10px;">Name</th>
                                                         <th>Type</th>
                                                         <th>Quantity</th>
@@ -193,10 +193,10 @@
                                                 </thead>
                                                 <tbody>
                                                     {% for part in inventory %}
-                                                        <tr>
+                                                        <tr onclick="goToDetailView( '{{part.w_FK.pk}}', '{{part.p_FK.pk}}')">
                                                             <td>{{ part.p_FK.p_name }}</td>
                                                             <td>{{ part.p_FK.p_type }}</td>
-                                                            <td>{{ part.p_quantity }}</td>
+                                                            <td>{{ inventory_count|get_count:part.p_serial }}</td>
                                                             <td>{{ part.p_FK.p_unit_value }}</td>
                                                             <td>{{ part.w_FK.w_name }}</td>
                                                         </tr>
@@ -352,7 +352,7 @@
                                                     {% for order in rm_orders %}
                                                         <tr>
                                                             <td>{{ order.timestamp }}</td>
-                                                            <td>{{ order.rm_FK.rm_name }}</td>
+                                                            <td>{{ order.p_FK.p_name }}</td>
                                                             <td>{{ order.order_quantity }}</td>
                                                             <td>{{ order.w_FK.w_name }}</td>
                                                             <td>{{ order.v_FK.v_name }}</td>
@@ -519,44 +519,48 @@
         }
 
         function SelectOrderVendor(vendor_id) {
-                if (vendor_id == 0) {
-                    var quantity = document.getElementById("purchase-order-quantity").value;
-                    var updatedUnitCost = orderRawMaterialUnitCost * quantity;
-                    var element = document.getElementById("total-cost-here");
+            if (vendor_id == 0) {
+                var quantity = document.getElementById("purchase-order-quantity").value;
+                var updatedUnitCost = orderRawMaterialUnitCost * quantity;
+                var element = document.getElementById("total-cost-here");
 
-                    element.innerHTML = "$" + updatedUnitCost.toFixed(2);
-                    totalCostElement.value = updatedUnitCost;
-                }
-                else {
-                    $.ajax({
-                        url: '/inventory/get-vendor/',
-                        data: {
-                            'v_id': vendor_id
-                        },
-                        dataType: 'json',
-                        success: function(data) {
-                            var v_multiplier = data[0].fields.v_price_multiplier;
-                            var element = document.getElementById("total-cost-here");
+                element.innerHTML = "$" + updatedUnitCost.toFixed(2);
+                totalCostElement.value = updatedUnitCost;
+            }
+            else {
+                $.ajax({
+                    url: '/inventory/get-vendor/',
+                    data: {
+                        'v_id': vendor_id
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        var v_multiplier = data[0].fields.v_price_multiplier;
+                        var element = document.getElementById("total-cost-here");
 
-                            if (orderRawMaterialUnitCost >= 0) {
-                                var quantity = document.getElementById("purchase-order-quantity").value;
-                                var updatedUnitCost = orderRawMaterialUnitCost * v_multiplier * quantity;
-                                element.innerHTML = "$" + updatedUnitCost.toFixed(2);
-                                totalCostElement.value = updatedUnitCost;
-                                vendorMultiplier = v_multiplier;
-                            }
-                            else {
-                                alert("You must choose a raw material first");
-                                var select = document.getElementById("purchase-vendor-name");
-                                select.value = 0;
-                            }
-                        },
-                        error: function(data) {
-                            alert("Uh-oh");
+                        if (orderRawMaterialUnitCost >= 0) {
+                            var quantity = document.getElementById("purchase-order-quantity").value;
+                            var updatedUnitCost = orderRawMaterialUnitCost * v_multiplier * quantity;
+                            element.innerHTML = "$" + updatedUnitCost.toFixed(2);
+                            totalCostElement.value = updatedUnitCost;
+                            vendorMultiplier = v_multiplier;
                         }
-                    });
-                }
+                        else {
+                            alert("You must choose a raw material first");
+                            var select = document.getElementById("purchase-vendor-name");
+                            select.value = 0;
+                        }
+                    },
+                    error: function(data) {
+                        alert("Uh-oh");
+                    }
+                });
+            }
+        }
 
+        function goToDetailView(warehouse_id, part_id) {
+            window.location.href = 'inventory/part/?warehouse_id=' + warehouse_id + "&part_id=" + part_id;
+            return false;
         }
     </script>
 </body>

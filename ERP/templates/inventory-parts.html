@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html>
 {% load static %}
+{% load filters %}
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Table - TEAM12 ERP</title>
-    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
-    <link rel="stylesheet" href="{% static 'fonts/fontawesome-all.min.css' %}">
-    <link rel="stylesheet" href="{% static 'fonts/font-awesome.min.css' %}">
-    <link rel="stylesheet" href="{% static 'fonts/fontawesome5-overrides.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome5-overrides.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Billing-Table-with-Add-Row--Fixed-Header-Feature.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Bootstrap-DataTables.css' %}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'assets/css/Toggle-Switch.css' %}">
 </head>
 
 <body id="page-top">
@@ -21,23 +26,28 @@
                 </a>
                 <hr class="sidebar-divider my-0">
                 <ul class="navbar-nav text-light" id="accordionSidebar">
-                    <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'inventory' %}"><i class="fas fa-table"></i><span>Inventory</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="table.html"><i class="fas fa-table"></i><span>Table</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="login.html"><i class="far fa-user-circle"></i><span>Login</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="register.html"><i class="fas fa-user-circle"></i><span>Register</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="forgot-password.html"><i class="fas fa-key"></i><span>Forgotten Password</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="404.html"><i class="fas fa-exclamation-circle"></i><span>Page Not Found</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fas fa-window-maximize"></i><span>Blank Page</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-list"></i><span>Planning</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-calendar-o"></i><span>Scheduling</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-shopping-bag"></i><span>Vendors</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'manufacturing' %}"><i class="fa fa-bar-chart-o"></i><span>Manufacturing</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-search"></i><span>Quality Management</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-gift"></i><span>Packaging</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-truck"></i><span>Transport</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'sales' %}"><i class="fa fa-user"></i><span>Sales</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user"></i><span>Profile</span></a></li>
+                    {% if request.user|group:"inventory_account" %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'inventory' %}"><i class="fas fa-table"></i><span>Inventory</span></a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="far fa-user-circle"></i><span>Login</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'register' %}"><i class="fas fa-user-circle"></i><span>Register</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-key"></i><span>Forgotten Password</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-exclamation-circle"></i><span>Page Not Found</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-window-maximize"></i><span>Blank Page</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-list"></i><span>Planning</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-calendar-o"></i><span>Scheduling</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-shopping-bag"></i><span>Vendors</span></a></li>
+                    {% if request.user|group:"manufacturing_account" %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'manufacturing' %}"><i class="fa fa-bar-chart-o"></i><span>Manufacturing</span></a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-search"></i><span>Quality Management</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-gift"></i><span>Packaging</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-truck"></i><span>Transport</span></a></li>
+                    {% if request.user|group:"sales_account" %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'sales' %}"><i class="fa fa-user"></i><span>Sales</span></a></li>
+                    {% endif %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'accounting' %}"><i class="fa fa-money"></i><span>Accounting</span></a></li>
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
@@ -147,128 +157,59 @@
                     </div>
                 </nav>
                 <div class="container-fluid">
-                    <h3 class="text-dark mb-4">Sales</h3>
-                    <div class="card">
-                        <div class="card-header">
-                            <ul class="nav nav-tabs card-header-tabs">
-                                <li class="nav-item"><a class="nav-link{%  if tab == 'sell-tab' %} active{%  endif %}" href="#sell-tab" data-toggle="tab">Sell</a></li>
-                                <li class="nav-item"><a class="nav-link{%  if tab == 'history-tab' %} active{%  endif %}" href="#history-tab" data-toggle="tab">History</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#shipping-tab" data-toggle="tab">Shipping</a></li>
-                                <li class="nav-item"><a class="nav-link{%  if tab == 'customer-tab' %} active{%  endif %}" href="#customer-tab" data-toggle="tab">Customers</a></li>
-                            </ul>
+                    <h3 class="text-dark mb-4">List of Products</h3>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="card shadow" id="inventory-card">
+                        <div class="card-header py-3">
+                            <p class="text-primary m-0 font-weight-bold">{{ part_name }}</p>
+                            <p class="text-primary m-0">{{ warehouse_name }}</p>
                         </div>
-                        <div class="card-body tab-content">
-                            <div id="sell-tab" class="tab-pane fade show{%  if tab == 'sell-tab' %} active{%  endif %}">
-                                <div class="card shadow" id="sell-product-card">
-                                    <div class="card-header py-3">
-                                        <p class="text-primary m-0 font-weight-bold">Sell Products</p>
-                                    </div>
-                                    <div class="card-body">
-                                        <form method="POST" action="{% url 'add-order' %}">
-                                            {%  csrf_token %}
-                                            {{ order_form.as_p }}
-                                            <button type="submit" class="btn btn-primary">Add Order</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="history-tab" class="tab-pane fade show{%  if tab == 'history-tab' %} active{%  endif %}">
-                                <div class="card shadow" id="sales-history-card">
-                                    <div class="card-header py-3">
-                                        <p class="text-primary m-0 font-weight-bold">History of Sales</p>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6 text-nowrap"><input type="search" class="form-control form-control-sm" aria-controls="dataTable" placeholder="Search"></div>
-                                            <div class="col-md-6">
-                                                <div class="text-md-right dataTables_filter" id="dataTable_filter"><label></label></div>
-                                            </div>
-                                        </div>
-                                        <div class="table-responsive table mt-2" id="dataTable-1" role="grid" aria-describedby="dataTable_info">
-                                            <table class="table my-0" id="dataTable">
-                                                <thead>
+                        <div class="card-body">
+                            <form>
+                                <fieldset>
+                                    <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                        <input class="form-control mb-2 mr-auto" type="te" name="filter-table-textbox" id="filter-table-textbox" placeholder="Search by serial number" onkeyup="filterParts()">
+                                        <table class="table my-0 table-sm table-hover" id="dataTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Serial Number</th>
+                                                    <th>Status</th>
+                                                    <th>Identify</th>
+                                                    <th>Remove</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for part in inventory %}
                                                     <tr>
-                                                        <th>ID #</th>
-                                                        <th>Date Created</th>
-                                                        <th>Delivery Date</th>
-                                                        <th>Product Sold</th>
-                                                        <th>Quantity</th>
-                                                        <th>Warehouse Source</th>
-                                                        <th>Sale Total</th>
-                                                        <th>Customer</th>
-                                                        <th>Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                {% for order in order_history %}
-                                                    <tr>
-                                                        <td>{{ order.id }}</td>
-                                                        <td>{{ order.date_created }}</td>
-                                                        <td>{{ order.delivery_date }}</td>
-                                                        <td>{{ order.product.prod_type }}</td>
-                                                        <td>{{ order.quantity }}</td>
-                                                        <td>{{ order.warehouse.w_name }}</td>
-                                                        <td>{{ order.sale_total }}</td>
-                                                        <td>{{ order.customer.name }}</td>
-                                                        <td>{{ order.status }}</td>
+                                                        <td>{{ part.p_serial }}</td>
+                                                        {% if part.p_defective %}
+                                                            <td><span class="badge badge-danger" id="status-badge-{{ part.p_serial }}">Defective</span></td>
+                                                            <td><button class="badge badge-primary" type="button" onclick="toggleDefective( '{{ part.p_serial }}', true)" id="status-btn-{{ part.p_serial }}">Mark Functional</button></td>
+                                                        {% else %}
+                                                            <td><span class="badge badge-success" id="status-badge-{{ part.p_serial }}">Functional</span></td>
+                                                            <td><button class="badge badge-primary" type="button" onclick="toggleDefective( '{{ part.p_serial }}', false)" id="status-btn-{{ part.p_serial }}">Mark Defective</button></td>
+                                                        {% endif %}
+                                                        <td><button class="badge badge-primary" type="button" data-toggle="modal" data-target="#exampleModal" onclick="setDeletePartSerial('{{ part.p_serial }}')"><i class="fa fa-minus"></i></button></td>
                                                     </tr>
                                                 {% endfor %}
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <td><strong>ID #</strong></td>
-                                                        <td><strong>Date Created</strong></td>
-                                                        <td><strong>Delivery Date</strong></td>
-                                                        <td><strong>Product Sold</strong></td>
-                                                        <td><strong>Quantity</strong></td>
-                                                        <td><strong>Warehouse Source</strong></td>
-                                                        <td><strong>Sale Total</strong></td>
-                                                        <td><strong>Customer</strong></td>
-                                                        <td><strong>Status</strong></td>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6 align-self-center">
-                                                <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 27</p>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
-                                                    <ul class="pagination">
-                                                        <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
-                                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                                        <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-                                                    </ul>
-                                                </nav>
-                                            </div>
-                                        </div>
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td><strong>ID</strong></td>
+                                                    <td><strong>Status</strong></td>
+                                                    <td><strong>Identify</strong></td>
+                                                    <td><strong>Remove</strong></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
                                     </div>
-                                </div>
-                            </div>
-                            <div id="customer-tab" class="tab-pane fade show{%  if tab == 'customer-tab' %} active{%  endif %}">
-                                <div class="card shadow" id="sell-product-card">
-                                    <div class="card-header py-3">
-                                        <p class="text-primary m-0 font-weight-bold">Customer</p>
-                                    </div><!-- Start: customer_body -->
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col">
-                                                <form id="add-customer" method="POST" action="{% url 'add-customer' %}">
-													{% csrf_token %}
-                                                    {{ customer_form.as_p }}
-                                                    <button type="submit" class="btn btn-primary">Add Customer</button>
-                                                </form>
-                                            </div>
-                                            <div class="col">
-                                                <div class="card"></div>
-                                            </div>
-                                        </div>
-                                    </div><!-- End: customer_body -->
-                                </div>
-                            </div>
+                                </fieldset>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -280,12 +221,98 @@
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Deleting Part</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Are you sure you wish to delete the part/product from the inventory?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" onclick="deletePart()" data-dismiss="modal">Yes</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/chart.min.js' %}"></script>
     <script src="{% static 'js/bs-init.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
     <script src="{% static 'js/theme.js' %}"></script>
+    <script type="text/javascript">
+        var deletePartSerial = 0;
+
+        function setDeletePartSerial(p_serial) {
+            deletePartSerial = p_serial;
+        }
+
+        function deletePart() {
+            if (deletePartSerial != 0) {
+                $.ajax({
+                    url: '/inventory/delete-inventory-part/',
+                    data: {
+                        'p_serial': deletePartSerial
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        location.reload();
+                    },
+                    error: function(data) {
+                        alert("Something went wrong delete this part.");
+                    }
+                });
+            }
+        }
+
+        function toggleDefective(p_serial, p_defective) {
+            var badge = document.getElementById("status-badge-" + p_serial);
+            var button = document.getElementById("status-btn-" + p_serial);
+
+            // make an ajax call to change in database and reload page
+            $.ajax({
+                url: '/inventory/toggle-inventory-part-status/',
+                data: {
+                    'p_serial': p_serial
+                },
+                dataType: 'json',
+                success: function(data) {
+                    location.reload();
+                },
+                error: function(data) {
+                    alert("Something went wrong updating the status of this part.");
+                }
+            });
+        }
+
+        function filterParts() {
+            // Declare variables 
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("filter-table-textbox");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("dataTable");
+            tr = table.getElementsByTagName("tr");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                } 
+            }
+        }
+    </script>
 </body>
 
 </html>
