@@ -352,6 +352,7 @@
                             if(hits.length>0){
                                 hits[0].selected = true;
                             }
+                            document.getElementById(num+"chosen-component-qty").value = val["qty"];
                             anchor.appendChild(componentTemplate);
                             //row.innerHTML = "<td>"+val["name"]+"</td><td>"+val["quantity"]+"</td><td>"+val["store"]+"</td>";
                         }
