@@ -212,7 +212,7 @@
                                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                                 {%if parts%}
                                                                     {% for p in parts%}
-                                                                        <a class="dropdown-item" onclick="loadMaterialList('{{p.p_name}}');" href="#">{{p.p_name}}</a>
+                                                                        <button class="dropdown-item" onclick="loadMaterialList('{{p.p_name}}');">{{p.p_name}}</button>
                                                                     {% endfor %}
                                                                 {% endif %}
                                                             </div>
