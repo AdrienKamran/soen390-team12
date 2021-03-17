@@ -80,19 +80,19 @@ def loadMaterialList(request):
             if existing_rm:
                 matList = MadeOf.objects.filter(part_FK_parent=existing_rm).all()
                 if matList:
-                    existing_wh = Warehouse.objects.filter(w_name=new_wh_name).first()
-                    if existing_wh:
-                        counter = 0
-                        qty=0
-                        nom=""
-                        for p in matList:
-                            qty = p.quantity
-                            nom = p.part_FK_child.p_name
-                            resp [counter] = {
-                                "name":nom,
-                                "quantity":qty,
-                            }
-                            counter=counter+1        
+                    #existing_wh = Warehouse.objects.filter(w_name=new_wh_name).first()
+                    #if existing_wh:
+                    counter = 0
+                    qty=0
+                    nom=""
+                    for p in matList:
+                        qty = p.quantity
+                        nom = p.part_FK_child.p_name
+                        resp [counter] = {
+                            "name":nom,
+                            "quantity":qty,
+                        }
+                        counter=counter+1        
         return JsonResponse(resp)
 
 #@login_required(login_url='login')
