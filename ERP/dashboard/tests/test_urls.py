@@ -2,7 +2,6 @@ from django.test import SimpleTestCase
 from django.urls import reverse, resolve
 from dashboard.views import *
 
-
 class TestUrls(SimpleTestCase):
 
     def test_home_url_is_resolved(self):
@@ -24,15 +23,3 @@ class TestUrls(SimpleTestCase):
     def test_generate_url_is_resolved(self):
         url = reverse ('generate')
         self.assertEquals(resolve(url).func, generateReport)
-
-    def test_sales_url_is_resolved(self):
-        url = reverse ('sales')
-        self.assertEquals(resolve(url).func, salesViewPage)
-
-    def test_manufacturing_url_is_resolved(self):
-        url = reverse ('manufacturing')
-        self.assertEquals(resolve(url).func, manufacturingViewPage)
-
-    def test_inventory_url_is_resolved(self):
-        url = reverse ('inventory')
-        self.assertEquals(resolve(url).func, inventory)                         

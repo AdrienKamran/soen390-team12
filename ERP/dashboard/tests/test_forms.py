@@ -1,11 +1,12 @@
 from django.test import TestCase
 from django.contrib.auth.forms import UserCreationForm
-from dashboard.forms import CreateUserForm
+from dashboard.forms import *
+from inventory.models import *
 
 
 class TestCreateUserForm(TestCase):
 
-    def test_form_valid(self):
+    def test_Userform_valid(self):
         form = CreateUserForm()
         data = {
             'username': 'testingUser',
@@ -20,7 +21,7 @@ class TestCreateUserForm(TestCase):
         user = form.cleaned_data.get('username')
         self.assertEquals(user, 'testingUser')
 
-    def test_form_invalid_email(self):
+    def test_Userform_invalid_email(self):
         form1 = CreateUserForm()
 
         data1 = {
@@ -35,7 +36,7 @@ class TestCreateUserForm(TestCase):
 
         self.assertFalse(form1.is_valid())    
 
-    def test_form_passwords_different(self):
+    def test_Userform_passwords_different(self):
         form2 = CreateUserForm()    
         data2 = {
             'username': 'testingUser',
@@ -48,7 +49,7 @@ class TestCreateUserForm(TestCase):
 
         self.assertFalse(form2.is_valid())     
 
-    def test_form_password_weak(self):
+    def test_Userform_password_weak(self):
         form3 = CreateUserForm()
         data3 = {
             'username': 'testingUser',
@@ -59,4 +60,4 @@ class TestCreateUserForm(TestCase):
 
         form3 = CreateUserForm(data3)
 
-        self.assertFalse(form3.is_valid())     
+        self.assertFalse(form3.is_valid())

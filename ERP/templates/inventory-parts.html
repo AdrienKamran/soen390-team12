@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% load filters %}
+
+{% block content %}
+
+                <div class="container-fluid">
+                    <h3 class="text-dark mb-4">List of Products</h3>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="card shadow" id="inventory-card">
+                        <div class="card-header py-3">
+                            <p class="text-primary m-0 font-weight-bold">{{ part_name }}</p>
+                            <p class="text-primary m-0">{{ warehouse_name }}</p>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <fieldset>
+                                    <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                        <input class="form-control mb-2 mr-auto" type="te" name="filter-table-textbox" id="filter-table-textbox" placeholder="Search by serial number" onkeyup="filterParts()">
+                                        <table class="table my-0 table-sm table-hover" id="dataTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Serial Number</th>
+                                                    <th>Status</th>
+                                                    <th>Identify</th>
+                                                    <th>Remove</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for part in inventory %}
+                                                    <tr>
+                                                        <td>{{ part.p_serial }}</td>
+                                                        {% if part.p_defective %}
+                                                            <td><span class="badge badge-danger" id="status-badge-{{ part.p_serial }}">Defective</span></td>
+                                                            <td><button class="badge badge-primary" type="button" onclick="toggleDefective( '{{ part.p_serial }}', true)" id="status-btn-{{ part.p_serial }}">Mark Functional</button></td>
+                                                        {% else %}
+                                                            <td><span class="badge badge-success" id="status-badge-{{ part.p_serial }}">Functional</span></td>
+                                                            <td><button class="badge badge-primary" type="button" onclick="toggleDefective( '{{ part.p_serial }}', false)" id="status-btn-{{ part.p_serial }}">Mark Defective</button></td>
+                                                        {% endif %}
+                                                        <td><button class="badge badge-primary" type="button" data-toggle="modal" data-target="#exampleModal" onclick="setDeletePartSerial('{{ part.p_serial }}')"><i class="fa fa-minus"></i></button></td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td><strong>ID</strong></td>
+                                                    <td><strong>Status</strong></td>
+                                                    <td><strong>Identify</strong></td>
+                                                    <td><strong>Remove</strong></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+    <script type="text/javascript">
+        var deletePartSerial = 0;
+
+        function setDeletePartSerial(p_serial) {
+            deletePartSerial = p_serial;
+            deletePart();
+        }
+
+        function deletePart() {
+            if (deletePartSerial != 0) {
+                $.ajax({
+                    url: '/inventory/delete-inventory-part/',
+                    data: {
+                        'p_serial': deletePartSerial
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        location.reload();
+                    },
+                    error: function(data) {
+                        alert("Something went wrong delete this part.");
+                    }
+                });
+            }
+        }
+
+        function toggleDefective(p_serial, p_defective) {
+            var badge = document.getElementById("status-badge-" + p_serial);
+            var button = document.getElementById("status-btn-" + p_serial);
+
+            // make an ajax call to change in database and reload page
+            $.ajax({
+                url: '/inventory/toggle-inventory-part-status/',
+                data: {
+                    'p_serial': p_serial
+                },
+                dataType: 'json',
+                success: function(data) {
+                    location.reload();
+                },
+                error: function(data) {
+                    alert("Something went wrong updating the status of this part.");
+                }
+            });
+        }
+
+        function filterParts() {
+            // Declare variables 
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("filter-table-textbox");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("dataTable");
+            tr = table.getElementsByTagName("tr");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                } 
+            }
+        }
+    </script>
+
+{% endblock %}

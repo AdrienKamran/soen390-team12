@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load filters %}
+
+                <div class="container-fluid">
+                    <h3 class="text-dark mb-4">Accounting</h3>
+                    <div class="card">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs">
+                                <li class="nav-item"><a class="nav-link active" href="#tab1" data-toggle="tab">All</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#tab2" data-toggle="tab">Profits</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#tab3" data-toggle="tab">Expenses</a></li>
+                            </ul>
+                        </div>
+                        <div class="card-body tab-content">
+                            <div id="tab1" class="tab-pane fade show active">
+                                <div class="card shadow" id="all-card">
+                                    <div class="card-header py-3">
+                                        <p class="text-primary m-0 font-weight-bold">Full Record of Profits and Expenses</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                            <table class="table my-0" id="dataTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="border-width: -10px;">ID</th>
+                                                        <th>Date</th>
+                                                        <th>Type</th>
+                                                        <th>Item</th>
+                                                        <th>Quantity</th>
+                                                        <th>Balance</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for transaction in t_query %}
+                                                        <tr>
+                                                            <td>{{transaction.t_serial}}</td>
+                                                            <td>{{transaction.t_date}}</td>
+                                                            <td>{{transaction.t_type}}</td>
+                                                            <td>{{transaction.t_item_name}}</td>
+                                                            <td>{{transaction.t_quantity}}</td>
+                                                            {% if transaction.t_balance < 0 %}
+                                                                <td style="color: var(--danger);">{{transaction.t_balance}}</td>
+                                                            {% else %}
+                                                                <td style="color: var(--success);">{{transaction.t_balance}}</td>
+                                                            {% endif %}
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td><strong>ID</strong></td>
+                                                        <td><strong>Date</strong></td>
+                                                        <td><strong>Type</strong></td>
+                                                        <td><strong>Item</strong></td>
+                                                        <td><strong>Quantity</strong></td>
+                                                        <td><strong>Balance</strong></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 align-self-center">
+                                                <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 27</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                                    <ul class="pagination">
+                                                        <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab2" class="tab-pane fade show">
+                                <div class="card shadow" id="profits-card">
+                                    <div class="card-header py-3">
+                                        <p class="text-primary m-0 font-weight-bold">Record of Profits</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive table mt-2" id="dataTable-1" role="grid" aria-describedby="dataTable_info">
+                                            <table class="table my-0" id="dataTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="border-width: -10px;">ID</th>
+                                                        <th>Date</th>
+                                                        <th>Type</th>
+                                                        <th>Item</th>
+                                                        <th>Quantity</th>
+                                                        <th>Profit</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for transaction in t_query %}
+                                                        {% if transaction.t_balance > 0 %}
+                                                            <tr>
+                                                                <td>{{transaction.t_serial}}</td>
+                                                                <td>{{transaction.t_date}}</td>
+                                                                <td>{{transaction.t_type}}</td>
+                                                                <td>{{transaction.t_item_name}}</td>
+                                                                <td>{{transaction.t_quantity}}</td>
+                                                                <td>{{transaction.t_balance}}</td>
+                                                            </tr>
+                                                        {% endif %}    
+                                                    {% endfor %}
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td><strong>ID</strong></td>
+                                                        <td><strong>Date</strong></td>
+                                                        <td><strong>Type</strong></td>
+                                                        <td><strong>Item</strong></td>
+                                                        <td><strong>Quantity</strong></td>
+                                                        <td><strong>Balance</strong></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 align-self-center">
+                                                <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 27</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                                    <ul class="pagination">
+                                                        <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab3" class="tab-pane fade show">
+                                <div class="card shadow" id="expenses-card">
+                                    <div class="card-header py-3">
+                                        <p class="text-primary m-0 font-weight-bold">Record of Expenses</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive table mt-2" id="dataTable-1" role="grid" aria-describedby="dataTable_info">
+                                            <table class="table my-0" id="dataTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="border-width: -10px;">ID</th>
+                                                        <th>Date</th>
+                                                        <th>Type</th>
+                                                        <th>Item</th>
+                                                        <th>Quantity</th>
+                                                        <th>Expense</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for transaction in t_query %}
+                                                        {% if transaction.t_balance < 0 %}
+                                                            <tr>
+                                                                <td>{{transaction.t_serial}}</td>
+                                                                <td>{{transaction.t_date}}</td>
+                                                                <td>{{transaction.t_type}}</td>
+                                                                <td>{{transaction.t_item_name}}</td>
+                                                                <td>{{transaction.t_quantity}}</td>
+                                                                <td>{{transaction.t_balance}}</td>
+                                                            </tr>
+                                                        {% endif %}    
+                                                    {% endfor %}
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td><strong>ID</strong></td>
+                                                        <td><strong>Date</strong></td>
+                                                        <td><strong>Type</strong></td>
+                                                        <td><strong>Item</strong></td>
+                                                        <td><strong>Quantity</strong></td>
+                                                        <td><strong>Balance</strong></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 align-self-center">
+                                                <p id="dataTable_info-1" class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 27</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                                    <ul class="pagination">
+                                                        <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+{% endblock %}
