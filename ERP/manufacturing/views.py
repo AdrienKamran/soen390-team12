@@ -16,7 +16,8 @@ from decimal import Decimal
 import logging
 import json
 
-
+"""
+"""
 @login_required(login_url='login')
 def produceMaterialList(request):
     if request.method == 'GET':
@@ -63,7 +64,9 @@ def produceMaterialList(request):
                         resp['1'] = resp['1']*float(runTotal)*mulQty
         return JsonResponse(resp)
 
-#@login_required(login_url='login')
+"""
+"""
+@login_required(login_url='login')
 def loadMaterialList(request):
     if request.method == 'GET':
         new_rm_name = request.GET.get('product')
@@ -91,7 +94,9 @@ def loadMaterialList(request):
                         counter=counter+1        
         return JsonResponse(resp)
 
-#@login_required(login_url='login')
+"""
+"""
+@login_required(login_url='login')
 def createMaterialList(request):
     if request.method == 'POST':
         parent_part = None
@@ -141,7 +146,9 @@ def createMaterialList(request):
                     parent_part.save()
     return redirect('manufacturing')         
 
-#@login_required(login_url='login')
+"""
+"""
+@login_required(login_url='login')
 def manufacturingViewPage(request):
     #define everything as None to start to cover relation not found errors
     parts = Part.objects.all()
@@ -157,6 +164,22 @@ def manufacturingViewPage(request):
     }
     return render(request, template_name='manufacturing.html', context=data)
 
+"""
+    URL endpoint that handles the creation/manufacturing of a product.
+
+    It first gets the information passed by the POST request, and queries the database for the part template and the warehouse
+    source/destination. It also queries the MadeOf table to get all the sub parts required for manufacturing the part.
+
+    It then validates that every sub part is in enough quantity in the source warehouse to manufacture the product. If one or more sub-parts
+    are missing in the inventory, endpoint returns error message.
+
+    Next step is to "remove" the used sub-parts in the inventory by setting the property p_in_inventory to false
+    (for history purposes, we want to keep track of every part that has existed in the inventory)
+    When all the sub-parts have been removed, the product is created inside the inventory
+
+    It then creates a Manufacture order and a transaction to match this order in the accounting tab. The last step is to link all the manufactured
+    products to the manufacture order for tracking purposes.
+"""
 @login_required(login_url='login')
 def manufactureProduct(request):
     if request.method == 'POST':

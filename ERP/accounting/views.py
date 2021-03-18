@@ -2,13 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Transaction
 
-# Create your views here.
+"""
+	View for displaying the accunting tab.
+"""
 @login_required(login_url='login')
 def accounting(request):
-	# query the sales table
-	# query the manufactures table
-	# query the orders table
 
+	# query for fetching all the transactions
 	t_query = Transaction.objects.order_by('-t_date').all()
 
 	context = {
