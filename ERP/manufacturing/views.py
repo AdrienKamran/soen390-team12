@@ -11,6 +11,8 @@ from inventory.models import *
 from accounting.models import *
 from manufacturing.models import *
 
+from decimal import Decimal
+
 import logging
 import json
 
@@ -207,7 +209,7 @@ def manufactureProduct(request):
         if t_last_index_object is None:
             t_last_index = 500000
         else:
-            t_last_index = t_last_index_object.t_serial
+            t_last_index = t_last_index_object.t_serial + 1
 
         # create transaction
         new_transaction = Transaction(t_type='MANUFACTURE', t_balance=-price, t_item_name=part.p_name, t_serial=t_last_index, t_quantity=quantity)
@@ -221,6 +223,13 @@ def manufactureProduct(request):
             new_part.save()
             new_manufacture_part = ManufacturesPart(m_FK=new_manufacture, c_FK=new_part)
             new_manufacture_part.save()
+
+            if part.p_type == 'Product':
+                # This part is a product therefore we need to create a record in the product table
+                # For now, this product information is entered by default
+                product_price = Decimal(1.2) * part.p_unit_value
+                new_product = Product(c_FK=new_part, selling_price=product_price, prod_type='Mountain Bike', prod_weight=Decimal(70.59))
+                new_product.save()
 
             i = i + 1
 

@@ -85,7 +85,7 @@ def orderRawMaterial(request):
             if t_last_index_object is None:
                 t_last_index = 500000
             else:
-                t_last_index = t_last_index_object.t_serial
+                t_last_index = t_last_index_object.t_serial + 1
 
             # create transaction
             new_transaction = Transaction(t_type='ORDER', t_balance=-cost_rounded, t_item_name=new_order.p_FK.p_name, t_serial=t_last_index, t_quantity=new_order.order_quantity)

@@ -1,6 +1,6 @@
 from django.db import models
 
-from inventory.models import Product, Warehouse
+from inventory.models import *
 
 class Customer(models.Model):
     type_choice = (
@@ -29,8 +29,12 @@ class SalesOrder(models.Model):
     date_created = models.DateField(auto_now_add=True)
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
     delivery_date = models.DateField()
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    product = models.ForeignKey(Part, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField()
     warehouse = models.ForeignKey(Warehouse, on_delete=models.PROTECT)
     sale_total = models.FloatField()
     status = models.CharField(max_length=100,choices=status_choice)
+
+class SalesPart(models.Model):
+    s_FK = models.ForeignKey(SalesOrder, on_delete=models.CASCADE)
+    c_FK = models.ForeignKey(Contain, on_delete=models.CASCADE)
