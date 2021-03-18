@@ -14,11 +14,18 @@ The system is was built as a django application. The data is stored in a Postgre
 4. Software Architecture Document: https://docs.google.com/document/d/1kTaF9_VdMpLP_rBTfhu_e5pTbWfEUDiVmXaNE6T_y34/edit
 
 5. Bug Report: https://docs.google.com/document/d/1QGuDXPUS4-9nE3hDFdAqkaiiGxoNMvppadsOoHSAOKs/edit
+
+6. Testing Plan: https://docs.google.com/document/d/1Pjso6FMLq83I6EufJG2D-SaBmaan5ejteTX7r0wxO_o/edit# 
 ## Useful Links
+
+Jira link:
 https://soen390-team12.atlassian.net/
 
+Integrating Jira with github:
 https://github.com/integrations/jira/blob/master/README.md
 
+Docker-compose installation
 https://docs.docker.com/compose/install/ (docker-compose up)
 
+Coverage.py library for coverage report:
 https://docs.djangoproject.com/en/3.1/topics/testing/advanced/#integration-with-coverage-py
