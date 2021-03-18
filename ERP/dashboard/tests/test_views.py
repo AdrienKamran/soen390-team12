@@ -41,7 +41,7 @@ class TestViews(TestCase):
     def test_register_POST_validUser(self):
         response = self.client.post(self.register_url, self.validUser, format='text/html')
         self.assertEquals(response.status_code, 302)
-        self.assertRedirects(response, '/login')
+        self.assertRedirects(response, '/login/')
 
     def test_register_POST_invalid_invalidUser(self):
         response = self.client.post(self.register_url, self.invalidUser, format='text/html')
@@ -77,7 +77,7 @@ class TestViews(TestCase):
     def test_logout_GET(self):
         response = self.client.get(self.logout_url)
         self.assertEquals(response.status_code, 302)
-        self.assertRedirects(response, '/login')
+        self.assertRedirects(response, '/login/')
 
     def test_home_GET(self):
         self.client.post(self.register_url, self.validUser, format='text/html')
