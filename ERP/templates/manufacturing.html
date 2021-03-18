@@ -27,7 +27,7 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col">
-                                                <form id="create-material-list" method="POST" action="/createmateriallist">{% csrf_token %}
+                                                <form id="create-material-list" method="POST" action="{% url 'createMaterialList' %}">{% csrf_token %}
                                                     <fieldset>
                                                         <div class="form-row" style="padding: 5px;height: 48px;">
                                                             <div class="col d-flex justify-content-left"><label for="product-name">Write a product name:</label><input class="form-control" type="text" id="product-name" style="margin: 0px 30px 0px 30px;width: 400px;" name="product-name"></div>
@@ -175,7 +175,7 @@
 
         //load a material list in from the database
         function loadMaterialList(nom){
-            jQuery.get("/loadMaterialList",{ product: nom }, function(data, status){
+            jQuery.get("/manufacturing/loadMaterialList",{ product: nom }, function(data, status){
                 console.log("Data: " + data + "\nStatus: " + status);
                 anchor = document.getElementById("partsListRows");
                 anchor.innerHTML = '';
@@ -221,7 +221,7 @@
             p = document.getElementById("choose-material-list").value;
             w = document.getElementById("warehouse-destination").value; 
             q = document.getElementById("produce-quantity").value; 
-            jQuery.get("/produceMaterialList",{ product: p, warehouse: w, qty: q }, function(data, status){
+            jQuery.get("/manufacturing/produceMaterialList",{ product: p, warehouse: w, qty: q }, function(data, status){
                 console.log("Data: " + data + "\nStatus: " + status);
                 anchor = document.getElementById("partListHolder");
                 anchor.innerHTML = '';

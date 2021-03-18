@@ -1,7 +1,8 @@
 from django.db import models
-from inventory.models import Orders, Manufactures
 
-# Create your models here.
+# Wrapper model for the 3 different types of transactions, ORDER, MANUFACTURE AND SALE. This table is used so that
+# the cost and profit information can be neatly displayed in one table. A transaction is created after every sale, after
+# every part/product manufactured and after every order.
 class Transaction(models.Model):
     type_choices = (
         ('ORDER', 'ORDER'),

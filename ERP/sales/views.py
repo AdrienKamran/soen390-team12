@@ -2,8 +2,13 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from .forms import OrderForm, CustomerForm
-from .models import *
+from sales.forms import OrderForm, CustomerForm
+from sales.models import *
+
+@login_required(login_url='login')
+def salesViewPage(request):
+    return render(request, template_name='sales.html', context={})
+
 
 @login_required(login_url='login')
 def sales_view(request, order_form=None, customer_form=None):
@@ -16,6 +21,7 @@ def sales_view(request, order_form=None, customer_form=None):
         tab = 'customer-tab'
     order_history = SalesOrder.objects.all().order_by('-date_created')
     return render(request, 'sales.html', {'order_form' : order_form, 'customer_form' : customer_form, 'order_history' : order_history, 'tab' : tab})
+
 
 @login_required(login_url='login')
 def add_customer(request):
@@ -49,6 +55,7 @@ def add_customer(request):
                 customer_form.add_error('name',"Customer already exists.")
         return sales_view(request, customer_form=customer_form)
     return HttpResponseRedirect('/sales')
+
 
 @login_required(login_url='login')
 def add_sale_order(request):
