@@ -12,6 +12,8 @@ from .forms import CreateUserForm, OrderRawMaterialForm, CreateRawMaterialForm, 
 #from .filters import OrderFilter
 from datetime import datetime
 from decimal import Decimal
+from sales.models import *
+from accounting.models import Transaction
 import logging
 
 import io
@@ -78,7 +80,7 @@ def inventory(request):
         # filters for distinct values of the tuple warehouse and part.
         # eg. A part template will show only once for the same warehouse, but more than once
         # if in different warehouses.
-        part_inventory = Contains.objects.select_related().distinct('p_FK', 'w_FK') # inventory of the different part types in each warehouse
+        part_inventory = Contains.objects.select_related().filter(p_in_inventory=True).distinct('p_FK', 'w_FK') # inventory of the different part types in each warehouse
         raw_material_all = Part.objects.filter(p_type='Raw Material').all() # list of all the raw materials in the parts list
         warehouse_all = Warehouse.objects.all() # list of all the warehouses
         vendor_all = Vendor.objects.all() # list of all the vendors
@@ -89,7 +91,7 @@ def inventory(request):
         # accessible in the inventoy template
         part_inventory_count = {}
         for part in part_inventory:
-            part_inventory_count[part.p_serial] = len(Contains.objects.filter(p_FK=part.p_FK, w_FK=part.w_FK).all())
+            part_inventory_count[part.p_serial] = len(Contains.objects.filter(p_FK=part.p_FK, w_FK=part.w_FK, p_in_inventory=True).all())
         context = {
             'inventory': part_inventory,
             'inventory_count': part_inventory_count,
@@ -222,6 +224,18 @@ def orderRawMaterial(request):
             new_order.save()
             # for the sake of this sprint, the order is automatically shipped and appears in the warehouse inventory
 
+            t_last_index_object = Transaction.objects.order_by('-t_serial').first()
+            t_last_index = 0
+            if t_last_index_object is None:
+                t_last_index = 500000
+            else:
+                t_last_index = t_last_index_object.t_serial
+
+            # create transaction
+            new_transaction = Transaction(t_type='ORDER', t_balance=-cost_rounded, t_item_name=new_order.p_FK.p_name, t_serial=t_last_index, t_quantity=new_order.order_quantity)
+            new_transaction.save()
+        
+
             # before adding the new parts, query the contains list for the last index.
             last_index_object = Contains.objects.order_by('-p_serial').first()
             last_index = 0
@@ -230,10 +244,14 @@ def orderRawMaterial(request):
             else:
                 last_index = last_index_object.p_serial
             i = 0
+
             while i < int(request.POST.get('purchase-order-quantity')):
                 last_index = last_index + 1
-                new_rm = Contains(p_FK=new_order.p_FK, w_FK=new_order.w_FK, p_serial=last_index, p_defective=False)
+                new_rm = Contains(p_FK=new_order.p_FK, w_FK=new_order.w_FK, p_serial=last_index, p_defective=False, p_in_inventory=True)
                 new_rm.save()
+
+                new_order_part = OrderPart(o_FK=new_order, c_FK=new_rm)
+                new_order_part.save()
                 i = i + 1
 
             messages.success(request, 'Raw material ordered successfully.')
@@ -263,7 +281,7 @@ def createRawMaterial(request):
 
                 v_form = CreateNewVendorOfPartForm(data={
                     'p_FK': new_part.pk,
-                    'v_FK':request.POST.get('new-mat-vendor')
+                    'v_FK': request.POST.get('new-mat-vendor')
                 })
                 if v_form.is_valid():
                     v_form.save()
@@ -310,7 +328,7 @@ def inventoryPartView(request):
 
     part = Part.objects.get(pk=part_id)
     warehouse = Warehouse.objects.get(pk=warehouse_id)
-    inventory_parts = Contains.objects.filter(w_FK=warehouse, p_FK=part).all()
+    inventory_parts = Contains.objects.filter(w_FK=warehouse, p_FK=part, p_in_inventory=True).all()
 
     context = {
         'part_name': part.p_name,

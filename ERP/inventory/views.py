@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import *
+from accounting.models import Transaction
 # Create your views here.
 from django.shortcuts import render, redirect 
 from django.http import HttpResponse, FileResponse, HttpResponseNotFound
@@ -51,7 +52,7 @@ def produceMaterialList(request):
                             prx = p.part_FK_child.p_unit_value
                             nom = p.part_FK_child.p_name
                             tot = qty*prx
-                            existing_part_count = len(Contains.objects.filter(w_FK=existing_wh,p_FK=p.part_FK_child, p_defective=False).all())
+                            existing_part_count = len(Contains.objects.filter(w_FK=existing_wh,p_FK=p.part_FK_child, p_defective=False, p_in_inventory=True).all())
                             sto = existing_part_count
                                 
                             resp [counter] = {
@@ -67,6 +68,33 @@ def produceMaterialList(request):
                         resp['1'] = resp['1']*float(runTotal)*mulQty
         return JsonResponse(resp)
 
+#@login_required(login_url='login')
+def loadMaterialList(request):
+    if request.method == 'GET':
+        new_rm_name = request.GET.get('product')
+        resp = {'0':False}
+        if not new_rm_name == "":
+            # find the part and get a material list for said part
+            existing_rm = Part.objects.filter(p_name=new_rm_name).first()
+            if existing_rm:
+                matList = MadeOf.objects.filter(part_FK_parent=existing_rm).all()
+                if existing_rm.p_type=='Product':
+                    resp['0']=True
+                if matList:
+                    #existing_wh = Warehouse.objects.filter(w_name=new_wh_name).first()
+                    #if existing_wh:
+                    counter = 1
+                    qty=0
+                    nom=""
+                    for p in matList:
+                        qty = int(p.quantity)
+                        nom = p.part_FK_child.p_name
+                        resp [counter] = {
+                            "name":nom,
+                            "quantity":qty,
+                        }
+                        counter=counter+1        
+        return JsonResponse(resp)
 
 #@login_required(login_url='login')
 def createMaterialList(request):
@@ -78,8 +106,12 @@ def createMaterialList(request):
             # create a new raw material
             existing_rm = Part.objects.filter(p_name=new_rm_name).first()
             if existing_rm:
-                messages.error(request, 'This material list already exists.')
-                return redirect('manufacturing')
+                messages.error(request, 'This material list already exists... Updating Material List')
+                #Find and delete the old mat list then set parent part to the exisitng part
+                old_mat_list = MadeOf.objects.filter(part_FK_parent=existing_rm).all()
+                old_mat_list.delete()
+                parent_part = existing_rm
+                #return redirect('manufacturing')
             else:
                 # material doesn't exist yet
                 new_rm = Part(p_name=new_rm_name, p_type='Part', p_unit_value=0)
@@ -136,6 +168,7 @@ def manufactureProduct(request):
         part_name = request.POST.get('choose-material-list')
         warehouse_name = request.POST.get('warehouse-destination')
         quantity = int(request.POST.get('produce-quantity'))
+        price = float(request.POST.get('final-price'))
 
         part = Part.objects.filter(p_name=part_name).first()
         warehouse = Warehouse.objects.filter(w_name=warehouse_name).first()
@@ -145,7 +178,7 @@ def manufactureProduct(request):
 
         # first, query the warehouse for every sub-part and make sure they are available
         for sub_part in sub_parts:
-            sub_part_count = len(Contains.objects.filter(w_FK=warehouse.pk, p_FK=sub_part.part_FK_child.pk, p_defective=False).all())
+            sub_part_count = len(Contains.objects.filter(w_FK=warehouse.pk, p_FK=sub_part.part_FK_child.pk, p_defective=False, p_in_inventory=True).all())
             if sub_part_count < sub_part.quantity * quantity:
                 messages.error(request, f"Insufficient parts. Missing {(sub_part.quantity * quantity) - sub_part_count} unit(s) of the part: {sub_part.part_FK_child.p_name}.")
                 return redirect('manufacturing')
@@ -156,8 +189,9 @@ def manufactureProduct(request):
         for sub_part in sub_parts:
             i = 0
             while i < sub_part.quantity * quantity:
-                part_in_stock = Contains.objects.filter(w_FK=warehouse.pk, p_FK=sub_part.part_FK_child.pk, p_defective=False).first()
-                part_in_stock.delete()
+                part_in_stock = Contains.objects.filter(w_FK=warehouse.pk, p_FK=sub_part.part_FK_child.pk, p_defective=False, p_in_inventory=True).first()
+                part_in_stock.p_in_inventory = False
+                part_in_stock.save()
                 i = i + 1
 
         # every sub part is now removed from inventory
@@ -171,11 +205,30 @@ def manufactureProduct(request):
         else:
             last_index = last_index_object.p_serial
 
+        # create manufacture history record
+        new_manufacture = Manufactures(p_FK=part, w_FK=warehouse, manufacture_quantity=quantity, manufacture_total_cost=price)
+        new_manufacture.save()
+
+        t_last_index_object = Transaction.objects.order_by('-t_serial').first()
+        t_last_index = 0
+        if t_last_index_object is None:
+            t_last_index = 500000
+        else:
+            t_last_index = t_last_index_object.t_serial
+
+        # create transaction
+        new_transaction = Transaction(t_type='MANUFACTURE', t_balance=-price, t_item_name=part.p_name, t_serial=t_last_index, t_quantity=quantity)
+        new_transaction.save()
+        
+
         i = 0
         while i < quantity:
             last_index = last_index + 1
-            new_part = Contains(p_FK=part, w_FK=warehouse, p_serial=last_index, p_defective=False)
+            new_part = Contains(p_FK=part, w_FK=warehouse, p_serial=last_index, p_defective=False, p_in_inventory=True)
             new_part.save()
+            new_manufacture_part = ManufacturePart(m_FK=new_manufacture, c_FK=new_part)
+            new_manufacture_part.save()
+
             i = i + 1
 
         # every object should now be created and added to the inventory with their unique serial number

@@ -38,7 +38,7 @@
                     <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-gift"></i><span>Packaging</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-truck"></i><span>Transport</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'sales' %}"><i class="fa fa-user"></i><span>Sales</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="blank.html"><i class="fa fa-money"></i><span>Accounting</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'accounting' %}"><i class="fa fa-money"></i><span>Accounting</span></a></li>
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
             </div>
@@ -151,80 +151,28 @@
                     <div class="card">
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs">
-                                <li class="nav-item"><a class="nav-link active" href="#tab1" data-toggle="tab">Sell</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#tab2" data-toggle="tab">History</a></li>
+                                <li class="nav-item"><a class="nav-link{%  if tab == 'sell-tab' %} active{%  endif %}" href="#sell-tab" data-toggle="tab">Sell</a></li>
+                                <li class="nav-item"><a class="nav-link{%  if tab == 'history-tab' %} active{%  endif %}" href="#history-tab" data-toggle="tab">History</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#shipping-tab" data-toggle="tab">Shipping</a></li>
+                                <li class="nav-item"><a class="nav-link{%  if tab == 'customer-tab' %} active{%  endif %}" href="#customer-tab" data-toggle="tab">Customers</a></li>
                             </ul>
                         </div>
                         <div class="card-body tab-content">
-                            <div id="tab1" class="tab-pane fade show active">
+                            <div id="sell-tab" class="tab-pane fade show{%  if tab == 'sell-tab' %} active{%  endif %}">
                                 <div class="card shadow" id="sell-product-card">
                                     <div class="card-header py-3">
                                         <p class="text-primary m-0 font-weight-bold">Sell Products</p>
                                     </div>
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="col">
-                                                <form id="sell-product">
-                                                    <fieldset><label for="select-recipient">Choose a recipient</label><select class="form-control" id="select-recipient" name="select recipient">
-                                                            <optgroup label="This is a group">
-                                                                <option value="12" selected="">This is item 1</option>
-                                                                <option value="13">This is item 2</option>
-                                                                <option value="14">This is item 3</option>
-                                                            </optgroup>
-                                                        </select><label for="warehouse-source">Choose a warehouse source</label><select class="form-control" id="warehouse-source" name="warehouse source">
-                                                            <optgroup label="This is a group">
-                                                                <option value="12" selected="">This is item 1</option>
-                                                                <option value="13">This is item 2</option>
-                                                                <option value="14">This is item 3</option>
-                                                            </optgroup>
-                                                        </select><label for="select-product">Choose a product</label><select class="form-control" id="select-product" name="select product">
-                                                            <optgroup label="This is a group">
-                                                                <option value="12" selected="">This is item 1</option>
-                                                                <option value="13">This is item 2</option>
-                                                                <option value="14">This is item 3</option>
-                                                            </optgroup>
-                                                        </select><label for="sale-quantity">Choose a quantity</label><input class="form-control" type="number" id="sale-quantity" name="sale quantity"><label for="commission-rate">Choose a commission rate (%)</label><input class="form-control" type="number" id="commission-rate" name="commission rate">
-                                                        <legend>Make a Sale:</legend>
-                                                    </fieldset>
-                                                </form>
-                                            </div>
-                                            <div class="col">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <h4 class="card-title">Sale Invoice:</h4>
-                                                        <h6 class="text-muted card-subtitle mb-2">For [RECIPIENT]</h6>
-                                                        <p class="card-text">On [DATETIME]</p>
-                                                        <div class="table-responsive">
-                                                            <table class="table">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Product</th>
-                                                                        <th>Quantity</th>
-                                                                        <th>Available</th>
-                                                                        <th>Sub-Total</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td>MTN-MK2</td>
-                                                                        <td>3</td>
-                                                                        <td>15</td>
-                                                                        <td>575 $</td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                        <p class="card-text">Sale total:</p>
-                                                        <p class="card-text" style="font-size: 32px;color: var(--blue);">[TOTAL PRICE HERE]</p>
-                                                        <p class="card-text">&nbsp;= (sum of products) x (100 + commission)%</p><button class="btn btn-primary" type="button" form="sell-product">Sell</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <form method="POST" action="{% url 'add-order' %}">
+                                            {%  csrf_token %}
+                                            {{ order_form.as_p }}
+                                            <button type="submit" class="btn btn-primary">Add Order</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
-                            <div id="tab2" class="tab-pane fade show">
+                            <div id="history-tab" class="tab-pane fade show{%  if tab == 'history-tab' %} active{%  endif %}">
                                 <div class="card shadow" id="sales-history-card">
                                     <div class="card-header py-3">
                                         <p class="text-primary m-0 font-weight-bold">History of Sales</p>
@@ -240,44 +188,43 @@
                                             <table class="table my-0" id="dataTable">
                                                 <thead>
                                                     <tr>
-                                                        <th style="border-width: -10px;">ID #</th>
-                                                        <th>Date</th>
+                                                        <th>ID #</th>
+                                                        <th>Date Created</th>
+                                                        <th>Delivery Date</th>
                                                         <th>Product Sold</th>
                                                         <th>Quantity</th>
                                                         <th>Warehouse Source</th>
                                                         <th>Sale Total</th>
-                                                        <th>Recipient</th>
+                                                        <th>Customer</th>
+                                                        <th>Status</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                {% for order in order_history %}
                                                     <tr>
-                                                        <td>10482</td>
-                                                        <td>13-02-21</td>
-                                                        <td>MTN-MK2</td>
-                                                        <td>3</td>
-                                                        <td>Laval</td>
-                                                        <td>575 $</td>
-                                                        <td>Mountain Equipment Co-Op</td>
+                                                        <td>{{ order.id }}</td>
+                                                        <td>{{ order.date_created }}</td>
+                                                        <td>{{ order.delivery_date }}</td>
+                                                        <td>{{ order.product.prod_type }}</td>
+                                                        <td>{{ order.quantity }}</td>
+                                                        <td>{{ order.warehouse.w_name }}</td>
+                                                        <td>{{ order.sale_total }}</td>
+                                                        <td>{{ order.customer.name }}</td>
+                                                        <td>{{ order.status }}</td>
                                                     </tr>
-                                                    <tr>
-                                                        <td title="Made of: Steel (x3)">54813</td>
-                                                        <td>14-02-21</td>
-                                                        <td>STR-MK5</td>
-                                                        <td>10</td>
-                                                        <td>Sherbrooke</td>
-                                                        <td>1840 $</td>
-                                                        <td>Street Spokes Inc.</td>
-                                                    </tr>
+                                                {% endfor %}
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
                                                         <td><strong>ID #</strong></td>
-                                                        <td><strong>Date</strong></td>
+                                                        <td><strong>Date Created</strong></td>
+                                                        <td><strong>Delivery Date</strong></td>
                                                         <td><strong>Product Sold</strong></td>
                                                         <td><strong>Quantity</strong></td>
                                                         <td><strong>Warehouse Source</strong></td>
                                                         <td><strong>Sale Total</strong></td>
-                                                        <td><strong>Recipient</strong></td>
+                                                        <td><strong>Customer</strong></td>
+                                                        <td><strong>Status</strong></td>
                                                     </tr>
                                                 </tfoot>
                                             </table>
@@ -299,6 +246,27 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            <div id="customer-tab" class="tab-pane fade show{%  if tab == 'customer-tab' %} active{%  endif %}">
+                                <div class="card shadow" id="sell-product-card">
+                                    <div class="card-header py-3">
+                                        <p class="text-primary m-0 font-weight-bold">Customer</p>
+                                    </div><!-- Start: customer_body -->
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <form id="add-customer" method="POST" action="{% url 'add-customer' %}">
+													{% csrf_token %}
+                                                    {{ customer_form.as_p }}
+                                                    <button type="submit" class="btn btn-primary">Add Customer</button>
+                                                </form>
+                                            </div>
+                                            <div class="col">
+                                                <div class="card"></div>
+                                            </div>
+                                        </div>
+                                    </div><!-- End: customer_body -->
                                 </div>
                             </div>
                         </div>
