@@ -17,10 +17,7 @@ class TestViews(TestCase):
         self.register_url = reverse('register')
         self.login_url = reverse('login')
         self.logout_url = reverse('logout')
-        self.inventory = reverse('inventory')
-        self.sales = reverse('sales')
-        self.manufacturing = reverse('manufacturing')
-
+        
         self.validUser = {
             'username': 'testingUser',
             'email': 'testing@gmail.com',
@@ -41,7 +38,7 @@ class TestViews(TestCase):
     def test_register_POST_validUser(self):
         response = self.client.post(self.register_url, self.validUser, format='text/html')
         self.assertEquals(response.status_code, 302)
-        self.assertRedirects(response, '/login')
+        self.assertRedirects(response, '/login/')
 
     def test_register_POST_invalid_invalidUser(self):
         response = self.client.post(self.register_url, self.invalidUser, format='text/html')
@@ -77,7 +74,7 @@ class TestViews(TestCase):
     def test_logout_GET(self):
         response = self.client.get(self.logout_url)
         self.assertEquals(response.status_code, 302)
-        self.assertRedirects(response, '/login')
+        self.assertRedirects(response, '/login/')
 
     def test_home_GET(self):
         self.client.post(self.register_url, self.validUser, format='text/html')
@@ -86,27 +83,3 @@ class TestViews(TestCase):
         response = self.client.get(self.home_url)     
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'landing.html')
-
-    def test_inventory_GET(self):
-        self.client.post(self.register_url, self.validUser, format='text/html')
-        login_successful = self.client.login(username='testingUser', password="test123456!")
-        self.assertTrue(login_successful)         
-        response = self.client.get(self.inventory)     
-        self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'inventory.html')
-
-    def test_sales_GET(self):
-        self.client.post(self.register_url, self.validUser, format='text/html')
-        login_successful = self.client.login(username='testingUser', password="test123456!")
-        self.assertTrue(login_successful)         
-        response = self.client.get(self.sales)     
-        self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'sales.html')
-
-    def test_manufacturing_GET(self):
-        self.client.post(self.register_url, self.validUser, format='text/html')
-        login_successful = self.client.login(username='testingUser', password="test123456!")
-        self.assertTrue(login_successful)         
-        response = self.client.get(self.manufacturing)     
-        self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'manufacturing.html')    
