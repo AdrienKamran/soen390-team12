@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 
 from sales.forms import OrderForm, CustomerForm
@@ -13,15 +13,18 @@ def salesViewPage(request):
 
 
 @login_required(login_url='login')
-def sales_view(request, order_form=None, customer_form=None):
-    tab = 'sell-tab'
+def sales_view(request, order_form=None, customer_form=None, sales_tab=None):
+    if sales_tab is None:
+        tab = 'sell-tab'
+    else:
+        tab = sales_tab
     if order_form is None:
         order_form = OrderForm()
     if customer_form is None:
         customer_form = CustomerForm()
     else:
         tab = 'customer-tab'
-    order_history = SalesOrder.objects.all().order_by('-date_created')
+    order_history = SalesOrder.objects.order_by('-pk').all()
     return render(request, 'sales.html', {'order_form' : order_form, 'customer_form' : customer_form, 'order_history' : order_history, 'tab' : tab})
 
 
@@ -127,3 +130,22 @@ def add_sale_order(request):
             else:
                 order_form.add_error(None, "Customer or product is invalid.")
         return render(request, 'sales.html', {'order_form' : order_form, 'tab' : 'sell-tab'})
+
+@login_required(login_url='login')
+def set_order_status(request):
+    order_id = request.GET.get('order_id')
+    status = int(request.GET.get('status'))
+
+    order = SalesOrder.objects.get(pk=order_id)
+    if status == 1:
+        order.status = 'PENDING'
+        order.save()
+    elif status == 2:
+        order.status = 'SHIPPED'
+        order.save()
+    else:
+        order.status = 'RECEIVED'
+        order.save()
+    test = "success"
+    return sales_view(request, None, None, 'shipping-tab')
+

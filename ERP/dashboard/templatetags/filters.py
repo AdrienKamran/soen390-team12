@@ -10,3 +10,7 @@ def group(u, group_names):
 @register.filter(name='get_count')
 def get_count(dictionary, key):
     return dictionary.get(key)
+
+@register.filter(name='is_equal')
+def is_equal(value_1, value_2):
+	return value_1 == value_2
