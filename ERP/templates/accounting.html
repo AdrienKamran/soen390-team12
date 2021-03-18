@@ -100,14 +100,18 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" title="Made of: Steel (x3)">49129</td>
-                                                        <td>3/16/2021</td>
-                                                        <td>Sale</td>
-                                                        <td>MTN-MK2</td>
-                                                        <td>2</td>
-                                                        <td>342 $</td>
-                                                    </tr>
+                                                    {% for transaction in t_query %}
+                                                        {% if transaction.t_balance > 0 %}
+                                                            <tr>
+                                                                <td>{{transaction.t_serial}}</td>
+                                                                <td>{{transaction.t_date}}</td>
+                                                                <td>{{transaction.t_type}}</td>
+                                                                <td>{{transaction.t_item_name}}</td>
+                                                                <td>{{transaction.t_quantity}}</td>
+                                                                <td>{{transaction.t_balance}}</td>
+                                                            </tr>
+                                                        {% endif %}    
+                                                    {% endfor %}
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
