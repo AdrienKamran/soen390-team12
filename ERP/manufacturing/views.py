@@ -11,6 +11,8 @@ from inventory.models import *
 from accounting.models import *
 from manufacturing.models import *
 
+from decimal import Decimal
+
 import logging
 import json
 
@@ -221,6 +223,13 @@ def manufactureProduct(request):
             new_part.save()
             new_manufacture_part = ManufacturesPart(m_FK=new_manufacture, c_FK=new_part)
             new_manufacture_part.save()
+
+            if part.p_type == 'Product':
+                # This part is a product therefore we need to create a record in the product table
+                # For now, this product information is entered by default
+                product_price = Decimal(1.2) * part.p_unit_value
+                new_product = Product(c_FK=new_part, selling_price=product_price, prod_type='Mountain Bike', prod_weight=Decimal(70.59))
+                new_product.save()
 
             i = i + 1
 

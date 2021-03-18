@@ -51,21 +51,6 @@ class SellsPart(models.Model):
     def __str__(self):
             return self.v_FK.v_name + " " + self.p_FK.p_name
 
-# Model that keeps a record of every product. Only parts of type "PRODUCT" can appear in this table.
-class Product(models.Model):
-    type_choices = (
-        ('Mountain Bike', 'Mountain Bike'),
-        ('Road Bike', 'Road Bike'),
-        ('Hybrid Bike', 'Hybrid Bike')
-    )
-    p_FK = models.ForeignKey(Part, on_delete=models.CASCADE)
-    selling_price = models.DecimalField(decimal_places=2, null=False, blank=False, max_digits=9)
-    prod_type = models.TextField(choices=type_choices, null=False, blank=False, default='Hybrid Bike')
-    prod_weight = models.DecimalField(decimal_places=2, null=False, blank=False, max_digits=9)
-
-    def __str__(self):
-		    return self.p_FK.p_name + " " + self.type_choices 
-
 # Model that keeps a list of warehouses.
 class Warehouse(models.Model):
     w_name = models.CharField(null=False, blank=False, max_length=80, unique=True)
@@ -112,4 +97,17 @@ class OrdersPart(models.Model):
     o_FK = models.ForeignKey(Order, on_delete=models.CASCADE)
     c_FK = models.ForeignKey(Contain, on_delete=models.CASCADE)
 
+# Model that keeps a record of every product. Only parts of type "PRODUCT" can appear in this table.
+class Product(models.Model):
+    type_choices = (
+        ('Mountain Bike', 'Mountain Bike'),
+        ('Road Bike', 'Road Bike'),
+        ('Hybrid Bike', 'Hybrid Bike')
+    )
+    c_FK = models.ForeignKey(Contain, on_delete=models.CASCADE)
+    selling_price = models.DecimalField(decimal_places=2, null=False, blank=False, max_digits=9)
+    prod_type = models.TextField(choices=type_choices, null=False, blank=False, default='Hybrid Bike')
+    prod_weight = models.DecimalField(decimal_places=2, null=False, blank=False, max_digits=9)
 
+    def __str__(self):
+            return self.c_FK.p_FK.p_name + " " + self.type_choices 
