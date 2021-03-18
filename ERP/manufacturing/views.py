@@ -207,7 +207,7 @@ def manufactureProduct(request):
         if t_last_index_object is None:
             t_last_index = 500000
         else:
-            t_last_index = t_last_index_object.t_serial
+            t_last_index = t_last_index_object.t_serial + 1
 
         # create transaction
         new_transaction = Transaction(t_type='MANUFACTURE', t_balance=-price, t_item_name=part.p_name, t_serial=t_last_index, t_quantity=quantity)
