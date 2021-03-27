@@ -1,0 +1,13 @@
+<li class="nav-item dropdown no-arrow">
+    <div class="nav-item dropdown no-arrow">
+        <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#"><span class="badge badge-danger badge-counter"> {{ notification_count }}</span><i class="fas fa-bell fa-fw"></i></a>
+        <div class="dropdown-menu dropdown-menu-right dropdown-list dropdown-menu-right animated--grow-in">
+            <h6 class="dropdown-header">Your Notifications</h6>
+            {% for notice in notifications %}
+                <div class="mr-3">
+                    {% include 'notice.html'%}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</li>
