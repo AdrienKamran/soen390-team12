@@ -155,12 +155,14 @@ def manufacturingViewPage(request):
     warehouses = Warehouse.objects.all()
     made = MadeOf.objects.all()
     contain = Contain.objects.all()
+    manufacture_history = Manufacture.objects.select_related().all().order_by('timestamp')
     #Call all the itmes that we need to render these templates
     data = {
         'parts':parts,
         'warehouse':warehouses,
         'made':made,
         'contain':contain,
+        'manufacture_history':manufacture_history,      
     }
     return render(request, template_name='manufacturing.html', context=data)
 
