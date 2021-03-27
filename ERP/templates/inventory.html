@@ -10,7 +10,7 @@
                     {% endfor %}
                     <div class="card">
                         <div class="card-header">
-                            <ul class="nav nav-tabs card-header-tabs">
+                            <ul class="nav nav-tabs card-header-tabs" onload="setVendors()">
                                 <li class="nav-item"><a class="nav-link active" href="#tab1" data-toggle="tab">Inventory</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#tab2" data-toggle="tab">Order</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#tab3" data-toggle="tab">Create</a></li>
@@ -100,7 +100,8 @@
                                             <div class="col">
                                                 <form id="purchase-raw-mats" method="POST" action="{% url 'order-raw-material' %}">
                                                     {% csrf_token %}
-                                                    <fieldset><label for="purchase-raw-mat">Choose a raw material</label><select class="form-control" id="purchase-raw-mat" name="raw-mat-pk" onchange="DisplayPrice(this.value)">
+                                                    <fieldset><label for="purchase-raw-mat">Choose a raw material</label>
+                                                        <select class="form-control" id="purchase-raw-mat" name="raw-mat-pk" onchange="updateVendorsList(this.value)">
                                                             <optgroup label="This is a group">
                                                                 <option value="0" selected="">Select a raw material</option>
                                                                 {% for rm in raw_material_all %}
@@ -114,7 +115,8 @@
                                                                     <option value="{{ warehouse.pk }}">{{ warehouse.w_name }}</option>
                                                                 {% endfor %}
                                                             </optgroup>
-                                                        </select><label for="purchase-vendor-name">Choose a vendor to buy from</label><select class="form-control" id="purchase-vendor-name" name="purchase-vendor-pk" onchange="SelectOrderVendor(this.value)">
+                                                        </select><label for="purchase-vendor-name">Choose a vendor to buy from</label>
+                                                        <select class="form-control" id="purchase-vendor-name" name="purchase-vendor-pk" onchange="SelectOrderVendor(this.value)">
                                                             <optgroup label="This is a group">
                                                                 <option value="0" selected="">Select a vendor</option>
                                                                 {% for vendor in vendor_all %}
@@ -150,7 +152,11 @@
                                             <div class="col">
                                                 <form id="create-raw-mats" method="POST" action="{% url 'create-raw-material' %}">
                                                     {% csrf_token %}
-                                                    <fieldset><label for="new-raw-mat-name">Write a name:</label><label id="new-raw-mat-name-error" style="color: red;display: none;">&nbsp;This raw material already exists.</label><input class="form-control" type="text" id="new-raw-mat-name" name="new-raw-mat-name" onchange="CheckIfUnique()"><label for="existing-raw-mat">OR pick an existing raw material:</label><select class="form-control" id="existing-raw-mat" name="existing-raw-mat" onchange="SelectExistingRM()">
+                                                    <fieldset><label for="new-raw-mat-name">Write a name:</label>
+                                                        <label id="new-raw-mat-name-error" style="color: red;display: none;">&nbsp;This raw material already exists.</label>
+                                                        <input class="form-control" type="text" id="new-raw-mat-name" name="new-raw-mat-name" onchange="CheckIfUnique()">
+                                                        <label for="existing-raw-mat">OR pick an existing raw material:</label>
+                                                        <select class="form-control" id="existing-raw-mat" name="existing-raw-mat" onchange="SelectExistingRM()">
                                                             <optgroup label="This is a group">
                                                                 <option value="0" selected="">Select a raw material</option>
                                                                 {% for rm in raw_material_all %}
@@ -255,6 +261,7 @@
                     </div>
                 </div>
     <script type="text/javascript">
+        var vendor_dict = {};
         var orderRawMaterialUnitCost = -1;
         var vendorMultiplier = -1;
         var totalCostElement = document.getElementById("total-cost");
@@ -405,6 +412,82 @@
         function goToDetailView(warehouse_id, part_id) {
             window.location.href = '/inventory/part/?warehouse_id=' + warehouse_id + "&part_id=" + part_id;
             return false;
+        }
+        
+        function updateVendorsList(rm_pk) {
+            
+            DisplayPrice(rm_pk);
+            var vendorDropBox = document.getElementById("purchase-vendor-name");
+            $.ajax({
+                    url: '/inventory/get-sell-vendor/',
+                    data: {
+                        'rm_id': rm_pk
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        removeOptions(vendorDropBox);
+                        for (var i=0; i<data.length; i++) {
+                            var option = document.createElement("option");
+                            option.value= data[i].fields.v_FK;
+                            alert(vendor_dict[data[i].fields.v_FK]);
+                            option.text = vendor_dict[data[i].fields.v_FK];
+                            vendorDropBox.appendChild(option);
+                        }
+                        
+                        var v_FK = data[0].fields.v_FK;
+
+
+                        var v_name = data[0].fields.v_name;
+
+                        //alert(data);
+
+                        // var v_multiplier = data[0].fields.v_price_multiplier;
+                        // var element = document.getElementById("total-cost-here");
+
+                        // if (orderRawMaterialUnitCost >= 0) {
+                        //     var quantity = document.getElementById("purchase-order-quantity").value;
+                        //     var updatedUnitCost = orderRawMaterialUnitCost * v_multiplier * quantity;
+                        //     element.innerHTML = "$" + updatedUnitCost.toFixed(2);
+                        //     totalCostElement.value = updatedUnitCost;
+                        //     vendorMultiplier = v_multiplier;
+                        // }
+                        // else {
+                        //     alert("You must choose a raw material first");
+                        //     var select = document.getElementById("purchase-vendor-name");
+                        //     select.value = 0;
+                        // }
+                    },
+                    error: function(data) {
+                        alert("Uh-oh");
+                    }
+                });    
+        }
+
+        function removeOptions(selectElement) {
+            var i, L = selectElement.options.length - 1;
+            for(i = L; i >= 1; i--) {
+                selectElement.remove(i);
+            }
+        }
+
+        function setVendors() {
+
+            $.ajax({
+                    url: '/inventory/get-all-vendors/',
+                    dataType: 'json',
+                    success: function(data) {
+                        alert(data[0].fields.v_name);
+                        //alert(data[0].fields.v_name);
+                        for (var i=0; i<data.length; i++) {
+                            alert(data[i].fields.v_name);
+                            vendor_dict[data[i].fields.v_FK] = data[i].fields.v_name; 
+                            alert(vendor_dict[data[i].fields.v_FK]);
+                        }
+                    },
+                    error: function(data) {
+                        alert("Uh-oh");
+                    }
+                });
         }
     </script>
 {% endblock %}
