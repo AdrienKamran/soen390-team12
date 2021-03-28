@@ -242,3 +242,9 @@ modules.xml
 
 #VSCODE
 **/.vscode/
+
+#Annoying Apple .DS_Store
+.DS_Store
+
+#Remove anything from tmp dir for repo since it should remain empty
+tmp/
