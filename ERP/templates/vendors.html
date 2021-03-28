@@ -5,6 +5,9 @@
 {% block content %}
                 <div class="container-fluid">
                     <h3 class="text-dark mb-4">Vendors</h3>
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
                     <div class="card">
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs">
@@ -22,16 +25,33 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col">
-                                                <form id="register-vendor-form">
+                                                <form id="register-vendor-form" method= "POST" action="{% url 'add-vendor' %}">
+                                                    {% csrf_token %}
                                                     <fieldset>
-                                                        <legend>Specify the vendor's details:</legend><label for="vendor-name">Write a name:</label><input class="form-control" type="text" id="vendor-name" name="vendor-name"><label for="vendor-modifier">Choose a modifier (%):</label><input class="form-control" type="number" id="vendor-modifier" name="vendor-modifier"><label for="vendor-address">Write an address:</label><input class="form-control" type="text" id="vendor-address" name="vendor-address"><label for="vendor-city">Write a city:</label><input class="form-control" type="text" id="vendor-city" name="vendor-city"><label for="vendor-province-state">Write a province/state:</label><input class="form-control" type="text" id="vendor-province-state" name="vendor-province-state"><label for="vendor-zip-postal">Write a ZIP/Postal code:</label><input class="form-control" type="text" id="vendor-zip-postal" name="vendor-zip-postal">
+                                                        <legend>Specify the vendor's details:</legend>
+                                                        <label for="vendor-name">Write a name:</label><div>{{vendor_form.v_name}}</div>
+                                                        <label for="vendor-modifier">Choose a modifier (%):</label><div>{{vendor_form.v_price_multiplier}}</div>
+                                                        <label for="vendor-address">Write an address:</label><div>{{vendor_form.v_address}}</div>
+                                                        <label for="vendor-city">Write a city:</label><div>{{vendor_form.v_city}}</div>
+                                                        <label for="vendor-province-state">Write a province/state:</label><div>{{vendor_form.v_province}}</div>
+                                                        <label for="vendor-zip-postal">Write a ZIP/Postal code:</label><div>{{vendor_form.v_postal_code}}</div>
+                                                        <br>
+                                                        <button class="btn btn-primary" type="submit" form="register-vendor-form">Register Vendor</button>
                                                     </fieldset>
                                                 </form>
+                                                <br>
+                                                {% for field in vendor_form %}
+                                                    {% if field.errors %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        {{field.errors.1}}
+                                                    </div>
+                                                    {% endif %}
+                                                {% endfor %}
                                             </div>
                                             <div class="col">
                                                 <div class="card">
                                                     <div class="card-body">
-                                                        <h4 class="card-title">Register a vendor by filling the form fields here. Each vendor requires a name, their price modifier (in percentage), and their business address information.<br><br>Once complete, click the button below to confirm.</h4><button class="btn btn-primary" type="button" form="register-vendor-form">Register Vendor</button>
+                                                        <h4 class="card-title">Register a vendor by filling the form fields here. Each vendor requires a name, their price modifier (in percentage), and their business address information.<br><br>Once complete, click the button below to confirm.</h4>
                                                     </div>
                                                 </div>
                                             </div>
@@ -135,6 +155,13 @@
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
+
+    <script>
+        var form_fields = document.getElementsByTagName('input')
+        for (var i=1; i<7; i++) {
+            form_fields[i].className='form-control';
+        }
+    </script>
 </body>
 
 </html>
