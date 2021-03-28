@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% load filters %}
+
+{% block content %}
+                <div class="container-fluid">
+                    <h3 class="text-dark mb-4">Vendors</h3>
+                    <div class="card">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs">
+                                <li class="nav-item"><a class="nav-link active" href="#tab1" data-toggle="tab">Register</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#tab2" data-toggle="tab">Inventory</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#tab3" data-toggle="tab">Add Materials</a></li>
+                            </ul>
+                        </div>
+                        <div class="card-body tab-content">
+                            <div id="tab1" class="tab-pane fade show active">
+                                <div class="card shadow" id="vendor-registration-card">
+                                    <div class="card-header py-3">
+                                        <p class="text-primary m-0 font-weight-bold">Vendor Registration</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <form id="register-vendor-form">
+                                                    <fieldset>
+                                                        <legend>Specify the vendor's details:</legend><label for="vendor-name">Write a name:</label><input class="form-control" type="text" id="vendor-name" name="vendor-name"><label for="vendor-modifier">Choose a modifier (%):</label><input class="form-control" type="number" id="vendor-modifier" name="vendor-modifier"><label for="vendor-address">Write an address:</label><input class="form-control" type="text" id="vendor-address" name="vendor-address"><label for="vendor-city">Write a city:</label><input class="form-control" type="text" id="vendor-city" name="vendor-city"><label for="vendor-province-state">Write a province/state:</label><input class="form-control" type="text" id="vendor-province-state" name="vendor-province-state"><label for="vendor-zip-postal">Write a ZIP/Postal code:</label><input class="form-control" type="text" id="vendor-zip-postal" name="vendor-zip-postal">
+                                                    </fieldset>
+                                                </form>
+                                            </div>
+                                            <div class="col">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h4 class="card-title">Register a vendor by filling the form fields here. Each vendor requires a name, their price modifier (in percentage), and their business address information.<br><br>Once complete, click the button below to confirm.</h4><button class="btn btn-primary" type="button" form="register-vendor-form">Register Vendor</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab2" class="tab-pane fade show">
+                                <div class="card shadow" id="vendor-inventory-card">
+                                    <div class="card-header py-3">
+                                        <p class="text-primary m-0 font-weight-bold">Raw Material Inventory by Vendor</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 text-nowrap">
+                                                <div id="dataTable_vendor"><label>Select a vendor:</label><select class="form-control form-control-sm custom-select custom-select-sm" style="margin: 0px 0px 0px 8px;">
+                                                        <option value="Morrison Inc." selected="">Morrison Inc.</option>
+                                                        <option value="Andrew Sales Ltd.">Andrew Sales Ltd.</option>
+                                                    </select></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div></div>
+                                                <p class="text-right">Vendor modifier: 10%</p>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                            <table class="table my-0" id="dataTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="border-width: -10px;">Name</th>
+                                                        <th>Quantity</th>
+                                                        <th>Final Unit Price ($)</th>
+                                                        <th>Remove</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Steel</td>
+                                                        <td>16</td>
+                                                        <td>20</td>
+                                                        <td><button class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove raw material"><i class="fa fa-minus"></i></button></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Wood</td>
+                                                        <td>42</td>
+                                                        <td>5</td>
+                                                        <td><button class="btn btn-primary" data-toggle="tooltip" data-bss-tooltip="" data-placement="right" type="button" title="Remove raw material"><i class="fa fa-minus"></i></button></td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td><strong>Name</strong></td>
+                                                        <td><strong>Quantity</strong></td>
+                                                        <td><strong>Final Unit Price ($)</strong></td>
+                                                        <td><strong>Remove</strong></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab3" class="tab-pane fade show">
+                                <div class="card shadow" id="vendor-mats-card">
+                                    <div class="card-header py-3">
+                                        <p class="text-primary m-0 font-weight-bold">Add Raw Materials</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <form id="edit-vendor-form">
+                                                    <fieldset>
+                                                        <legend>Replenish a vendor's inventory</legend><label for="vendor-edit-name">Choose a vendor:</label><select class="form-control" id="vendor-edit-name" name="vendor-edit-name">
+                                                            <option value="Morrison Inc.">Morrison Inc.</option>
+                                                        </select><label for="vendor-edit-material">Choose a raw material:</label><select class="form-control" id="vendor-edit-material" name="vendor-edit-material">
+                                                            <option value="Steel">Steel</option>
+                                                            <option value="Wood">Wood</option>
+                                                        </select><label for="vendor-edit-quantity">Choose a quantity to add:</label><input class="form-control" type="number" id="vendor-edit-quantity" name="vendor-edit-quantity">
+                                                    </fieldset>
+                                                </form>
+                                            </div>
+                                            <div class="col">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h4 class="card-title">Select a vendor, a raw material, and a quantity of that raw material to add to the vendor's inventory.<br><br>If the vendor does not currently stock the raw material, it will still be added to their inventory, and it will become purchasable for ordering.<br><br>Once complete, click the button below to confirm.</h4><button class="btn btn-primary" type="button" form="edit-vendor-form">Add Materials</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright © TEAM12 ERP 2021</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+</body>
+
+</html>
+{% endblock %} 
