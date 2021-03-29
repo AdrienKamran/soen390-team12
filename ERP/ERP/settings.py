@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'accounting',
     'manufacturing',
     'vendors',
+    'mathfilters',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

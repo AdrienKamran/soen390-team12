@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 
 from dashboard.decorators import *
 from .forms import *
@@ -21,10 +21,26 @@ def vendors(request):
 
 
 @login_required(login_url='login')
-def vendors_view(request, vendor_form=None):
+def vendors_view(request, vendor_pk=None, vendor_form=None, vendors_tab=None):
+    if vendors_tab is None:
+        tab = 'vendor-register-tab'
+    else:
+        tab = vendors_tab
     if vendor_form is None:
         vendor_form = VendorForm()
-    return render(request, 'vendors.html', {'vendor_form' : vendor_form})
+    if not vendor_pk is None:
+        vendor_inventory = SellsPart.objects.select_related().filter(v_FK=vendor_pk).all()
+    else:
+        vendor_inventory = SellsPart.objects.select_related().filter(v_FK=0).all()
+    vendors = Vendor.objects.all()
+        
+    context = {
+        'vendor_form': vendor_form,
+        'vendors': vendors,
+        'vendor_inventory': vendor_inventory,
+        'tab': tab,
+    }    
+    return render(request, 'vendors.html', context=context)
 
 @login_required(login_url='login')
 def add_vendor(request):
@@ -57,3 +73,17 @@ def add_vendor(request):
             vendor_form.add_error('v_name', ' Vendor already exists.')
         return vendors_view(request, vendor_form=vendor_form)
     return HttpResponseRedirect('/vendors')
+
+@login_required(login_url='login')
+def vendors_inventory(request):
+    vendor_id = request.GET.get('vendor_id')
+    return vendors_view(request, vendor_id, None, 'vendor-inventory-tab')
+
+@login_required(login_url='login')
+def delete_item(request):
+    sellsPart_pk = request.GET.get('sellsPart_pk') 
+    item = SellsPart.objects.filter(pk=sellsPart_pk).first()
+    item.delete()
+    test = "success"
+    messages.success(request, "Items successfully deleted.")
+    return JsonResponse(test, safe=False)   
