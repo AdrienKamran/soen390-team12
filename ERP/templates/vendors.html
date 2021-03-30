@@ -14,7 +14,7 @@
                             <ul class="nav nav-tabs card-header-tabs">
                                 <li class="nav-item"><a class="nav-link{%  if tab == 'vendor-register-tab' %} active{%  endif %}" href="#tab1" data-toggle="tab">Register</a></li>
                                 <li class="nav-item"><a class="nav-link{%  if tab == 'vendor-inventory-tab' %} active{%  endif %}" href="#tab2" data-toggle="tab">Inventory</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#tab3" data-toggle="tab">Add Materials</a></li>
+                                <li class="nav-item"><a class="nav-link{%  if tab == 'vendor-rm-tab' %} active{%  endif %}" href="#tab3" data-toggle="tab">Add Materials</a></li>
                             </ul>
                         </div>
                         <div class="card-body tab-content">
@@ -117,7 +117,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="tab3" class="tab-pane fade show">
+                            <div id="tab3" class="tab-pane fade show{%  if tab == 'vendor-rm-tab' %} active{%  endif %}">
                                 <div class="card shadow" id="vendor-mats-card">
                                     <div class="card-header py-3">
                                         <p class="text-primary m-0 font-weight-bold">Add Raw Materials</p>
@@ -125,21 +125,25 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col">
-                                                <form id="edit-vendor-form">
+                                                <form id="edit-vendor-form" method= "POST" action="{% url 'add-rm' %}">
+                                                    {% csrf_token %}
                                                     <fieldset>
-                                                        <legend>Replenish a vendor's inventory</legend><label for="vendor-edit-name">Choose a vendor:</label><select class="form-control" id="vendor-edit-name" name="vendor-edit-name">
-                                                            <option value="Morrison Inc.">Morrison Inc.</option>
-                                                        </select><label for="vendor-edit-material">Choose a raw material:</label><select class="form-control" id="vendor-edit-material" name="vendor-edit-material">
-                                                            <option value="Steel">Steel</option>
-                                                            <option value="Wood">Wood</option>
-                                                        </select><label for="vendor-edit-quantity">Choose a quantity to add:</label><input class="form-control" type="number" id="vendor-edit-quantity" name="vendor-edit-quantity">
+                                                        <legend>Replenish a vendor's inventory</legend><label for="vendor-edit-name">Choose a vendor:</label>
+                                                        <br>
+                                                        {{replenish_form.vendor}}
+                                                        <br>
+                                                        <label for="vendor-edit-material">Choose a raw material:</label>
+                                                        <br> {{ replenish_form.part }} <br>
+                                                        <label for="vendor-edit-quantity">Choose a quantity to add:</label>
+                                                        <br> {{replenish_form.quantity}} <br>
+                                                        <button class="btn btn-primary" type="submit" form="edit-vendor-form">Add Materials</button>
                                                     </fieldset>
                                                 </form>
                                             </div>
                                             <div class="col">
                                                 <div class="card">
                                                     <div class="card-body">
-                                                        <h4 class="card-title">Select a vendor, a raw material, and a quantity of that raw material to add to the vendor's inventory.<br><br>If the vendor does not currently stock the raw material, it will still be added to their inventory, and it will become purchasable for ordering.<br><br>Once complete, click the button below to confirm.</h4><button class="btn btn-primary" type="button" form="edit-vendor-form">Add Materials</button>
+                                                        <h4 class="card-title">Select a vendor, a raw material, and a quantity of that raw material to add to the vendor's inventory.<br><br>If the vendor does not currently stock the raw material, it will still be added to their inventory, and it will become purchasable for ordering.<br><br>Once complete, click the button below to confirm.</h4>
                                                     </div>
                                                 </div>
                                             </div>
@@ -160,16 +164,24 @@
     </div>
 
     <script>
+
+        // Styling the input and select fields
         var form_fields = document.getElementsByTagName('input')
-        for (var i=1; i<7; i++) {
+        for (var i=1; i<13; i++) {
             form_fields[i].className='form-control';
         }
 
+        var select_fields = document.getElementsByTagName('select')
+        for (var i=1; i<3; i++) {
+            select_fields[i].className='form-control';
+        }
+
+        // make an ajax call to change in database and reload page
         function filterTable(vendor_id) {
-            // make an ajax call to change in database and reload page
             location.replace("/vendors/vendor-inventory/?vendor_id=" + vendor_id);
         }
 
+        //Ajax call to delete the item from the vendor inventory by providing the pk of SellsPart record that we're interested in deleting
         function deleteItem(sellsPart_pk) {
             $.ajax({
                 url: '/vendors/delete-inventory-part/',
