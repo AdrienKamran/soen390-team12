@@ -6,6 +6,7 @@ from django.core import serializers
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Sum
 
 from .decorators import *
 from .forms import *
@@ -33,7 +34,18 @@ logger = logging.getLogger(__name__)
 # Create your views here.
 @login_required(login_url='login')
 def home(request):
-    return render(request, "landing.html")
+    sales_transactions = Transaction.objects.filter(t_type='SALE').all().aggregate(profit=Sum('t_balance'))
+    manu_transactions = Transaction.objects.filter(t_type='MANUFACTURE').all().aggregate(manu_expense=Sum('t_balance'))
+    orders_transactions = Transaction.objects.filter(t_type='ORDER').all().aggregate(order_expense=Sum('t_balance'))
+    total = sales_transactions['profit'] + manu_transactions['manu_expense'] + orders_transactions['order_expense']
+    
+    context = {
+        'sales_transactions': sales_transactions,
+        'manu_transactions': manu_transactions,
+        'orders_transactions': orders_transactions,
+        'total': total
+    }
+    return render(request, "landing.html", context=context)
 
 
 @unauthenticated_user
