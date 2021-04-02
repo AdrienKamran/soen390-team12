@@ -34,16 +34,39 @@ logger = logging.getLogger(__name__)
 # Create your views here.
 @login_required(login_url='login')
 def home(request):
+    top_three_names = []
+    top_three_counts = []
+
+    top_three_items = SoldItems.objects.select_related().order_by('-count')[:3]
+    # top_three_names.append("Bike M2")
+    # top_three_names.append("Bike M3")
+
+    for item in top_three_items:
+        top_three_names.append(item.product.p_name)
+        top_three_counts.append(item.count)       
     sales_transactions = Transaction.objects.filter(t_type='SALE').all().aggregate(profit=Sum('t_balance'))
+    num_of_sales_transactions = Transaction.objects.filter(t_type='SALE').all().aggregate(num_sales=Count('pk'))
     manu_transactions = Transaction.objects.filter(t_type='MANUFACTURE').all().aggregate(manu_expense=Sum('t_balance'))
+    num_of_manu_transactions = Transaction.objects.filter(t_type='MANUFACTURE').all().aggregate(num_manu=Count('pk'))
     orders_transactions = Transaction.objects.filter(t_type='ORDER').all().aggregate(order_expense=Sum('t_balance'))
-    total = sales_transactions['profit'] + manu_transactions['manu_expense'] + orders_transactions['order_expense']
-    
+    num_of_orders_transactions = Transaction.objects.filter(t_type='ORDER').all().aggregate(num_orders=Count('pk'))
+    total = 0
+    if sales_transactions['profit'] is not None:
+        total = total + sales_transactions['profit']
+    if manu_transactions['manu_expense'] is not None:
+        total = total + manu_transactions['manu_expense']
+    if orders_transactions['order_expense'] is not None:
+        total = total + orders_transactions['order_expense']    
     context = {
         'sales_transactions': sales_transactions,
         'manu_transactions': manu_transactions,
         'orders_transactions': orders_transactions,
-        'total': total
+        'total': total,
+        'num_of_sales_transactions': num_of_sales_transactions,
+        'num_of_manu_transactions': num_of_manu_transactions,
+        'num_of_orders_transactions': num_of_orders_transactions,
+        'top_three_names': top_three_names,
+        'top_three_counts': top_three_counts
     }
     return render(request, "landing.html", context=context)
 

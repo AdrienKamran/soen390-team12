@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load mathfilters %}
+{% load static %}
+
 {% block content %}
 
                 <div class="container-fluid">
@@ -77,7 +79,8 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="chart-area"><canvas data-bs-chart="{&quot;type&quot;:&quot;line&quot;,&quot;data&quot;:{&quot;labels&quot;:[&quot;Jan&quot;,&quot;Feb&quot;,&quot;Mar&quot;,&quot;Apr&quot;,&quot;May&quot;,&quot;Jun&quot;,&quot;Jul&quot;,&quot;Aug&quot;],&quot;datasets&quot;:[{&quot;label&quot;:&quot;Earnings&quot;,&quot;fill&quot;:true,&quot;data&quot;:[&quot;0&quot;,&quot;10000&quot;,&quot;5000&quot;,&quot;15000&quot;,&quot;10000&quot;,&quot;20000&quot;,&quot;15000&quot;,&quot;25000&quot;],&quot;backgroundColor&quot;:&quot;rgba(78, 115, 223, 0.05)&quot;,&quot;borderColor&quot;:&quot;rgba(78, 115, 223, 1)&quot;}]},&quot;options&quot;:{&quot;maintainAspectRatio&quot;:false,&quot;legend&quot;:{&quot;display&quot;:false},&quot;title&quot;:{},&quot;scales&quot;:{&quot;xAxes&quot;:[{&quot;gridLines&quot;:{&quot;color&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;zeroLineColor&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;drawBorder&quot;:false,&quot;drawTicks&quot;:false,&quot;borderDash&quot;:[&quot;2&quot;],&quot;zeroLineBorderDash&quot;:[&quot;2&quot;],&quot;drawOnChartArea&quot;:false},&quot;ticks&quot;:{&quot;fontColor&quot;:&quot;#858796&quot;,&quot;padding&quot;:20}}],&quot;yAxes&quot;:[{&quot;gridLines&quot;:{&quot;color&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;zeroLineColor&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;drawBorder&quot;:false,&quot;drawTicks&quot;:false,&quot;borderDash&quot;:[&quot;2&quot;],&quot;zeroLineBorderDash&quot;:[&quot;2&quot;]},&quot;ticks&quot;:{&quot;fontColor&quot;:&quot;#858796&quot;,&quot;padding&quot;:20}}]}}}"></canvas></div>
+                                    <div class="chart-area"><canvas id="myChart" height="120"></canvas></div>
+                                    <!-- <div class="chart-area"><canvas data-bs-chart="{&quot;type&quot;:&quot;line&quot;,&quot;data&quot;:{&quot;labels&quot;:[&quot;Jan&quot;,&quot;Feb&quot;,&quot;Mar&quot;,&quot;Apr&quot;,&quot;May&quot;,&quot;Jun&quot;,&quot;Jul&quot;,&quot;Aug&quot;],&quot;datasets&quot;:[{&quot;label&quot;:&quot;Earnings&quot;,&quot;fill&quot;:true,&quot;data&quot;:[&quot;0&quot;,&quot;10000&quot;,&quot;5000&quot;,&quot;15000&quot;,&quot;10000&quot;,&quot;20000&quot;,&quot;15000&quot;,&quot;25000&quot;],&quot;backgroundColor&quot;:&quot;rgba(78, 115, 223, 0.05)&quot;,&quot;borderColor&quot;:&quot;rgba(78, 115, 223, 1)&quot;}]},&quot;options&quot;:{&quot;maintainAspectRatio&quot;:false,&quot;legend&quot;:{&quot;display&quot;:false},&quot;title&quot;:{},&quot;scales&quot;:{&quot;xAxes&quot;:[{&quot;gridLines&quot;:{&quot;color&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;zeroLineColor&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;drawBorder&quot;:false,&quot;drawTicks&quot;:false,&quot;borderDash&quot;:[&quot;2&quot;],&quot;zeroLineBorderDash&quot;:[&quot;2&quot;],&quot;drawOnChartArea&quot;:false},&quot;ticks&quot;:{&quot;fontColor&quot;:&quot;#858796&quot;,&quot;padding&quot;:20}}],&quot;yAxes&quot;:[{&quot;gridLines&quot;:{&quot;color&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;zeroLineColor&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;drawBorder&quot;:false,&quot;drawTicks&quot;:false,&quot;borderDash&quot;:[&quot;2&quot;],&quot;zeroLineBorderDash&quot;:[&quot;2&quot;]},&quot;ticks&quot;:{&quot;fontColor&quot;:&quot;#858796&quot;,&quot;padding&quot;:20}}]}}}"></canvas></div> -->
                                 </div>
                             </div>
                         </div>
@@ -93,7 +96,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="chart-area"><canvas data-bs-chart="{&quot;type&quot;:&quot;doughnut&quot;,&quot;data&quot;:{&quot;labels&quot;:[&quot;Direct&quot;,&quot;Social&quot;,&quot;Referral&quot;],&quot;datasets&quot;:[{&quot;label&quot;:&quot;&quot;,&quot;backgroundColor&quot;:[&quot;#4e73df&quot;,&quot;#1cc88a&quot;,&quot;#36b9cc&quot;],&quot;borderColor&quot;:[&quot;#ffffff&quot;,&quot;#ffffff&quot;,&quot;#ffffff&quot;],&quot;data&quot;:[&quot;50&quot;,&quot;30&quot;,&quot;15&quot;]}]},&quot;options&quot;:{&quot;maintainAspectRatio&quot;:false,&quot;legend&quot;:{&quot;display&quot;:false},&quot;title&quot;:{}}}"></canvas></div>
+                                    <div class="chart-area"><canvas id="doughnutChart"></canvas></div>
                                     <div class="text-center small mt-4"><span class="mr-2"><i class="fas fa-circle text-primary"></i>&nbsp;Direct</span><span class="mr-2"><i class="fas fa-circle text-success"></i>&nbsp;Social</span><span class="mr-2"><i class="fas fa-circle text-info"></i>&nbsp;Refferal</span></div>
                                 </div>
                             </div>
@@ -170,5 +173,118 @@
                         </div>
                     </div>
                 </div>
+ 
+                
 
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'js/chart.min.js' %}"></script>
+
+                <script>
+                    var top_three_names = "{{top_three_names}}";
+                    var top_three_counts = "{{top_three_counts}}";
+                    var new_arr = top_three_names.split("&#x27;");
+                    var new_arr2 = top_three_counts;
+
+                    $("body").on('load', function(){
+                        var doughnutChart = document.getElementById('doughnutChart');
+                        var doughnutChart1 = new Chart(doughnutChart, {
+                            type: 'doughnut',
+                            // data: {
+                            //     labels: ['# of Sales', '# of Manufactured items', '# of Ordered items'],
+                            //     datasets: [{
+                            //         label: '# of Votes',
+                            //         data: [num_of_sales, num_of_manu, num_of_orders],
+                            //         backgroundColor: [
+                            //             '#4e73df',
+                            //             '#1cc88a',
+                            //             '#36b9cc'
+                            //         ],
+                            //         borderColor: [
+                            //             '#ffffff',
+                            //             '#ffffff',
+                            //             '#ffffff',
+                            //         ],
+                            //         borderWidth: 1
+                            //     }]
+                            // },
+                            // options&quot;:{&quot;maintainAspectRatio&quot;:false,&quot;legend&quot;:{&quot;display&quot;:false},&quot;title&quot;:{}}}">
+                            options: {
+                                maintainAspectRatio: false,
+                                legend: {
+                                    display: false,
+                                }
+                            }
+                        });
+                        for (var i=1; i<=new_arr.length-2; i=i+2) {
+                            console.log(new_arr[i]);
+                            console.log(new_arr2[i]);
+                            addData(doughnutChart1, new_arr[i], new_arr2[i]);
+                        }
+                    });
+                    
+                    function addData(chart, label, data) {
+                        chart.data.labels.push(label);
+                        chart.data.datasets.forEach((dataset) => {
+                            dataset.data.push(data);
+                        });
+                        chart.update();
+                    }
+
+                    // [&#x27;Bike M1&#x27;]
+                    // ["[", "Bike M1", "]"]
+                    console.log(top_three_names)
+                    console.log(top_three_counts);
+                    console.log(new_arr);
+                    console.log(new_arr[1]);
+                    console.log(new_arr2[1]);
+                    console.log(new_arr2[3]);
+
+                    var ctx = document.getElementById('myChart').getContext('2d');
+                    var num_of_sales = "{{num_of_sales_transactions.num_sales}}"
+                    var num_of_manu = "{{num_of_manu_transactions.num_manu}}"
+                    var num_of_orders = "{{num_of_orders_transactions.num_orders}}"
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['# of Sales', '# of Manufactured items', '# of Ordered items'],
+                            datasets: [{
+                                label: '# of Votes',
+                                data: [num_of_sales, num_of_manu, num_of_orders],
+                                backgroundColor: [
+                                    '#4e73df',
+                                    '#1cc88a',
+                                    '#36b9cc'
+                                ],
+                                // borderColor: [
+                                //     'rgba(255, 99, 132, 1)',
+                                //     'rgba(54, 162, 235, 1)',
+                                //     'rgba(255, 206, 86, 1)',
+                                // ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                    
+                    // <div class="chart-area"><canvas data-bs-chart="{&quot;type&quot;:&quot;doughnut&quot;,&quot;data&quot;:{&quot;labels&quot;:[&quot;Direct&quot;,&quot;Social&quot;,&quot;Referral&quot;],&quot;datasets&quot;:[{&quot;label&quot;:&quot;&quot;,&quot;backgroundColor&quot;:[&quot;#4e73df&quot;,&quot;#1cc88a&quot;,&quot;#36b9cc&quot;],&quot;borderColor&quot;:[&quot;#ffffff&quot;,&quot;#ffffff&quot;,&quot;#ffffff&quot;],&quot;data&quot;:[&quot;50&quot;,&quot;30&quot;,&quot;15&quot;]}]},&quot;options&quot;:{&quot;maintainAspectRatio&quot;:false,&quot;legend&quot;:{&quot;display&quot;:false},&quot;title&quot;:{}}}"></canvas></div>
+
+                    // var num_of_sales = "{{num_of_sales_transactions.num_sales}}"
+                    // var num_of_manu = "{{num_of_manu_transactions.num_manu}}"
+                    // var num_of_orders = "{{num_of_orders_transactions.num_orders}}"
+                    
+                    
+                    console.log(new_arr.length);
+                    
+
+                </script>
 {% endblock %}

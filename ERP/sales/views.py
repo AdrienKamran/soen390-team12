@@ -97,6 +97,17 @@ def add_sale_order(request):
                             status=status
                         )
                         order.save()
+                        
+                        soldCount = SoldItems.objects.filter(product=product).first()
+                        if soldCount is not None:
+                            soldCount.count = soldCount.count + quantity
+                            soldCount.save()
+                        else:
+                            new_soldCount = SoldItems(
+                                product=product,
+                                count=quantity
+                            ) 
+                            new_soldCount.save()   
 
                         # Create sale transaction for the accounting tab
                         t_last_index_object = Transaction.objects.order_by('-t_serial').first()
