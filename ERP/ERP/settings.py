@@ -198,11 +198,7 @@ LOGGING = {
 #email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_HOST_USER = 'youremail@gmail.com'
-# EMAIL_HOST_PASSWORD = 'email_password'
-# EMAIL_PORT = 587
-EMAIL_HOST = 'smtp.mailtrap.io'
-EMAIL_HOST_USER = '7ceaa05a72f12f'
-EMAIL_HOST_PASSWORD = '446323c1a0ff8d'
-EMAIL_PORT = '2525'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'youremail@gmail.com'
+EMAIL_HOST_PASSWORD = 'email_password'
+EMAIL_PORT = 587
