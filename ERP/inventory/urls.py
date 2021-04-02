@@ -16,4 +16,5 @@ urlpatterns = [
     path('part/', views.inventoryPartView, name='inventory-part'), # view that displays all parts with a specific part template
     path('toggle-inventory-part-status/', views.toggleInventoryPartStatus, name='toggle-inventory-part-status'), # ajax endpoint to toggle the inventory part status
     path('delete-inventory-part/', views.deleteInventoryPart, name='delete-inventory-part'), # ajax endpoint to delete a part from the inventory
+    path('download-csv/', views.download_inventory_history, name='download_inventory_history'),
 ]

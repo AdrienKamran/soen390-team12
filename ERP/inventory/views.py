@@ -312,3 +312,19 @@ def returnAllVendor(request):
     all_vendors = Vendor.objects.all()
     all_json = serializers.serialize('json', all_vendors)
     return HttpResponse(all_json)
+
+@login_required(login_url='login')
+def download_inventory_history(request):
+    items = Order.objects.all()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="orders-history.csv"'
+    writer = csv.writer(response, delimiter=',')
+    #writing attributes
+    #Find a way to get the attributes directly from the db
+    writer.writerow(['Date', 'Raw Material', 'Quantity', 'Warehouse', 'Vendor', 'Cost($)', 'Status'])
+
+    #writing data corresponding to attributes
+    for obj in items:
+        writer.writerow([obj.timestamp, obj.p_FK, obj.order_quantity,  obj.w_FK, obj.v_FK, obj.order_total_cost,
+                         obj.order_status])
+    return response
