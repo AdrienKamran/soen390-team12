@@ -3,9 +3,11 @@
 
 {% block javascript %}
 <script>
+    //Accessing the number of each: sales, manufacturing and orders from the views and storing them in variables
     var num_of_sales = "{{num_of_sales_transactions.num_sales}}";
     var num_of_manu = "{{num_of_manu_transactions.num_manu}}";
     var num_of_orders = "{{num_of_orders_transactions.num_orders}}";
+    //Accessing and storing the name of the top three sold products and how many times they are sold
     var first_item_name = "{{top_three_items.0.product.p_name}}";
     var first_item_count = "{{top_three_items.0.count}}";
     var sec_item_name = "{{top_three_items.1.product.p_name}}";
@@ -13,6 +15,8 @@
     var third_item_name = "{{top_three_items.2.product.p_name}}";
     var third_item_count = "{{top_three_items.2.count}}";
 
+    //On loading the document, populate first the doughnut chart with the top three sold items
+    //Then, populate the bar chart with the number of transactions whether it is a sale, manufacturing or order.
     $(document).ready(function(){
         var chart_element = document.getElementById('doughnutChart');
         var doughnutChart = new Chart(chart_element, {

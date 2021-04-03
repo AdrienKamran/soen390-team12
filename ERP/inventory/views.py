@@ -128,6 +128,13 @@ def orderRawMaterial(request):
                 new_order_part.save()
                 i = i + 1
 
+            # Remove the ordered raw materials from the vendors' inventory
+            raw_material_pk = request.POST.get('raw-mat-pk')
+            order_quantity = request.POST.get('purchase-order-quantity')
+            vendor_inventory = SellsPart.objects.filter(p_FK=raw_material_pk).first()
+            vendor_inventory.p_quantity = vendor_inventory.p_quantity - int(order_quantity)
+            vendor_inventory.save()
+
             messages.success(request, 'Raw material ordered successfully.')
             return redirect('inventory')
         else:
