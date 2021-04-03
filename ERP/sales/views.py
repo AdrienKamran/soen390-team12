@@ -135,13 +135,14 @@ def add_sale_order(request):
                             product_sold.p_in_inventory = False
                             product_sold.save()
                             i = i + 1
+                        messages.success(request,'The sale order has been created successfully.')
                         return HttpResponseRedirect('/sales')
                     else:
-                        order_form.add_error(None, "Not enough product in inventory.")
+                        messages.error(request,'Not enough product in inventory.')
                 else:
-                    order_form.add_error(None, "This product does not exist in this warehouse.")
+                    messages.error(request, product.p_name + 'does not exist in this warehouse.')
             else:
-                order_form.add_error(None, "Customer or product is invalid.")
+                messages.error(request, 'Customer or product is invalid.')
         return render(request, 'sales.html', {'order_form' : order_form, 'tab' : 'sell-tab'})
 
 @login_required(login_url='login')
