@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
+from django.contrib import messages
 
 from sales.forms import OrderForm, CustomerForm
 from sales.models import *
@@ -55,9 +56,10 @@ def add_customer(request):
                     country=country
                 )
                 customer.save()
+                messages.success(request, name + ' was created successfully')
                 return HttpResponseRedirect('/sales')
             else:
-                customer_form.add_error('name',"Customer already exists.")
+                messages.error(request, name + ' already exists')
         return sales_view(request, customer_form=customer_form)
     return HttpResponseRedirect('/sales')
 
