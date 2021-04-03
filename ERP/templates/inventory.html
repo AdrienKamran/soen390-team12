@@ -102,14 +102,14 @@
                                                     {% csrf_token %}
                                                     <fieldset><label for="purchase-raw-mat">Choose a raw material</label>
                                                         <select class="form-control" id="purchase-raw-mat" name="raw-mat-pk" onchange="updateVendorsList(this.value)">
-                                                            <optgroup label="This is a group">
+                                                            <optgroup label="Raw material list">
                                                                 <option value="0" selected="">Select a raw material</option>
                                                                 {% for rm in raw_material_all %}
                                                                     <option value="{{ rm.pk }}">{{ rm.p_name }}</option>
                                                                 {% endfor %}
                                                             </optgroup>
                                                         </select><label for="warehouse-destination">Choose a warehouse destination</label><select class="form-control" id="warehouse-destination" name="warehouse-pk">
-                                                            <optgroup label="This is a group">
+                                                            <optgroup label="Warehouse list">
                                                                 <option value="0" selected="">Select a warehouse destination</option>
                                                                 {% for warehouse in warehouse_all %}
                                                                     <option value="{{ warehouse.pk }}">{{ warehouse.w_name }}</option>
@@ -117,13 +117,16 @@
                                                             </optgroup>
                                                         </select><label for="purchase-vendor-name">Choose a vendor to buy from</label>
                                                         <select class="form-control" id="purchase-vendor-name" name="purchase-vendor-pk" onchange="SelectOrderVendor(this.value)">
-                                                            <optgroup label="This is a group">
+                                                            <optgroup label="Vendors list">
                                                                 <option value="0" selected="">Select a vendor</option>
                                                                 {% for vendor in vendor_all %}
                                                                     <option value="{{ vendor.pk }}">{{ vendor.v_name }}</option>
                                                                 {% endfor %}
                                                             </optgroup>
-                                                        </select><label for="purchase-order-quantity">Choose the quantity to receive</label><input class="form-control" type="number" id="purchase-order-quantity" name="purchase-order-quantity" value="1" onchange="UpdatePrice(this.value)"><input id="total-cost" name="total-cost" value="0" step=".01" hidden>
+                                                        </select>
+                                                        <label for="purchase-order-quantity">Choose the quantity to receive</label>
+                                                        <input class="form-control" type="number" id="purchase-order-quantity" name="purchase-order-quantity" value="1" onchange="UpdatePrice(this.value)">
+                                                        <input id="total-cost" name="total-cost" value="0" step=".01" hidden>
                                                         <legend>Place your order here:</legend>
                                                     </fieldset>
                                                 </form>
@@ -157,7 +160,7 @@
                                                         <input class="form-control" type="text" id="new-raw-mat-name" name="new-raw-mat-name" onchange="CheckIfUnique()">
                                                         <label for="existing-raw-mat">OR pick an existing raw material:</label>
                                                         <select class="form-control" id="existing-raw-mat" name="existing-raw-mat" onchange="SelectExistingRM()">
-                                                            <optgroup label="This is a group">
+                                                            <optgroup label="Raw material list">
                                                                 <option value="0" selected="">Select a raw material</option>
                                                                 {% for rm in raw_material_all %}
                                                                     <option value="{{ rm.pk }}">{{ rm.p_name }}</option>
