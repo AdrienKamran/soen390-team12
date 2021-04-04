@@ -13,15 +13,12 @@ class TestViews(TestCase):
         self.vendors = reverse('vendors')
         self.add_vendors = reverse('add-vendor')
         self.vendor_inventory = reverse('vendor-inventory')
-        # self.delete_item = reverse('delete-inventory-part')
         self.replenish_inventory = reverse('add-rm')
         self.register_url = reverse('register')
         vendor = Vendor(v_name='Vendor2', v_price_multiplier=1.2, v_address='123 address', v_city='Montreal', v_province='Quebec', v_postal_code='h3b28k')
         vendor.save()
         rawMaterial= Part(p_name='Steel', p_unit_value=10.00, p_size=2, p_color='Grey', p_finish='Matte', p_grade='Aluminum', p_type='Raw Material')
         rawMaterial.save()
-        # item = SellsPart(v_FK=vendor, p_FK=rawMaterial, p_quantity=1)
-        # item.save()
         self.validUser = {
             'username': 'testingUser',
             'email': 'testing@gmail.com',
@@ -44,9 +41,6 @@ class TestViews(TestCase):
         self.vendor_pk = {
             'vendor_id': vendor.pk
         }
-        # self.item_pk = {
-        #     'sellsPart_pk': item.pk
-        # }
 
     def test_vendors_view_GET(self):
         self.client.post(self.register_url, self.validUser, format='text/html')
@@ -85,10 +79,3 @@ class TestViews(TestCase):
         self.assertTrue(login_successful)    
         response = self.client.post(self.vendor_inventory, self.vendor_pk, format='text/html')     
         self.assertEquals(response.status_code, 200)
-
-    # def test_delete_item_POST(self):
-    #     self.client.post(self.register_url, self.validUser, format='text/html')
-    #     login_successful = self.client.login(username='testingUser', password="test123456!")
-    #     self.assertTrue(login_successful)    
-    #     response = self.client.post(self.delete_item, self.item_pk, format='text/html')     
-    #     self.assertEquals(response.status_code, 200)
