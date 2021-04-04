@@ -211,6 +211,17 @@
                     </div>
                 </div>
                 <script type="text/javascript">
+                    //Styling the input field and select field to make it consistent with the other fields in the app
+                    var form_fields = document.getElementsByTagName('input')
+                    for (var i=0; i<17; i++) {
+                        form_fields[i].className='form-control';
+                    }
+
+                    var select_fields = document.getElementsByTagName('select')
+                    for (var i=0; i<15; i++) {
+                        select_fields[i].className='form-control';
+                    }
+
                     function setStatus(order_id, status) {
                         // make an ajax call to change in database and reload page
                         location.replace("/sales/set-order-status/?order_id=" + order_id + "&status=" + status)
