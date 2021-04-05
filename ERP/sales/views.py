@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 
@@ -6,10 +7,7 @@ from sales.forms import OrderForm, CustomerForm
 from sales.models import *
 from inventory.models import *
 from accounting.models import *
-
-@login_required(login_url='login')
-def salesViewPage(request):
-    return render(request, template_name='sales.html', context={})
+from utils.forms import SubscriptionCreateForm
 
 
 @login_required(login_url='login')
@@ -24,8 +22,13 @@ def sales_view(request, order_form=None, customer_form=None, sales_tab=None):
         customer_form = CustomerForm()
     else:
         tab = 'customer-tab'
+
     order_history = SalesOrder.objects.order_by('-pk').all()
-    return render(request, 'sales.html', {'order_form' : order_form, 'customer_form' : customer_form, 'order_history' : order_history, 'tab' : tab})
+    customers = Customer.objects.all()
+
+    return render(request, 'sales.html',
+                  {'order_form': order_form, 'customer_form': customer_form, 'order_history': order_history,
+                   'tab': tab, 'customers': customers})
 
 
 @login_required(login_url='login')
@@ -57,7 +60,7 @@ def add_customer(request):
                 customer.save()
                 return HttpResponseRedirect('/sales')
             else:
-                customer_form.add_error('name',"Customer already exists.")
+                customer_form.add_error('name', "Customer already exists.")
         return sales_view(request, customer_form=customer_form)
     return HttpResponseRedirect('/sales')
 
@@ -74,11 +77,14 @@ def add_sale_order(request):
             # product is the part template chosen from the form
 
             # get the quantity in the warehouse
-            product_quantity = len(Contain.objects.filter(p_FK=product, w_FK=warehouse, p_defective=False, p_in_inventory = True).all())
+            product_quantity = len(
+                Contain.objects.filter(p_FK=product, w_FK=warehouse, p_defective=False, p_in_inventory=True).all())
 
             if product_quantity > 0:
                 # Get the selling price
-                selling_price = Product.objects.filter(c_FK=Contain.objects.filter(p_FK=product, w_FK=warehouse, p_defective=False, p_in_inventory = True).first()).first().selling_price
+                selling_price = Product.objects.filter(
+                    c_FK=Contain.objects.filter(p_FK=product, w_FK=warehouse, p_defective=False,
+                                                p_in_inventory=True).first()).first().selling_price
 
                 if customer and product:
                     delivery_date = order_form.cleaned_data['delivery_date']
@@ -107,14 +113,17 @@ def add_sale_order(request):
                             t_last_index = t_last_index_object.t_serial + 1
 
                         # create transaction
-                        new_transaction = Transaction(t_type='SALE', t_balance=order.sale_total, t_item_name=order.product.p_name, t_serial=t_last_index, t_quantity=order.quantity)
+                        new_transaction = Transaction(t_type='SALE', t_balance=order.sale_total,
+                                                      t_item_name=order.product.p_name, t_serial=t_last_index,
+                                                      t_quantity=order.quantity)
                         new_transaction.save()
 
                         # Add the products sold to the SalePart table and remove from inventory
                         i = 0
                         while i < quantity:
                             # get the first product
-                            product_sold = Contain.objects.filter(p_FK=product, w_FK=warehouse, p_defective=False, p_in_inventory = True).first()
+                            product_sold = Contain.objects.filter(p_FK=product, w_FK=warehouse, p_defective=False,
+                                                                  p_in_inventory=True).first()
                             # add record
                             new_sales_part_record = SalesPart(s_FK=order, c_FK=product_sold)
                             new_sales_part_record.save()
@@ -129,7 +138,8 @@ def add_sale_order(request):
                     order_form.add_error(None, "This product does not exist in this warehouse.")
             else:
                 order_form.add_error(None, "Customer or product is invalid.")
-        return render(request, 'sales.html', {'order_form' : order_form, 'tab' : 'sell-tab'})
+        return render(request, 'sales.html', {'order_form': order_form, 'tab': 'sell-tab'})
+
 
 @login_required(login_url='login')
 def set_order_status(request):
@@ -148,4 +158,3 @@ def set_order_status(request):
         order.save()
     test = "success"
     return sales_view(request, None, None, 'shipping-tab')
-
