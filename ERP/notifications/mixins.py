@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 
-from utils.models import Subscription
+from notifications.models import Subscription
 
 
 class NotifiableFormMixin(forms.Form):

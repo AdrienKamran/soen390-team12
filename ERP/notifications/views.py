@@ -2,8 +2,8 @@ from django.http import HttpResponseRedirect
 from django.views.generic import ListView
 from django.views.generic.base import View
 
-from utils.forms import SubscriptionForm
-from utils.models import Notification, Subscription
+from notifications.forms import SubscriptionForm
+from notifications.models import Notification, Subscription
 
 
 class NotificationViewList(ListView):

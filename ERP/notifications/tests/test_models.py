@@ -7,7 +7,7 @@ from ..models import Subscription, FakeModel
 
 class ModelsTestCase(TestCase):
     def test_model(self):
-        instance = mixer.blend('utils.Subscription')
+        instance = mixer.blend('notifications.Subscription')
         self.assertTrue(str(instance))
 
     def test_notifiable_model(self):

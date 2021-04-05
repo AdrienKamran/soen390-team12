@@ -33,7 +33,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'dashboard',
-    'utils',
+    'notifications',
     'inventory',
     'sales',
     'accounting',

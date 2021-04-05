@@ -1,6 +1,6 @@
 from django.urls import path
 
-from utils.views import SubscriptionCreateView, SubscriptionDeleteView
+from notifications.views import SubscriptionCreateView, SubscriptionDeleteView
 
 urlpatterns = [
     path('add',

@@ -7,7 +7,7 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('utils', '0002_auto_20210325_2021'),
+        ('notifications', '0002_auto_20210325_2021'),
     ]
 
     operations = [

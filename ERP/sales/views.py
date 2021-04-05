@@ -7,7 +7,8 @@ from sales.forms import OrderForm, CustomerForm
 from sales.models import *
 from inventory.models import *
 from accounting.models import *
-from utils.forms import SubscriptionCreateForm
+from notifications.forms import SubscriptionCreateForm
+from notifications.models import Subscription
 
 
 @login_required(login_url='login')
@@ -57,6 +58,9 @@ def add_customer(request):
                     zip_code=zip_code,
                     country=country
                 )
+                subscription = Subscription(user=request.user, content_type=ContentType.objects.get_for_model(customer),
+                                            object_id=customer_form.instance.pk)
+                subscription.save()
                 customer.save()
                 return HttpResponseRedirect('/sales')
             else:

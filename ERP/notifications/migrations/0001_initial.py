@@ -41,14 +41,14 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('sent', models.BooleanField(default=False)),
                 ('read', models.DateTimeField(blank=True, null=True)),
-                ('email_notification', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='utils.emailnotification')),
+                ('email_notification', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='notifications.emailnotification')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
             model_name='emailnotification',
             name='users',
-            field=models.ManyToManyField(related_name='notifications', through='utils.EmailNotificationUser', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(related_name='notifications', through='notifications.EmailNotificationUser', to=settings.AUTH_USER_MODEL),
         ),
         migrations.CreateModel(
             name='Subscription',

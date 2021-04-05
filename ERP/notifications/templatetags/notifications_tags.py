@@ -2,8 +2,8 @@ from django import template
 from django.contrib.contenttypes.models import ContentType
 from django.utils.html import format_html
 
-from utils.forms import SubscriptionForm, SubscriptionCreateForm
-from utils.models import Subscription
+from notifications.forms import SubscriptionForm, SubscriptionCreateForm
+from notifications.models import Subscription
 
 register = template.Library()
 

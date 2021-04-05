@@ -1,7 +1,7 @@
 from django.db import models
 
 from inventory.models import *
-from utils.models import NotifiableModel
+from notifications.models import NotifiableModel
 
 
 class Customer(NotifiableModel):

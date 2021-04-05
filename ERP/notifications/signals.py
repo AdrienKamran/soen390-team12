@@ -54,24 +54,25 @@ def notify_by_email(user, subject, message):
     email_notification_user.save()
 
 
-def notify(sender, instance, **kwargs):
-    content_type = ContentType.objects.get_for_model(instance)
-    object_id = instance.id
-    message = 'A change has happened to ' + str(instance)
-    subscriptions = Subscription.objects.filter(object_id=object_id, content_type=content_type)
-    for subscription in subscriptions:
-        if subscription.notify_by_email:
-            notify_by_email(
-                user=subscription.user,
-                subject='New change to ' + str(instance),
+def notify(sender, instance, created, **kwargs):
+    if not created:
+        content_type = ContentType.objects.get_for_model(instance)
+        object_id = instance.id
+        message = 'A change has happened to ' + str(instance)
+        subscriptions = Subscription.objects.filter(object_id=object_id, content_type=content_type)
+        for subscription in subscriptions:
+            if subscription.notify_by_email:
+                notify_by_email(
+                    user=subscription.user,
+                    subject='New change to ' + str(instance),
+                    message=message
+                )
+            notification = Notification(
+                recipient=subscription.user,
+                actor=instance,
                 message=message
             )
-        notification = Notification(
-            recipient=subscription.user,
-            actor=instance,
-            message=message
-        )
-        notification.save()
+            notification.save()
 
 
 for subclass in NotifiableModel.__subclasses__():

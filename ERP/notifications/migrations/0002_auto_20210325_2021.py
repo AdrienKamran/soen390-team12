@@ -10,14 +10,14 @@ class Migration(migrations.Migration):
     dependencies = [
         ('contenttypes', '0002_remove_content_type_name'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('utils', '0001_initial'),
+        ('notifications', '0001_initial'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='emailnotification',
             name='users',
-            field=models.ManyToManyField(related_name='email_notifications', through='utils.EmailNotificationUser', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(related_name='email_notifications', through='notifications.EmailNotificationUser', to=settings.AUTH_USER_MODEL),
         ),
         migrations.CreateModel(
             name='Notification',
