@@ -34,7 +34,6 @@ logger = logging.getLogger(__name__)
 # Create your views here.
 @login_required(login_url='login')
 def home(request):
-    top_three_items = SoldItems.objects.select_related().order_by('-count')[:3]       
     sales_transactions = Transaction.objects.filter(t_type='SALE').all().aggregate(profit=Sum('t_balance'))
     num_of_sales_transactions = Transaction.objects.filter(t_type='SALE').all().aggregate(num_sales=Count('pk'))
     manu_transactions = Transaction.objects.filter(t_type='MANUFACTURE').all().aggregate(manu_expense=Sum('t_balance'))
@@ -55,8 +54,7 @@ def home(request):
         'total': total,
         'num_of_sales_transactions': num_of_sales_transactions,
         'num_of_manu_transactions': num_of_manu_transactions,
-        'num_of_orders_transactions': num_of_orders_transactions,
-        'top_three_items': top_three_items
+        'num_of_orders_transactions': num_of_orders_transactions
     }
     return render(request, "landing.html", context=context)
 
