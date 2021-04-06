@@ -317,10 +317,9 @@ def returnAllVendor(request):
 def download_inventory_history(request):
     items = Order.objects.all()
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="orders-history.csv"'
+    response['Content-Disposition'] = 'attachment; filename="order-history.csv"'
     writer = csv.writer(response, delimiter=',')
     #writing attributes
-    #Find a way to get the attributes directly from the db
     writer.writerow(['Date', 'Raw Material', 'Quantity', 'Warehouse', 'Vendor', 'Cost($)', 'Status'])
 
     #writing data corresponding to attributes
