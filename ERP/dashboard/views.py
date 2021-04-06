@@ -3,10 +3,11 @@ from django.http import HttpResponse, FileResponse, HttpResponseNotFound, JsonRe
 from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
 from django.core import serializers
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum
+from django.contrib.auth.models import Group
 
 from .decorators import *
 from .forms import *
@@ -34,6 +35,9 @@ logger = logging.getLogger(__name__)
 # Create your views here.
 @login_required(login_url='login')
 def home(request):
+    User = get_user_model()
+    users = User.objects.all()
+    top_three_items = SoldItems.objects.select_related().order_by('-count')[:3]
     sales_transactions = Transaction.objects.filter(t_type='SALE').all().aggregate(profit=Sum('t_balance'))
     num_of_sales_transactions = Transaction.objects.filter(t_type='SALE').all().aggregate(num_sales=Count('pk'))
     manu_transactions = Transaction.objects.filter(t_type='MANUFACTURE').all().aggregate(manu_expense=Sum('t_balance'))
@@ -55,6 +59,9 @@ def home(request):
         'num_of_sales_transactions': num_of_sales_transactions,
         'num_of_manu_transactions': num_of_manu_transactions,
         'num_of_orders_transactions': num_of_orders_transactions
+        'num_of_orders_transactions': num_of_orders_transactions,
+        'top_three_items': top_three_items,
+        'users': users
     }
     return render(request, "landing.html", context=context)
 
@@ -177,3 +184,82 @@ def writeTestReport():
     writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
     writer.writerow(['Second row', 'A', 'B', 'C', '"Testing"', "Here's a quote"])
     return response
+
+"""
+    Ajax endpoint for returning the groups of the logged in user in json format
+"""
+def getUserGroups(request):
+    user_pk = request.GET.get('user_pk')
+    if user_pk == "none":
+        return JsonResponse([], safe=False)
+    else:
+        user = get_user_model().objects.get(pk=user_pk)
+        list = []
+        for g in user.groups.all():
+            list.append(g.name)
+        return JsonResponse(list, safe=False)
+
+def updateUserGroups(request):
+    if request.method == "POST":
+        user_selected = request.POST.get('user-selected')
+        manu_checkbox = request.POST.get('manufacturingCheckbox')
+        inventory_checkbox = request.POST.get('inventoryCheckbox')
+        sales_checkbox = request.POST.get('salesCheckbox')
+
+        if user_selected == "none":
+            messages.info(request, 'No user selected to save group settings.')
+            return redirect('home')
+        else:
+            user = get_user_model().objects.get(pk=int(user_selected))
+            if manu_checkbox:
+                # add user to group if not already in it
+                group = Group.objects.get(name='manufacturing_account')
+                try:
+                    user.groups.get(pk=group.pk)
+                except Group.DoesNotExist:
+                    group.user_set.add(user)
+            else:
+                # remove user from group if already in it
+                group = Group.objects.get(name='manufacturing_account')
+                try:
+                    if user.groups.get(pk=group.pk) is not None:
+                        group.user_set.remove(user)
+                except Group.DoesNotExist:
+                    # do nothing, user already removed from group
+                    i = 0
+            
+            if inventory_checkbox:
+                # add user to group if not already in it
+                group = Group.objects.get(name='inventory_account')
+                try:
+                    user.groups.get(pk=group.pk)
+                except Group.DoesNotExist:
+                    group.user_set.add(user)
+            else:
+                # remove user from group if already in it
+                group = Group.objects.get(name='inventory_account')
+                try:
+                    if user.groups.get(pk=group.pk) is not None:
+                        group.user_set.remove(user)
+                except Group.DoesNotExist:
+                    # do nothing, user already removed from group
+                    i = 0
+            
+            if sales_checkbox:
+                # add user to group if not already in it
+                group = Group.objects.get(name='sales_account')
+                try:
+                    user.groups.get(pk=group.pk)  
+                except Group.DoesNotExist:
+                    group.user_set.add(user)
+            else:
+                # remove user from group if already in it
+                group = Group.objects.get(name='sales_account')
+                try:
+                    if user.groups.get(pk=group.pk) is not None:
+                        group.user_set.remove(user)
+                except Group.DoesNotExist:
+                    # do nothing, user already removed from group
+                    i = 0
+        messages.info(request, 'User groups updated.')
+        return redirect('home')

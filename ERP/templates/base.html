@@ -41,8 +41,12 @@
                     {% if request.user|group:"sales_account" %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'sales' %}"><i class="fa fa-credit-card-alt"></i><span>Sales</span></a></li>
                     {% endif %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'accounting' %}"><i class="fa fa-money"></i><span>Accounting</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'vendors' %}"><i class="fa fa-handshake-o"></i><span>Vendors</span></a></li>
+                    {% if request.user|group:"sales_account" %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounting' %}"><i class="fa fa-money"></i><span>Accounting</span></a></li>
+                    {% endif %}
+                    {% if request.user|group:"inventory_account" %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'vendors' %}"><i class="fa fa-handshake-o"></i><span>Vendors</span></a></li>
+                    {% endif %}
 
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
@@ -104,7 +108,9 @@
                                     </a>
                                     <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in">
                                         <a class="dropdown-item" href="#">Profile</a>
-                                        <a class="dropdown-item" data-target="#user-permissions-modal" data-toggle="modal" href="#"><i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Settings</a>
+                                        {% if user.is_superuser %}
+                                            <a class="dropdown-item" data-target="#user-permissions-modal" data-toggle="modal" href="#"><i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Settings</a>
+                                        {% endif %}
                                         <a class="dropdown-item" href="#">Activity log</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
@@ -133,19 +139,21 @@
                         <h4 class="modal-title">User Permissions Settings</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                     </div>
                     <div class="modal-body">
-                        <form>
-                            <fieldset><label>Select a user to set their permissions:</label><select class="form-control">
+                        <form method="POST" action="{% url 'update-user-groups' %}" id="permissionsForm">
+                            {% csrf_token %}
+                            <fieldset><label>Select a user to set their permissions:</label><select class="form-control" id="user-selected" onchange="updateCheckBoxes()" name="user-selected">
                                     <option value="none" selected="">Select a user</option>
-                                    <option value="Marcus">Marcus</option>
-                                    <option value="Aurelius">Aurelius</option>
+                                    {% for user in users %}
+                                    <option value="{{user.pk}}">{{user.username}}</option>
+                                    {% endfor %}
                                 </select><label>Select which groups this user should belong to:</label>
-                                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-4"><label class="form-check-label" for="formCheck-4">Manufacturing</label></div>
-                                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-4"><label class="form-check-label" for="formCheck-4">Inventory Management</label></div>
-                                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-5"><label class="form-check-label" for="formCheck-4">Sales &amp; Accounting</label></div>
+                                <div class="form-check"><input class="form-check-input" type="checkbox" id="manufacturingCheckbox" name="manufacturingCheckbox"><label class="form-check-label" for="formCheck-4">Manufacturing</label></div>
+                                <div class="form-check"><input class="form-check-input" type="checkbox" id="inventoryCheckbox" name="inventoryCheckbox"><label class="form-check-label" for="formCheck-4">Inventory Management</label></div>
+                                <div class="form-check"><input class="form-check-input" type="checkbox" id="salesCheckbox" name="salesCheckbox"><label class="form-check-label" for="formCheck-4">Sales &amp; Accounting</label></div>
                             </fieldset>
                         </form>
                     </div>
-                    <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button class="btn btn-primary" type="button">Save</button></div>
+                    <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button class="btn btn-primary" type="submit" form="permissionsForm">Save</button></div>
                 </div>
             </div>
         </div>
@@ -156,7 +164,47 @@
     <script src="{% static 'js/bs-init.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
     <script src="{% static 'js/theme.js' %}"></script>
-    
-</body>
+    <script>
+        function updateCheckBoxes() {
+            var manufacturingCheckbox = document.getElementById("manufacturingCheckbox");
+            var inventoryCheckbox = document.getElementById("inventoryCheckbox");
+            var salesCheckbox = document.getElementById("salesCheckbox");
+            var selectedUser = document.getElementById("user-selected");
 
+            manufacturingCheckbox.checked = false;
+            inventoryCheckbox.checked = false;
+            salesCheckbox.checked = false;
+            $.ajax({
+                url: '/get-user-groups/',
+                data: {
+                    'user_pk': selectedUser.value
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.length == 0) {
+                        manufacturingCheckbox.checked = false;
+                        inventoryCheckbox.checked = false;
+                        salesCheckbox.checked = false;
+                    }
+                    else {
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i] == "manufacturing_account") {
+                                manufacturingCheckbox.checked = true;
+                            }
+                            else if (data[i] == "inventory_account") {
+                                inventoryCheckbox.checked = true;
+                            }
+                            else if (data[i] == "sales_account") {
+                                salesCheckbox.checked = true;
+                            }
+                        }
+                    }
+                },
+                error: function(data) {
+                    alert("Uh-oh");
+                }
+            });
+        }
+    </script>
+</body>
 </html>
