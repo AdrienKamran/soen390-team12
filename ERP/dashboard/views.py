@@ -58,10 +58,10 @@ def home(request):
         'total': total,
         'num_of_sales_transactions': num_of_sales_transactions,
         'num_of_manu_transactions': num_of_manu_transactions,
-        'num_of_orders_transactions': num_of_orders_transactions
+        'num_of_orders_transactions': num_of_orders_transactions,
         'num_of_orders_transactions': num_of_orders_transactions,
         'top_three_items': top_three_items,
-        'users': users
+        'users': users,
     }
     return render(request, "landing.html", context=context)
 
