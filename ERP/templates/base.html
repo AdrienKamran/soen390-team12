@@ -16,6 +16,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/Toggle-Switch.css' %}">
 </head>
 
 <body id="page-top">
@@ -103,7 +104,7 @@
                                     </a>
                                     <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in">
                                         <a class="dropdown-item" href="#">Profile</a>
-                                        <a class="dropdown-item" href="#">Settings</a>
+                                        <a class="dropdown-item" data-target="#user-permissions-modal" data-toggle="modal" href="#"><i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Settings</a>
                                         <a class="dropdown-item" href="#">Activity log</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
@@ -117,7 +118,7 @@
                 <div>
                     {% block content %}{% endblock %}
                 </div>
-
+                
             </div>
             <footer class="bg-white sticky-footer">
                 <div class="container my-auto">
@@ -125,6 +126,29 @@
                 </div>
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+        <div class="modal fade" role="dialog" tabindex="-1" id="user-permissions-modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">User Permissions Settings</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <fieldset><label>Select a user to set their permissions:</label><select class="form-control">
+                                    <option value="none" selected="">Select a user</option>
+                                    <option value="Marcus">Marcus</option>
+                                    <option value="Aurelius">Aurelius</option>
+                                </select><label>Select which groups this user should belong to:</label>
+                                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-4"><label class="form-check-label" for="formCheck-4">Manufacturing</label></div>
+                                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-4"><label class="form-check-label" for="formCheck-4">Inventory Management</label></div>
+                                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-5"><label class="form-check-label" for="formCheck-4">Sales &amp; Accounting</label></div>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button class="btn btn-primary" type="button">Save</button></div>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
