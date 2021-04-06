@@ -27,10 +27,41 @@ def download_accounting_history(request):
     response['Content-Disposition'] = 'attachment; filename="transaction-history.csv"'
     writer = csv.writer(response, delimiter=',')
     # writing attributes
-    # Find a way to get the attributes directly from the db
     writer.writerow(['Date', 'Type', 'Name', 'Serial Number', 'Quantity', 'Balance'])
 
     # writing data corresponding to attributes
     for obj in items:
         writer.writerow([obj.t_date, obj.t_type, obj.t_item_name, obj.t_serial, obj.t_quantity, obj.t_balance])
+    return response
+
+
+@login_required(login_url='login')
+def download_accounting_profits_history(request):
+    items = Transaction.objects.all()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="profits-history.csv"'
+    writer = csv.writer(response, delimiter=',')
+    # writing attributes
+    writer.writerow(['Date', 'Type', 'Name', 'Serial Number', 'Quantity', 'Balance'])
+
+    # writing data corresponding to attributes
+    for obj in items:
+        if obj.t_balance >= 0:
+            writer.writerow([obj.t_date, obj.t_type, obj.t_item_name, obj.t_serial, obj.t_quantity, obj.t_balance])
+    return response
+
+
+@login_required(login_url='login')
+def download_accounting_expenses_history(request):
+    items = Transaction.objects.all()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="expenses-history.csv"'
+    writer = csv.writer(response, delimiter=',')
+    # writing attributes
+    writer.writerow(['Date', 'Type', 'Name', 'Serial Number', 'Quantity', 'Balance'])
+
+    # writing data corresponding to attributes
+    for obj in items:
+        if obj.t_balance < 0:
+            writer.writerow([obj.t_date, obj.t_type, obj.t_item_name, obj.t_serial, obj.t_quantity, obj.t_balance])
     return response
