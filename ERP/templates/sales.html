@@ -199,7 +199,12 @@
                                                 </form>
                                             </div>
                                             <div class="col">
-                                                <div class="card"></div>
+                                                {% for customer in customers %}
+                                                <p class="h3">{{ customer.name }}</p>
+                                                <p class="h6">{{ customer.address_line }}</p>
+                                                {% load notifications_tags %}
+                                                {% notify_widget customer %}
+                                                {% endfor %}
                                             </div>
                                         </div>
                                     </div><!-- End: customer_body -->

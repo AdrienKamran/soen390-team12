@@ -1,8 +1,10 @@
 from django.db import models
 
 from inventory.models import *
+from notifications.models import NotifiableModel
 
-class Customer(models.Model):
+
+class Customer(NotifiableModel):
     type_choice = (
         ('Company', 'Company'),
         ('Individual', 'Individual')
