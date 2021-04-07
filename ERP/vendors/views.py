@@ -15,10 +15,6 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 
-@login_required(login_url='login')
-def vendors(request):
-    return render(request, template_name='vendors.html', context={})
-
 # This is the main view that we use to render the vendors.html template
 # We provide it with the vendor_pk which allows us to filter the vendor's inventory based on the selected vendor name
 # from the dropdown. We also pass in 2 forms; one for creating vendors, and other for Creating/Editing a raw material

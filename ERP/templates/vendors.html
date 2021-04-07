@@ -184,7 +184,7 @@
         //Ajax call to delete the item from the vendor inventory by providing the pk of SellsPart record that we're interested in deleting
         function deleteItem(sellsPart_pk) {
             $.ajax({
-                url: '/vendors/delete-inventory-part/',
+                url: '/vendors/delete-vendor-part/',
                 data: {
                     'sellsPart_pk': sellsPart_pk
                 },

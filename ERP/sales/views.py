@@ -18,7 +18,6 @@ def salesViewPage(request):
     users = User.objects.all()
     return render(request, template_name='sales.html', context={'users': users})
 
-
 @login_required(login_url='login')
 def sales_view(request, order_form=None, customer_form=None, sales_tab=None):
     User = get_user_model()
@@ -150,7 +149,7 @@ def add_sale_order(request):
                 else:
                     messages.error(request, product.p_name + 'does not exist in this warehouse.')
             else:
-                messages.error(request, 'Customer or product is invalid.')
+                messages.error(request, 'Product does not exist in the inventory')
         return render(request, 'sales.html', {'order_form' : order_form, 'tab' : 'sell-tab'})
 
 @login_required(login_url='login')
