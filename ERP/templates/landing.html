@@ -106,7 +106,7 @@
                     <div class="row align-items-center no-gutters">
                         <div class="col mr-2">
                             <div class="text-uppercase text-primary font-weight-bold text-xs mb-1"><span>Total Sales</span></div>
-                            {% if sales_transactions is "None" %}
+                            {% if sales_transactions is 0 %}
                             <div class="text-dark font-weight-bold h5 mb-0"><span>$0.00</span></div>
                             {% else %}
                             <div class="text-dark font-weight-bold h5 mb-0"><span>${{sales_transactions}}</span></div>
@@ -123,7 +123,11 @@
                     <div class="row align-items-center no-gutters">
                         <div class="col mr-2">
                             <div class="text-uppercase text-success font-weight-bold text-xs mb-1"><span>Manufacturing Cost</span></div>
+                            {% if manu_transactions is 0 %}
+                            <div class="text-dark font-weight-bold h5 mb-0"><span>$0.00</span></div>
+                            {% else %}
                             <div class="text-dark font-weight-bold h5 mb-0"><span>${{manu_transactions}}</span></div>
+                            {% endif %}
                         </div>
                         <div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-gray-300"></i></div>
                     </div>
@@ -138,7 +142,11 @@
                             <div class="text-uppercase text-info font-weight-bold text-xs mb-1"><span>Raw Material Cost</span></div>
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
+                                    {% if orders_transactions is 0 %}
+                                    <div class="text-dark font-weight-bold h5 mb-0 mr-3"><span>$0.00</span></div>
+                                    {% else %}
                                     <div class="text-dark font-weight-bold h5 mb-0 mr-3"><span>${{orders_transactions}}</span></div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -153,7 +161,11 @@
                     <div class="row align-items-center no-gutters">
                         <div class="col mr-2">
                             <div class="text-uppercase text-warning font-weight-bold text-xs mb-1"><span>Total Revenue</span></div>
+                            {% if total is 0 %}
+                            <div class="text-dark font-weight-bold h5 mb-0"><span>$0.00</span></div>
+                            {% else %}
                             <div class="text-dark font-weight-bold h5 mb-0"><span>${{total}}</span></div>
+                            {% endif %}
                         </div>
                         <div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-gray-300"></i></div>
                     </div>
