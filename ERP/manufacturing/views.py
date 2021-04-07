@@ -15,6 +15,8 @@ from decimal import Decimal
 
 import logging
 import json
+import csv
+
 
 """
 """
@@ -148,6 +150,7 @@ def createMaterialList(request):
 
 """
 """
+
 @login_required(login_url='login')
 def manufacturingViewPage(request):
     #define everything as None to start to cover relation not found errors
@@ -264,3 +267,17 @@ def manufactureProduct(request):
         return redirect('inventory')
     else:
         return redirect('manufacturing')
+
+@login_required(login_url='login')
+def download_manufacturing_history(request):
+    items = Manufacture.objects.select_related().all()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="manufacturing-history.csv"'
+    writer = csv.writer(response, delimiter=',')
+    #writing attributes
+    writer.writerow(['Date', 'Item', 'Quantity', 'Cost($)', 'Warehouse'])
+
+    #writing data corresponding to attributes
+    for obj in items:
+        writer.writerow([obj.timestamp, obj.p_FK.p_name, obj.manufacture_quantity,  obj.manufacture_total_cost, obj.w_FK.w_name])
+    return response
