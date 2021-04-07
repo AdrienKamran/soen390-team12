@@ -3,7 +3,7 @@ from django.http import HttpResponse, FileResponse, HttpResponseNotFound, JsonRe
 from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
 from django.core import serializers
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
@@ -44,6 +44,8 @@ def inventory(request):
         vendor_all = Vendor.objects.all() # list of all the vendors
         orders = Order.objects.select_related().all().order_by('timestamp') # list of all the orders
         date_of_day = datetime.now() # today's datetime
+        User = get_user_model()
+        users = User.objects.all()
 
         # for every part in the list, find how many of those parts exist in the warehouse and save in a dictionary to be
         # accessible in the inventoy template
@@ -58,7 +60,8 @@ def inventory(request):
             'warehouse_all': warehouse_all,
             'vendor_all': vendor_all,
             'rm_orders': orders,
-            'date_of_day': date_of_day
+            'date_of_day': date_of_day,
+            'users': users
         }
     return render(request, 'inventory.html', context=context) # render the view
 
@@ -311,7 +314,11 @@ def returnVendor(request):
 def returnSellingVendor(request):
     rm_id = request.GET.get('rm_id')
     listOfVendors = SellsPart.objects.select_related().filter(p_FK=rm_id).all()
-    rm_json = serializers.serialize('json', listOfVendors)
+    vendorObjectList = []
+    for vendor in listOfVendors:
+        vendorObject = Vendor.objects.get(pk=vendor.v_FK.pk)
+        vendorObjectList.append(vendorObject)
+    rm_json = serializers.serialize('json', vendorObjectList)
     return HttpResponse(rm_json) 
 
 @login_required(login_url='login')
@@ -319,3 +326,18 @@ def returnAllVendor(request):
     all_vendors = Vendor.objects.all()
     all_json = serializers.serialize('json', all_vendors)
     return HttpResponse(all_json)
+
+@login_required(login_url='login')
+def download_inventory_history(request):
+    items = Order.objects.all()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="order-history.csv"'
+    writer = csv.writer(response, delimiter=',')
+    #writing attributes
+    writer.writerow(['Date', 'Raw Material', 'Quantity', 'Warehouse', 'Vendor', 'Cost($)', 'Status'])
+
+    #writing data corresponding to attributes
+    for obj in items:
+        writer.writerow([obj.timestamp, obj.p_FK, obj.order_quantity,  obj.w_FK, obj.v_FK, obj.order_total_cost,
+                         obj.order_status])
+    return response

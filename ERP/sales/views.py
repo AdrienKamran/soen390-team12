@@ -1,16 +1,27 @@
+import csv, io
+
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.contrib import messages
+from django.shortcuts import render, HttpResponse
 
 from sales.forms import OrderForm, CustomerForm
 from sales.models import *
 from inventory.models import *
 from accounting.models import *
 
+@login_required(login_url='login')
+def salesViewPage(request):
+    User = get_user_model()
+    users = User.objects.all()
+    return render(request, template_name='sales.html', context={'users': users})
 
 @login_required(login_url='login')
 def sales_view(request, order_form=None, customer_form=None, sales_tab=None):
+    User = get_user_model()
+    users = User.objects.all()
     if sales_tab is None:
         tab = 'sell-tab'
     else:
@@ -22,7 +33,7 @@ def sales_view(request, order_form=None, customer_form=None, sales_tab=None):
     else:
         tab = 'customer-tab'
     order_history = SalesOrder.objects.order_by('-pk').all()
-    return render(request, 'sales.html', {'order_form' : order_form, 'customer_form' : customer_form, 'order_history' : order_history, 'tab' : tab})
+    return render(request, 'sales.html', {'order_form' : order_form, 'customer_form' : customer_form, 'order_history' : order_history, 'tab' : tab, 'users': users})
 
 
 @login_required(login_url='login')
@@ -159,3 +170,18 @@ def set_order_status(request):
     test = "success"
     return sales_view(request, None, None, 'shipping-tab')
 
+@login_required(login_url='login')
+def download_sales(request):
+    items = SalesOrder.objects.all()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="sales-history.csv"'
+    writer = csv.writer(response, delimiter=',')
+    #writing attributes
+    #Find a way to get the attributes directly from the db
+    writer.writerow(['Customer', 'Delivery date', 'Product', 'Quantity', 'Warehouse', 'Sale total', 'Status'])
+
+    #writing data corresponding to attributes
+    for obj in items:
+        writer.writerow([obj.customer, obj.delivery_date, obj.product, obj.quantity, obj.warehouse, obj.sale_total, obj.status])
+
+    return response
