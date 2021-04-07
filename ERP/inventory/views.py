@@ -3,7 +3,7 @@ from django.http import HttpResponse, FileResponse, HttpResponseNotFound, JsonRe
 from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
 from django.core import serializers
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
@@ -44,6 +44,8 @@ def inventory(request):
         vendor_all = Vendor.objects.all() # list of all the vendors
         orders = Order.objects.select_related().all().order_by('timestamp') # list of all the orders
         date_of_day = datetime.now() # today's datetime
+        User = get_user_model()
+        users = User.objects.all()
 
         # for every part in the list, find how many of those parts exist in the warehouse and save in a dictionary to be
         # accessible in the inventoy template
@@ -58,7 +60,8 @@ def inventory(request):
             'warehouse_all': warehouse_all,
             'vendor_all': vendor_all,
             'rm_orders': orders,
-            'date_of_day': date_of_day
+            'date_of_day': date_of_day,
+            'users': users
         }
     return render(request, 'inventory.html', context=context) # render the view
 

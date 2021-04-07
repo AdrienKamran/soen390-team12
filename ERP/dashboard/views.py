@@ -47,10 +47,19 @@ def home(request):
     total = 0
     if sales_transactions['profit'] is not None:
         total = total + sales_transactions['profit']
+        sales_transactions = sales_transactions['profit']
+    else:
+        sales_transactions = 0
     if manu_transactions['manu_expense'] is not None:
         total = total + manu_transactions['manu_expense']
+        manu_transactions = manu_transactions['manu_expense']
+    else:
+        manu_transactions = 0
     if orders_transactions['order_expense'] is not None:
-        total = total + orders_transactions['order_expense']    
+        total = total + orders_transactions['order_expense']
+        orders_transactions = orders_transactions['order_expense']
+    else:
+        orders_transactions = 0   
     context = {
         'sales_transactions': sales_transactions,
         'manu_transactions': manu_transactions,
