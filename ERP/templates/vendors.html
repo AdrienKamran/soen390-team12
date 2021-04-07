@@ -9,6 +9,13 @@
                     {% for message in messages %}
                         <div class="alert alert-{{ message.tags }}">{{ message }}</div>
                     {% endfor %}
+                    {% for field in vendor_form %}
+                        {% if field.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{field.errors.1}}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
                     <div class="card">
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs">
@@ -41,13 +48,6 @@
                                                     </fieldset>
                                                 </form>
                                                 <br>
-                                                {% for field in vendor_form %}
-                                                    {% if field.errors %}
-                                                    <div class="alert alert-danger" role="alert">
-                                                        {{field.errors.1}}
-                                                    </div>
-                                                    {% endif %}
-                                                {% endfor %}
                                             </div>
                                             <div class="col">
                                                 <div class="card">
@@ -167,12 +167,12 @@
 
         // Styling the input and select fields
         var form_fields = document.getElementsByTagName('input')
-        for (var i=1; i<13; i++) {
+        for (var i=1; i<form_fields.length; i++) {
             form_fields[i].className='form-control';
         }
 
         var select_fields = document.getElementsByTagName('select')
-        for (var i=1; i<3; i++) {
+        for (var i=1; i<select_fields.length; i++) {
             select_fields[i].className='form-control';
         }
 

@@ -108,7 +108,7 @@ def createMaterialList(request):
             # create a new raw material
             existing_rm = Part.objects.filter(p_name=new_rm_name).first()
             if existing_rm:
-                messages.error(request, 'This material list already exists... Updating Material List')
+                messages.info(request, 'Updating Material List for this Item')
                 #Find and delete the old mat list then set parent part to the exisitng part
                 old_mat_list = MadeOf.objects.filter(part_FK_parent=existing_rm).all()
                 old_mat_list.delete()

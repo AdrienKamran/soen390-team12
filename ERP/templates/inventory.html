@@ -6,7 +6,11 @@
                 <div class="container-fluid">
                     <h3 class="text-dark mb-4">Inventory</h3>
                     {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% if message.tags == 'error' %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% else %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endif %}
                     {% endfor %}
                     <div class="card">
                         <div class="card-header">
@@ -32,9 +36,6 @@
                                                         <option value="50">50</option>
                                                         <option value="100">100</option>
                                                     </select></div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="text-md-right dataTables_filter" id="dataTable_filter"><label><input type="search" class="form-control form-control-sm" aria-controls="dataTable" placeholder="Search"></label></div>
                                             </div>
                                         </div>
                                         <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
@@ -102,14 +103,14 @@
                                                     {% csrf_token %}
                                                     <fieldset><label for="purchase-raw-mat">Choose a raw material</label>
                                                         <select class="form-control" id="purchase-raw-mat" name="raw-mat-pk" onchange="updateVendorsList(this.value)">
-                                                            <optgroup label="This is a group">
+                                                            <optgroup label="Raw material list">
                                                                 <option value="0" selected="">Select a raw material</option>
                                                                 {% for rm in raw_material_all %}
                                                                     <option value="{{ rm.pk }}">{{ rm.p_name }}</option>
                                                                 {% endfor %}
                                                             </optgroup>
                                                         </select><label for="warehouse-destination">Choose a warehouse destination</label><select class="form-control" id="warehouse-destination" name="warehouse-pk">
-                                                            <optgroup label="This is a group">
+                                                            <optgroup label="Warehouse list">
                                                                 <option value="0" selected="">Select a warehouse destination</option>
                                                                 {% for warehouse in warehouse_all %}
                                                                     <option value="{{ warehouse.pk }}">{{ warehouse.w_name }}</option>
@@ -117,13 +118,16 @@
                                                             </optgroup>
                                                         </select><label for="purchase-vendor-name">Choose a vendor to buy from</label>
                                                         <select class="form-control" id="purchase-vendor-name" name="purchase-vendor-pk" onchange="SelectOrderVendor(this.value)">
-                                                            <optgroup label="This is a group">
+                                                            <optgroup label="Vendors list">
                                                                 <option value="0" selected="">Select a vendor</option>
                                                                 {% for vendor in vendor_all %}
                                                                     <option value="{{ vendor.pk }}">{{ vendor.v_name }}</option>
                                                                 {% endfor %}
                                                             </optgroup>
-                                                        </select><label for="purchase-order-quantity">Choose the quantity to receive</label><input class="form-control" type="number" id="purchase-order-quantity" name="purchase-order-quantity" value="1" onchange="UpdatePrice(this.value)"><input id="total-cost" name="total-cost" value="0" step=".01" hidden>
+                                                        </select>
+                                                        <label for="purchase-order-quantity">Choose the quantity to receive</label>
+                                                        <input class="form-control" type="number" id="purchase-order-quantity" name="purchase-order-quantity" value="1" onchange="UpdatePrice(this.value)">
+                                                        <input id="total-cost" name="total-cost" value="0" step=".01" hidden>
                                                         <legend>Place your order here:</legend>
                                                     </fieldset>
                                                 </form>
@@ -157,7 +161,7 @@
                                                         <input class="form-control" type="text" id="new-raw-mat-name" name="new-raw-mat-name" onchange="CheckIfUnique()">
                                                         <label for="existing-raw-mat">OR pick an existing raw material:</label>
                                                         <select class="form-control" id="existing-raw-mat" name="existing-raw-mat" onchange="SelectExistingRM()">
-                                                            <optgroup label="This is a group">
+                                                            <optgroup label="Raw material list">
                                                                 <option value="0" selected="">Select a raw material</option>
                                                                 {% for rm in raw_material_all %}
                                                                     <option value="{{ rm.pk }}">{{ rm.p_name }}</option>
@@ -194,7 +198,6 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-md-6 text-nowrap"><input type="search" class="form-control form-control-sm" aria-controls="dataTable" placeholder="Search"></div>
                                             <div class="col-md-6">
                                                 <div class="text-md-right dataTables_filter" id="dataTable_filter"><label></label></div>
                                             </div>
@@ -428,9 +431,8 @@
                         removeOptions(vendorDropBox);
                         for (var i=0; i<data.length; i++) {
                             var option = document.createElement("option");
-                            option.value= data[i].fields.v_FK;
-                            alert(vendor_dict[data[i].fields.v_FK]);
-                            option.text = vendor_dict[data[i].fields.v_FK];
+                            option.value= data[i].pk;
+                            option.text = data[i].fields.v_name;
                             vendorDropBox.appendChild(option);
                         }
                         

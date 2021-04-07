@@ -8,7 +8,11 @@
                     <h3 class="text-dark mb-4">Manufacturing</h3>
                     {% if messages %}
                         {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                            {% if message.tags == 'error' %}
+                                <div class="alert alert-danger">{{ message }}</div>
+                            {% else %}
+                                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
                     <div class="card">
@@ -164,7 +168,6 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-md-6 text-nowrap"><input type="search" class="form-control form-control-sm" aria-controls="dataTable" placeholder="Search"></div>
                                             <div class="col-md-6">
                                                 <div class="text-md-right dataTables_filter" id="dataTable_filter"><label></label></div>
                                             </div>
