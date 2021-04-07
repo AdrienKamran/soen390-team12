@@ -157,14 +157,15 @@
                                                                     <option value="{{ rm.pk }}">{{ rm.p_name }}</option>
                                                                 {% endfor %}
                                                             </optgroup>
-                                                        </select><label for="new-mat-cost">Choose the material's unit cost:</label><input class="form-control" type="number" step=".01" id="new-mat-cost" name="new-mat-cost"><label for="new-mat-vendor">Pick the material's vendor:</label><select class="form-control" id="new-mat-vendor" name="new-mat-vendor">
+                                                        </select><label for="new-mat-cost">Choose the material's unit cost:</label><input class="form-control" type="number" step=".01" id="new-mat-cost" name="new-mat-cost">
+                                                        <!--<label for="new-mat-vendor">Pick the material's vendor:</label><select class="form-control" id="new-mat-vendor" name="new-mat-vendor">
                                                             <optgroup label="This is a group">
                                                                 <option value="12" selected="">Select a vendor</option>
                                                                 {% for vendor in vendor_all %}
                                                                     <option value="{{ vendor.pk }}">{{ vendor.v_name }}</option>
                                                                 {% endfor %}
                                                             </optgroup>
-                                                        </select>
+                                                        </select> -->
                                                         <legend>Specify the material details:</legend>
                                                     </fieldset>
                                                 </form>

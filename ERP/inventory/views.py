@@ -164,21 +164,23 @@ def createRawMaterial(request):
             if rm_form.is_valid():
                 # material does not exist yet, save the new raw material in database
                 new_part = rm_form.save()
+                messages.success(request, 'Raw material created.')
+                return redirect('inventory')
 
                 # create new vendor relationship for this raw material
-                v_form = CreateNewVendorOfPartForm(data={
-                    'p_FK': new_part.pk,
-                    'v_FK': request.POST.get('new-mat-vendor')
-                })
-                if v_form.is_valid():
-                    # everything is created, return with a success message
-                    v_form.save()
-                    messages.success(request, 'Raw material created.')
-                    return redirect('inventory')
-                else:
-                    # return to inventory with error message
-                    messages.error(request, 'Problem finding vendor to sell raw material.')
-                    return redirect('inventory')
+                # v_form = CreateNewVendorOfPartForm(data={
+                #     'p_FK': new_part.pk,
+                #     'v_FK': request.POST.get('new-mat-vendor')
+                # })
+                # if v_form.is_valid():
+                #     # everything is created, return with a success message
+                #     v_form.save()
+                    
+                #     return redirect('inventory')
+                # else:
+                #     # return to inventory with error message
+                #     messages.error(request, 'Problem finding vendor to sell raw material.')
+                    
             else:
                 # return to inventory with error message
                 messages.error(request, 'This raw material already exists.')
