@@ -311,7 +311,11 @@ def returnVendor(request):
 def returnSellingVendor(request):
     rm_id = request.GET.get('rm_id')
     listOfVendors = SellsPart.objects.select_related().filter(p_FK=rm_id).all()
-    rm_json = serializers.serialize('json', listOfVendors)
+    vendorObjectList = []
+    for vendor in listOfVendors:
+        vendorObject = Vendor.objects.get(pk=vendor.v_FK.pk)
+        vendorObjectList.append(vendorObject)
+    rm_json = serializers.serialize('json', vendorObjectList)
     return HttpResponse(rm_json) 
 
 @login_required(login_url='login')

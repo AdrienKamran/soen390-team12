@@ -431,9 +431,8 @@
                         removeOptions(vendorDropBox);
                         for (var i=0; i<data.length; i++) {
                             var option = document.createElement("option");
-                            option.value= data[i].fields.v_FK;
-                            alert(vendor_dict[data[i].fields.v_FK]);
-                            option.text = vendor_dict[data[i].fields.v_FK];
+                            option.value= data[i].pk;
+                            option.text = data[i].fields.v_name;
                             vendorDropBox.appendChild(option);
                         }
                         
