@@ -27,7 +27,7 @@ class Part(models.Model):
     p_type = models.TextField(choices=type_choices, null=False, blank=False, default='Part')
 
     def __str__(self):
-            return self.p_name
+            return self.p_name + " " + str(self.pk)
 
 # Model that keeps the list of vendors to buy raw material from. Vendors can only sell raw materials.
 class Vendor(models.Model):
@@ -49,7 +49,7 @@ class SellsPart(models.Model):
     p_quantity = models.IntegerField(default=100, null=False, blank=False)
 
     def __str__(self):
-            return self.v_FK.v_name + " " + self.p_FK.p_name
+            return self.v_FK.v_name + " " + self.p_FK.p_name + " " + str(self.p_FK.pk)
 
 # Model that keeps a list of warehouses.
 class Warehouse(models.Model):

@@ -15,6 +15,8 @@ from decimal import Decimal
 
 import logging
 import json
+import csv
+
 
 """
 """
@@ -106,7 +108,7 @@ def createMaterialList(request):
             # create a new raw material
             existing_rm = Part.objects.filter(p_name=new_rm_name).first()
             if existing_rm:
-                messages.error(request, 'This material list already exists... Updating Material List')
+                messages.info(request, 'Updating Material List for this Item')
                 #Find and delete the old mat list then set parent part to the exisitng part
                 old_mat_list = MadeOf.objects.filter(part_FK_parent=existing_rm).all()
                 old_mat_list.delete()
@@ -148,6 +150,7 @@ def createMaterialList(request):
 
 """
 """
+
 @login_required(login_url='login')
 def manufacturingViewPage(request):
     #define everything as None to start to cover relation not found errors
@@ -155,12 +158,14 @@ def manufacturingViewPage(request):
     warehouses = Warehouse.objects.all()
     made = MadeOf.objects.all()
     contain = Contain.objects.all()
+    manufacture_history = Manufacture.objects.select_related().all().order_by('timestamp')
     #Call all the itmes that we need to render these templates
     data = {
         'parts':parts,
         'warehouse':warehouses,
         'made':made,
         'contain':contain,
+        'manufacture_history':manufacture_history,      
     }
     return render(request, template_name='manufacturing.html', context=data)
 
@@ -262,3 +267,17 @@ def manufactureProduct(request):
         return redirect('inventory')
     else:
         return redirect('manufacturing')
+
+@login_required(login_url='login')
+def download_manufacturing_history(request):
+    items = Manufacture.objects.select_related().all()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="manufacturing-history.csv"'
+    writer = csv.writer(response, delimiter=',')
+    #writing attributes
+    writer.writerow(['Date', 'Item', 'Quantity', 'Cost($)', 'Warehouse'])
+
+    #writing data corresponding to attributes
+    for obj in items:
+        writer.writerow([obj.timestamp, obj.p_FK.p_name, obj.manufacture_quantity,  obj.manufacture_total_cost, obj.w_FK.w_name])
+    return response

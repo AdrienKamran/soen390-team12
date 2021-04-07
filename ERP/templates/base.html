@@ -11,15 +11,22 @@
     <link rel="stylesheet" href="{% static 'fonts/fontawesome-all.min.css' %}">
     <link rel="stylesheet" href="{% static 'fonts/font-awesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'fonts/fontawesome5-overrides.min.css' %}">
+    <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.14/semantic.min.css">
+    <!--Chart js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/Toggle-Switch.css' %}">
 </head>
 
 <body id="page-top">
+    {% block javascript%} {% endblock %}
     <div id="wrapper">
         <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
             <div class="container-fluid d-flex flex-column p-0">
-                <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
-                    <div class="sidebar-brand-icon"><img src="../static/img/logo-icon.svg" height = 60 alt="logo"/></div>
-                    <div class="sidebar-brand-text"><img src="../static/img/logo-text.svg" height= 60 alt="logo-text"/></div>
+                <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="{% url 'home' %}">
+                    <div class="sidebar-brand-icon"><img src="{% static 'img/logo-icon.svg' %}" height = 60 alt="logo"/></div>
+                    <div class="sidebar-brand-text"><img src="{% static 'img/logo-text.svg' %}" height= 60 alt="logo-text"/></div>
                 </a>
                 <hr class="sidebar-divider my-0">
                 <ul class="nav navbar-nav text-light" id="accordionSidebar">
@@ -32,9 +39,15 @@
                         <li class="nav-item"><a class="nav-link" href="{% url 'manufacturing' %}"><i class="fa fa-bar-chart-o"></i><span>Manufacturing</span></a></li>
                     {% endif %}
                     {% if request.user|group:"sales_account" %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'sales' %}"><i class="fa fa-user"></i><span>Sales</span></a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'sales' %}"><i class="fa fa-credit-card-alt"></i><span>Sales</span></a></li>
                     {% endif %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'accounting' %}"><i class="fa fa-money"></i><span>Accounting</span></a></li>
+                    {% if request.user|group:"sales_account" %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounting' %}"><i class="fa fa-money"></i><span>Accounting</span></a></li>
+                    {% endif %}
+                    {% if request.user|group:"inventory_account" %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'vendors' %}"><i class="fa fa-handshake-o"></i><span>Vendors</span></a></li>
+                    {% endif %}
+
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
             </div>
@@ -43,11 +56,6 @@
             <div id="content">
                 <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
                     <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
-                        <form class="form-inline d-none d-sm-inline-block mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"> {% csrf_token %}
-                            <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
-                                <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
-                            </div>
-                        </form>
                         <div class="container">
                             <div class="row">
                                 <div class="col offset-xl-11"><a class="btn btn-primary" role="button" data-toggle="tooltip" data-bs-tooltip="" data-placement="bottom" style="width: 107px;margin: 6px;" title="Access your Google Drive" href="https://accounts.google.com/ServiceLogin/signinchooser?service=wise&amp;passive=1209600&amp;continue=https%3A%2F%2Fdrive.google.com%2Fdrive%2Fmy-drive&amp;followup=https%3A%2F%2Fdrive.google.com%2Fdrive%2Fmy-drive&amp;flowName=GlifWebSignIn&amp;flowEntry=ServiceLogin"><i class="fab fa-google-drive" style="padding: 4px;"></i>Drive</a></div>
@@ -69,13 +77,14 @@
                             <li class="nav-item dropdown no-arrow">
                                 <div class="nav-item dropdown no-arrow">
                                     <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#">
-                                        <div class="row">
                                             <i class="fas fa-user"></i>
-                                        </div>
+                                            <span class="d-none d-lg-inline mr-2 text-gray-600 small">&nbsp&nbsp  {{request.user}}</span>
                                     </a>
                                     <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in">
                                         <a class="dropdown-item" href="#">Profile</a>
-                                        <a class="dropdown-item" href="#">Settings</a>
+                                        {% if user.is_superuser %}
+                                            <a class="dropdown-item" data-target="#user-permissions-modal" data-toggle="modal" href="#"><i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Settings</a>
+                                        {% endif %}
                                         <a class="dropdown-item" href="#">Activity log</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
@@ -89,7 +98,7 @@
                 <div>
                     {% block content %}{% endblock %}
                 </div>
-
+                
             </div>
             <footer class="bg-white sticky-footer">
                 <div class="container my-auto">
@@ -97,6 +106,31 @@
                 </div>
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+        <div class="modal fade" role="dialog" tabindex="-1" id="user-permissions-modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">User Permissions Settings</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="{% url 'update-user-groups' %}" id="permissionsForm">
+                            {% csrf_token %}
+                            <fieldset><label>Select a user to set their permissions:</label><select class="form-control" id="user-selected" onchange="updateCheckBoxes()" name="user-selected">
+                                    <option value="none" selected="">Select a user</option>
+                                    {% for user in users %}
+                                    <option value="{{user.pk}}">{{user.username}}</option>
+                                    {% endfor %}
+                                </select><label>Select which groups this user should belong to:</label>
+                                <div class="form-check"><input class="form-check-input" type="checkbox" id="manufacturingCheckbox" name="manufacturingCheckbox"><label class="form-check-label" for="formCheck-4">Manufacturing</label></div>
+                                <div class="form-check"><input class="form-check-input" type="checkbox" id="inventoryCheckbox" name="inventoryCheckbox"><label class="form-check-label" for="formCheck-4">Inventory Management</label></div>
+                                <div class="form-check"><input class="form-check-input" type="checkbox" id="salesCheckbox" name="salesCheckbox"><label class="form-check-label" for="formCheck-4">Sales &amp; Accounting</label></div>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button class="btn btn-primary" type="submit" form="permissionsForm">Save</button></div>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
@@ -104,6 +138,47 @@
     <script src="{% static 'js/bs-init.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
     <script src="{% static 'js/theme.js' %}"></script>
-</body>
+    <script>
+        function updateCheckBoxes() {
+            var manufacturingCheckbox = document.getElementById("manufacturingCheckbox");
+            var inventoryCheckbox = document.getElementById("inventoryCheckbox");
+            var salesCheckbox = document.getElementById("salesCheckbox");
+            var selectedUser = document.getElementById("user-selected");
 
+            manufacturingCheckbox.checked = false;
+            inventoryCheckbox.checked = false;
+            salesCheckbox.checked = false;
+            $.ajax({
+                url: '/get-user-groups/',
+                data: {
+                    'user_pk': selectedUser.value
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.length == 0) {
+                        manufacturingCheckbox.checked = false;
+                        inventoryCheckbox.checked = false;
+                        salesCheckbox.checked = false;
+                    }
+                    else {
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i] == "manufacturing_account") {
+                                manufacturingCheckbox.checked = true;
+                            }
+                            else if (data[i] == "inventory_account") {
+                                inventoryCheckbox.checked = true;
+                            }
+                            else if (data[i] == "sales_account") {
+                                salesCheckbox.checked = true;
+                            }
+                        }
+                    }
+                },
+                error: function(data) {
+                    alert("Uh-oh");
+                }
+            });
+        }
+    </script>
+</body>
 </html>

@@ -40,3 +40,7 @@ class SalesOrder(models.Model):
 class SalesPart(models.Model):
     s_FK = models.ForeignKey(SalesOrder, on_delete=models.CASCADE)
     c_FK = models.ForeignKey(Contain, on_delete=models.CASCADE)
+
+class SoldItems(models.Model):
+    product = models.ForeignKey(Part, on_delete=models.PROTECT)
+    count = models.PositiveIntegerField()
