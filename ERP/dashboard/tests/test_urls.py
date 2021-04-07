@@ -23,3 +23,7 @@ class TestUrls(SimpleTestCase):
     def test_generate_url_is_resolved(self):
         url = reverse ('generate')
         self.assertEquals(resolve(url).func, generateReport)
+
+    def test_update_user_groups_url_is_resolved(self):
+        url = reverse ('update-user-groups')
+        self.assertEquals(resolve(url).func, updateUserGroups)  
