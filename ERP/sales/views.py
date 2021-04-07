@@ -58,9 +58,6 @@ def add_customer(request):
                     zip_code=zip_code,
                     country=country
                 )
-                subscription = Subscription(user=request.user, content_type=ContentType.objects.get_for_model(customer),
-                                            object_id=customer_form.instance.pk)
-                subscription.save()
                 customer.save()
                 return HttpResponseRedirect('/sales')
             else:
