@@ -1,15 +1,12 @@
 from django import forms
 from django.contrib.contenttypes.models import ContentType
-
 from notifications.models import Subscription
-
 
 class NotifiableFormMixin(forms.Form):
     subscribe = forms.BooleanField(required=False)
 
-
+# This function validates the form and create a subscription record if form is validated
 class NotifiableViewMixin:
-
     def __init__(self):
         self.request = None
 
