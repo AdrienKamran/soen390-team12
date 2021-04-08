@@ -5,13 +5,11 @@ from django.db import models
 from django.utils import timezone
 from django.utils.timesince import timesince
 
-
 class EmailNotification(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     subject = models.CharField(max_length=100, null=False)
     message = models.TextField()
     users = models.ManyToManyField(User, related_name='email_notifications', through='EmailNotificationUser')
-
 
 class EmailNotificationUser(models.Model):
     created = models.DateTimeField(auto_now_add=True)
@@ -20,19 +18,15 @@ class EmailNotificationUser(models.Model):
     email_notification = models.ForeignKey(EmailNotification, on_delete=models.CASCADE)
     read = models.DateTimeField(null=True, blank=True)
 
-
 class Subscription(models.Model):
     class Meta:
         unique_together = ('user', 'content_type', 'object_id')
 
     user = models.ForeignKey(User, related_name='subscriptions', on_delete=models.CASCADE)
-
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
-
     notify_by_email = models.BooleanField(default=False)
-
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Creation date')
 
     def __str__(self):
@@ -42,19 +36,14 @@ class Subscription(models.Model):
 
 class NotifiableModel(models.Model):
     subscriptions = GenericRelation(Subscription)
-
     def _get_subscribers(self):
         return User.objects.filter(subscriptions__in=self.subscriptions.all())
-
     subscribers = property(_get_subscribers)
-
     class Meta:
         abstract = True
 
-
 class FakeModel(NotifiableModel):
     name = models.CharField(max_length=256)
-
     def __str__(self):
         return self.name
 
@@ -96,7 +85,6 @@ class NotificationQuerySet(models.query.QuerySet):
             query_set = self.deleted()
             return query_set.update(deleted=False)
         return None
-
 
 class Notification(models.Model):
     recipient = models.ForeignKey(User, blank=False, related_name='notifications', on_delete=models.CASCADE)
