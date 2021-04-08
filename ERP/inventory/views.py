@@ -6,7 +6,6 @@ from django.core import serializers
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
 from manufacturing.models import *
 from inventory.models import *
 from inventory.forms import *
@@ -14,15 +13,12 @@ from sales.models import *
 from dashboard.decorators import *
 from sales.forms import *
 from accounting.models import *
-
 from datetime import datetime
 from decimal import Decimal
-
 import logging
 import io
 import csv
 import json
-
 from reportlab.pdfgen import canvas
 
 """
@@ -249,7 +245,6 @@ def inventoryPartView(request):
     # filter the inventory for every part having the part template and inside the inventory of the warehouse clicked.
     # a part is marked as in the inventory if its attribute "p_in_inventory" = true
     inventory_parts = Contain.objects.filter(w_FK=warehouse, p_FK=part, p_in_inventory=True).all()
-
     context = {
         'part_name': part.p_name,
         'warehouse_name': warehouse.w_name,
@@ -266,11 +261,9 @@ def inventoryPartView(request):
 @login_required(login_url='login')
 def toggleInventoryPartStatus(request):
     p_serial = request.GET.get('p_serial')
-
     part = Contain.objects.filter(p_serial=p_serial).first()
     part.p_defective = not part.p_defective
     part.save()
-
     test = "success"
     return JsonResponse(test, safe=False)
 
@@ -282,10 +275,8 @@ def toggleInventoryPartStatus(request):
 @login_required(login_url='login')
 def deleteInventoryPart(request):
     p_serial = request.GET.get('p_serial')
-
     part = Contain.objects.filter(p_serial=p_serial).first()
     part.delete()
-
     test = "success"
     messages.success(request, f"Part [{p_serial}] successfully deleted.")
     return JsonResponse(test, safe=False)
@@ -310,6 +301,9 @@ def returnVendor(request):
     v_json = serializers.serialize('json', vendor)
     return HttpResponse(v_json)
 
+"""
+    Simple URL endpoint for returning all selling vendors. Used in an ajax call in the front end
+"""
 @login_required(login_url='login')
 def returnSellingVendor(request):
     rm_id = request.GET.get('rm_id')
@@ -321,12 +315,16 @@ def returnSellingVendor(request):
     rm_json = serializers.serialize('json', vendorObjectList)
     return HttpResponse(rm_json) 
 
+"""
+    Simple URL endpoint for returning all vendors. Used in an ajax call in the front end
+"""
 @login_required(login_url='login')
 def returnAllVendor(request):
     all_vendors = Vendor.objects.all()
     all_json = serializers.serialize('json', all_vendors)
     return HttpResponse(all_json)
 
+#This view is responsible for exporting reports on the inventory history
 @login_required(login_url='login')
 def download_inventory_history(request):
     items = Order.objects.all()
@@ -335,7 +333,6 @@ def download_inventory_history(request):
     writer = csv.writer(response, delimiter=',')
     #writing attributes
     writer.writerow(['Date', 'Raw Material', 'Quantity', 'Warehouse', 'Vendor', 'Cost($)', 'Status'])
-
     #writing data corresponding to attributes
     for obj in items:
         writer.writerow([obj.timestamp, obj.p_FK, obj.order_quantity,  obj.w_FK, obj.v_FK, obj.order_total_cost,
