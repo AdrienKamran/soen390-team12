@@ -6,3 +6,5 @@ coverage
 django-mathfilters
 pylint
 django-lint
+gunicorn
+whitenoise

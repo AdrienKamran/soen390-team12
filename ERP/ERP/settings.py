@@ -46,10 +46,12 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -89,10 +91,10 @@ WSGI_APPLICATION = 'ERP.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'db',
+        'NAME': 'iztgetig',
+        'USER': 'iztgetig',
+        'PASSWORD': 'sn9dBTO3SyrU-tOnV6hJo7Ic_gE7qSAI',
+        'HOST': 'queenie.db.elephantsql.com',
         'PORT': 5432,
     }
 }
@@ -151,12 +153,14 @@ SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
 
 STATIC_URL = '/static/'
 
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
-
 ]
+
+
 
 # Logging information
 LOGGING = {
