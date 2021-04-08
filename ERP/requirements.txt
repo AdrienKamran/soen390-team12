@@ -8,3 +8,4 @@ pylint
 django-lint
 gunicorn
 whitenoise
+sendgrid
