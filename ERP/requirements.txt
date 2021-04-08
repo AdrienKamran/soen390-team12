@@ -4,3 +4,5 @@ reportlab
 mixer
 coverage
 django-mathfilters
+pylint
+django-lint
