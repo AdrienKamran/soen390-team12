@@ -1,0 +1,14 @@
+{% load notifications_tags %}
+{% is_subscribed user obj as user_is_subscribed %}
+{% if user_is_subscribed %}
+<form action="{% url 'subscriptions_delete' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger btn-sm">Unsubscribe</button>
+{% else %}
+<form action="{% url 'subscriptions_create' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success btn-sm">Subscribe</button>
+{% endif %}
+    <input type="hidden" name="previous_page" value="{{ request.path }}">
+{{ form.as_p }}
+</form>

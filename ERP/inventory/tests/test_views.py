@@ -26,11 +26,3 @@ class TestViews(TestCase):
         response = self.client.get(self.inventory)     
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'inventory.html')
-
-    # def test_inventory_parts_GET(self):
-    #     self.client.post(self.register_url, self.validUser, format='text/html')
-    #     login_successful = self.client.login(username='testingUser', password="test123456!")
-    #     self.assertTrue(login_successful)         
-    #     response = self.client.get(self.inventory_part)     
-    #     self.assertEquals(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'inventory-parts.html')            

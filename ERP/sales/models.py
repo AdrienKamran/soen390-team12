@@ -1,8 +1,10 @@
 from django.db import models
 
 from inventory.models import *
+from notifications.models import NotifiableModel
 
-class Customer(models.Model):
+
+class Customer(NotifiableModel):
     type_choice = (
         ('Company', 'Company'),
         ('Individual', 'Individual')
@@ -38,3 +40,7 @@ class SalesOrder(models.Model):
 class SalesPart(models.Model):
     s_FK = models.ForeignKey(SalesOrder, on_delete=models.CASCADE)
     c_FK = models.ForeignKey(Contain, on_delete=models.CASCADE)
+
+class SoldItems(models.Model):
+    product = models.ForeignKey(Part, on_delete=models.PROTECT)
+    count = models.PositiveIntegerField()

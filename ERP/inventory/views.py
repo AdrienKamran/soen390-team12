@@ -3,10 +3,9 @@ from django.http import HttpResponse, FileResponse, HttpResponseNotFound, JsonRe
 from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
 from django.core import serializers
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
 from manufacturing.models import *
 from inventory.models import *
 from inventory.forms import *
@@ -14,15 +13,12 @@ from sales.models import *
 from dashboard.decorators import *
 from sales.forms import *
 from accounting.models import *
-
 from datetime import datetime
 from decimal import Decimal
-
 import logging
 import io
 import csv
 import json
-
 from reportlab.pdfgen import canvas
 
 """
@@ -44,6 +40,8 @@ def inventory(request):
         vendor_all = Vendor.objects.all() # list of all the vendors
         orders = Order.objects.select_related().all().order_by('timestamp') # list of all the orders
         date_of_day = datetime.now() # today's datetime
+        User = get_user_model()
+        users = User.objects.all()
 
         # for every part in the list, find how many of those parts exist in the warehouse and save in a dictionary to be
         # accessible in the inventoy template
@@ -58,7 +56,8 @@ def inventory(request):
             'warehouse_all': warehouse_all,
             'vendor_all': vendor_all,
             'rm_orders': orders,
-            'date_of_day': date_of_day
+            'date_of_day': date_of_day,
+            'users': users
         }
     return render(request, 'inventory.html', context=context) # render the view
 
@@ -128,6 +127,13 @@ def orderRawMaterial(request):
                 new_order_part.save()
                 i = i + 1
 
+            # Remove the ordered raw materials from the vendors' inventory
+            raw_material_pk = request.POST.get('raw-mat-pk')
+            order_quantity = request.POST.get('purchase-order-quantity')
+            vendor_inventory = SellsPart.objects.filter(p_FK=raw_material_pk).first()
+            vendor_inventory.p_quantity = vendor_inventory.p_quantity - int(order_quantity)
+            vendor_inventory.save()
+
             messages.success(request, 'Raw material ordered successfully.')
             return redirect('inventory')
         else:
@@ -164,21 +170,23 @@ def createRawMaterial(request):
             if rm_form.is_valid():
                 # material does not exist yet, save the new raw material in database
                 new_part = rm_form.save()
+                messages.success(request, 'Raw material created.')
+                return redirect('inventory')
 
                 # create new vendor relationship for this raw material
-                v_form = CreateNewVendorOfPartForm(data={
-                    'p_FK': new_part.pk,
-                    'v_FK': request.POST.get('new-mat-vendor')
-                })
-                if v_form.is_valid():
-                    # everything is created, return with a success message
-                    v_form.save()
-                    messages.success(request, 'Raw material created.')
-                    return redirect('inventory')
-                else:
-                    # return to inventory with error message
-                    messages.error(request, 'Problem finding vendor to sell raw material.')
-                    return redirect('inventory')
+                # v_form = CreateNewVendorOfPartForm(data={
+                #     'p_FK': new_part.pk,
+                #     'v_FK': request.POST.get('new-mat-vendor')
+                # })
+                # if v_form.is_valid():
+                #     # everything is created, return with a success message
+                #     v_form.save()
+                    
+                #     return redirect('inventory')
+                # else:
+                #     # return to inventory with error message
+                #     messages.error(request, 'Problem finding vendor to sell raw material.')
+                    
             else:
                 # return to inventory with error message
                 messages.error(request, 'This raw material already exists.')
@@ -237,7 +245,6 @@ def inventoryPartView(request):
     # filter the inventory for every part having the part template and inside the inventory of the warehouse clicked.
     # a part is marked as in the inventory if its attribute "p_in_inventory" = true
     inventory_parts = Contain.objects.filter(w_FK=warehouse, p_FK=part, p_in_inventory=True).all()
-
     context = {
         'part_name': part.p_name,
         'warehouse_name': warehouse.w_name,
@@ -254,11 +261,9 @@ def inventoryPartView(request):
 @login_required(login_url='login')
 def toggleInventoryPartStatus(request):
     p_serial = request.GET.get('p_serial')
-
     part = Contain.objects.filter(p_serial=p_serial).first()
     part.p_defective = not part.p_defective
     part.save()
-
     test = "success"
     return JsonResponse(test, safe=False)
 
@@ -270,10 +275,8 @@ def toggleInventoryPartStatus(request):
 @login_required(login_url='login')
 def deleteInventoryPart(request):
     p_serial = request.GET.get('p_serial')
-
     part = Contain.objects.filter(p_serial=p_serial).first()
     part.delete()
-
     test = "success"
     messages.success(request, f"Part [{p_serial}] successfully deleted.")
     return JsonResponse(test, safe=False)
@@ -297,3 +300,41 @@ def returnVendor(request):
     vendor = Vendor.objects.filter(pk=v_id).all()
     v_json = serializers.serialize('json', vendor)
     return HttpResponse(v_json)
+
+"""
+    Simple URL endpoint for returning all selling vendors. Used in an ajax call in the front end
+"""
+@login_required(login_url='login')
+def returnSellingVendor(request):
+    rm_id = request.GET.get('rm_id')
+    listOfVendors = SellsPart.objects.select_related().filter(p_FK=rm_id).all()
+    vendorObjectList = []
+    for vendor in listOfVendors:
+        vendorObject = Vendor.objects.get(pk=vendor.v_FK.pk)
+        vendorObjectList.append(vendorObject)
+    rm_json = serializers.serialize('json', vendorObjectList)
+    return HttpResponse(rm_json) 
+
+"""
+    Simple URL endpoint for returning all vendors. Used in an ajax call in the front end
+"""
+@login_required(login_url='login')
+def returnAllVendor(request):
+    all_vendors = Vendor.objects.all()
+    all_json = serializers.serialize('json', all_vendors)
+    return HttpResponse(all_json)
+
+#This view is responsible for exporting reports on the inventory history
+@login_required(login_url='login')
+def download_inventory_history(request):
+    items = Order.objects.all()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="order-history.csv"'
+    writer = csv.writer(response, delimiter=',')
+    #writing attributes
+    writer.writerow(['Date', 'Raw Material', 'Quantity', 'Warehouse', 'Vendor', 'Cost($)', 'Status'])
+    #writing data corresponding to attributes
+    for obj in items:
+        writer.writerow([obj.timestamp, obj.p_FK, obj.order_quantity,  obj.w_FK, obj.v_FK, obj.order_total_cost,
+                         obj.order_status])
+    return response

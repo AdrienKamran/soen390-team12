@@ -3,3 +3,9 @@ psycopg2-binary>=2.8
 reportlab
 mixer
 coverage
+django-mathfilters
+pylint
+django-lint
+gunicorn
+whitenoise
+sendgrid

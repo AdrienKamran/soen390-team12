@@ -31,10 +31,7 @@ class TestViews(TestCase):
             'password1': 'test123456!',
             'password2': 'test123456!',
         }
-
-        # self.client.post(self.register_url, self.registeredUser, format='text/html')
-        # self.login_successful = self.client.login(username='user', password="test123456!")
-
+        
     def test_register_POST_validUser(self):
         response = self.client.post(self.register_url, self.validUser, format='text/html')
         self.assertEquals(response.status_code, 302)

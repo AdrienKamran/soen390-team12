@@ -6,11 +6,13 @@
 
                 <div class="container-fluid">
                     <h3 class="text-dark mb-4">List of Products</h3>
-                    {% if messages %}
-                        {% for message in messages %}
+                    {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% else %}
                             <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                        {% endfor %}
-                    {% endif %}
+                        {% endif %}
+                    {% endfor %}
                     <div class="card shadow" id="inventory-card">
                         <div class="card-header py-3">
                             <p class="text-primary m-0 font-weight-bold">{{ part_name }}</p>
