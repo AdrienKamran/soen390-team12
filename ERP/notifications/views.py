@@ -1,11 +1,10 @@
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView
 from django.views.generic.base import View
-
 from notifications.forms import SubscriptionForm
 from notifications.models import Notification, Subscription
 
-
+#A view that is responsible for displaying the notifications
 class NotificationViewList(ListView):
     model = Notification
     template_name = 'notification_list.html'
@@ -13,7 +12,7 @@ class NotificationViewList(ListView):
     paginate_by = 5
     ordering = '-timestamp'
 
-
+# A view that is responsible for creating subscription
 class SubscriptionCreateView(View):
     form_class = SubscriptionForm
 
@@ -25,7 +24,7 @@ class SubscriptionCreateView(View):
             form.instance.save()
         return HttpResponseRedirect(previous)
 
-
+# A view that is responsible for deleting subscription
 class SubscriptionDeleteView(View):
     form_class = SubscriptionForm
 
