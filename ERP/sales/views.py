@@ -179,7 +179,7 @@ def set_order_status(request):
     test = "success"
     return sales_view(request, None, None, 'shipping-tab')
   
-#This view is responsible for exporting reports on the history of sales order
+#This view is responsible for exporting reports on the history of sales order in a csv format
 @login_required(login_url='login')
 def download_sales(request):
     items = SalesOrder.objects.all()
@@ -193,4 +193,23 @@ def download_sales(request):
     for obj in items:
         writer.writerow([obj.customer, obj.delivery_date, obj.product, obj.quantity, obj.warehouse, obj.sale_total, obj.status])
     return response
+
+#This view is responsible for exporting reports on the history of sales order in a pdf format
+@login_required(login_url='login')
+def download_sales_report(request):
+    items = SalesOrder.objects.all()
+    # Create a file-like buffer to receive PDF data.
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer)
+    #writing attributes
+    #Find a way to get the attributes directly from the db
+    counter=100
+    jump = 15
+    p.drawString(100, counter, 'Customer | Delivery date | Product | Quantity | Warehouse | Sale total | Status')
+    #writing data corresponding to attributes
+    
+    for obj in items:
+        counter= counter+jump
+        writer.writerow(100, counter,obj.customer+' | '+obj.delivery_date+' | '+obj.product+' | '+obj.quantity+' | '+obj.warehouse+' | '+obj.sale_total+' | '+obj.status)
+    return FileResponse(buffer, as_attachment=True, filename='sales_history.pdf')
 
