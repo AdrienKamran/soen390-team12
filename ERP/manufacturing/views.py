@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, FileResponse, HttpResponseNotFound
 from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -105,7 +105,7 @@ def createMaterialList(request):
         new_rm_name = request.POST.get('product-name')
         is_bike = request.POST.get('bicycle-check')
         if not new_rm_name == "":
-            # create a new raw material
+            # create a new material list
             existing_rm = Part.objects.filter(p_name=new_rm_name).first()
             if existing_rm:
                 messages.info(request, 'Updating Material List for this Item')
@@ -123,6 +123,9 @@ def createMaterialList(request):
                 else:
                     new_rm.save()
                 parent_part = new_rm
+        else:
+            messages.error(request, 'Material list must have a name before being created.')
+            return redirect('manufacturing')
         bike = False
         parts = {}
         counter = 0
@@ -159,13 +162,16 @@ def manufacturingViewPage(request):
     made = MadeOf.objects.all()
     contain = Contain.objects.all()
     manufacture_history = Manufacture.objects.select_related().all().order_by('timestamp')
+    User = get_user_model()
+    users = User.objects.all()
     #Call all the itmes that we need to render these templates
     data = {
         'parts':parts,
         'warehouse':warehouses,
         'made':made,
         'contain':contain,
-        'manufacture_history':manufacture_history,      
+        'manufacture_history':manufacture_history,
+        'users':users    
     }
     return render(request, template_name='manufacturing.html', context=data)
 
@@ -193,78 +199,82 @@ def manufactureProduct(request):
         quantity = int(request.POST.get('produce-quantity'))
         price = float(request.POST.get('final-price'))
 
-        part = Part.objects.filter(p_name=part_name).first()
-        warehouse = Warehouse.objects.filter(w_name=warehouse_name).first()
-        # get all the raw material is the part is made of
+        if not part_name == None and not warehouse_name == None and not quantity == 0:
+            part = Part.objects.filter(p_name=part_name).first()
+            warehouse = Warehouse.objects.filter(w_name=warehouse_name).first()
+            # get all the raw material is the part is made of
 
-        sub_parts = MadeOf.objects.select_related().filter(part_FK_parent=part.pk).all()
+            sub_parts = MadeOf.objects.select_related().filter(part_FK_parent=part.pk).all()
 
-        # first, query the warehouse for every sub-part and make sure they are available
-        for sub_part in sub_parts:
-            sub_part_count = len(Contain.objects.filter(w_FK=warehouse.pk, p_FK=sub_part.part_FK_child.pk, p_defective=False, p_in_inventory=True).all())
-            if sub_part_count < sub_part.quantity * quantity:
-                messages.error(request, f"Insufficient parts. Missing {(sub_part.quantity * quantity) - sub_part_count} unit(s) of the part: {sub_part.part_FK_child.p_name}.")
-                return redirect('manufacturing')
+            # first, query the warehouse for every sub-part and make sure they are available
+            for sub_part in sub_parts:
+                sub_part_count = len(Contain.objects.filter(w_FK=warehouse.pk, p_FK=sub_part.part_FK_child.pk, p_defective=False, p_in_inventory=True).all())
+                if sub_part_count < sub_part.quantity * quantity:
+                    messages.error(request, f"Insufficient parts. Missing {(sub_part.quantity * quantity) - sub_part_count} unit(s) of the part: {sub_part.part_FK_child.p_name}.")
+                    return redirect('manufacturing')
 
-        # if we reach the end of the for loop, this means we have enough quantity of every part(s).
-        # second step is to remove the parts needed to manufacture the product from the warehouse
+            # if we reach the end of the for loop, this means we have enough quantity of every part(s).
+            # second step is to remove the parts needed to manufacture the product from the warehouse
 
-        for sub_part in sub_parts:
+            for sub_part in sub_parts:
+                i = 0
+                while i < sub_part.quantity * quantity:
+                    part_in_stock = Contain.objects.filter(w_FK=warehouse.pk, p_FK=sub_part.part_FK_child.pk, p_defective=False, p_in_inventory=True).first()
+                    part_in_stock.p_in_inventory = False
+                    part_in_stock.save()
+                    i = i + 1
+
+            # every sub part is now removed from inventory
+            # last step is to add the amount of new products into the inventory
+
+            # get the serial number of the last added part/product/raw material
+            last_index_object = Contain.objects.order_by('-p_serial').first()
+            last_index = 0
+            if last_index_object is None:
+                last_index = 10000
+            else:
+                last_index = last_index_object.p_serial
+
+            # create manufacture history record
+            new_manufacture = Manufacture(p_FK=part, w_FK=warehouse, manufacture_quantity=quantity, manufacture_total_cost=price)
+            new_manufacture.save()
+
+            t_last_index_object = Transaction.objects.order_by('-t_serial').first()
+            t_last_index = 0
+            if t_last_index_object is None:
+                t_last_index = 500000
+            else:
+                t_last_index = t_last_index_object.t_serial + 1
+
+            # create transaction
+            new_transaction = Transaction(t_type='MANUFACTURE', t_balance=-price, t_item_name=part.p_name, t_serial=t_last_index, t_quantity=quantity)
+            new_transaction.save()
+            
+
             i = 0
-            while i < sub_part.quantity * quantity:
-                part_in_stock = Contain.objects.filter(w_FK=warehouse.pk, p_FK=sub_part.part_FK_child.pk, p_defective=False, p_in_inventory=True).first()
-                part_in_stock.p_in_inventory = False
-                part_in_stock.save()
+            while i < quantity:
+                last_index = last_index + 1
+                new_part = Contain(p_FK=part, w_FK=warehouse, p_serial=last_index, p_defective=False, p_in_inventory=True)
+                new_part.save()
+                new_manufacture_part = ManufacturesPart(m_FK=new_manufacture, c_FK=new_part)
+                new_manufacture_part.save()
+
+                if part.p_type == 'Product':
+                    # This part is a product therefore we need to create a record in the product table
+                    # For now, this product information is entered by default
+                    product_price = Decimal(1.2) * part.p_unit_value
+                    new_product = Product(c_FK=new_part, selling_price=product_price, prod_type='Mountain Bike', prod_weight=Decimal(70.59))
+                    new_product.save()
+
                 i = i + 1
 
-        # every sub part is now removed from inventory
-        # last step is to add the amount of new products into the inventory
+            # every object should now be created and added to the inventory with their unique serial number
 
-        # get the serial number of the last added part/product/raw material
-        last_index_object = Contain.objects.order_by('-p_serial').first()
-        last_index = 0
-        if last_index_object is None:
-            last_index = 10000
+            messages.success(request, "Part successfully manufactured and placed in the warehouse.")
+            return redirect('inventory')
         else:
-            last_index = last_index_object.p_serial
-
-        # create manufacture history record
-        new_manufacture = Manufacture(p_FK=part, w_FK=warehouse, manufacture_quantity=quantity, manufacture_total_cost=price)
-        new_manufacture.save()
-
-        t_last_index_object = Transaction.objects.order_by('-t_serial').first()
-        t_last_index = 0
-        if t_last_index_object is None:
-            t_last_index = 500000
-        else:
-            t_last_index = t_last_index_object.t_serial + 1
-
-        # create transaction
-        new_transaction = Transaction(t_type='MANUFACTURE', t_balance=-price, t_item_name=part.p_name, t_serial=t_last_index, t_quantity=quantity)
-        new_transaction.save()
-        
-
-        i = 0
-        while i < quantity:
-            last_index = last_index + 1
-            new_part = Contain(p_FK=part, w_FK=warehouse, p_serial=last_index, p_defective=False, p_in_inventory=True)
-            new_part.save()
-            new_manufacture_part = ManufacturesPart(m_FK=new_manufacture, c_FK=new_part)
-            new_manufacture_part.save()
-
-            if part.p_type == 'Product':
-                # This part is a product therefore we need to create a record in the product table
-                # For now, this product information is entered by default
-                product_price = Decimal(1.2) * part.p_unit_value
-                new_product = Product(c_FK=new_part, selling_price=product_price, prod_type='Mountain Bike', prod_weight=Decimal(70.59))
-                new_product.save()
-
-            i = i + 1
-
-        # every object should now be created and added to the inventory with their unique serial number
-
-        messages.success(request, "Part successfully manufactured and placed in the warehouse.")
-        return redirect('inventory')
+            messages.error(request, 'Must select a product to manufacture, a warehouse to store it in and the quantity before continuing.')
+            return redirect('manufacturing')
     else:
         return redirect('manufacturing')
 

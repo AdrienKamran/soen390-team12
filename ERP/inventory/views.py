@@ -192,17 +192,21 @@ def createRawMaterial(request):
                 messages.error(request, 'This raw material already exists.')
                 return redirect('inventory')
         else:
-            # exisiting raw material selected, edit the raw material in database
+            if int(request.POST.get('existing-raw-mat')) == 0:
+                messages.error(request, 'No raw material selected, or no name was given.')
+                return redirect('inventory')
+            else:
+                # exisiting raw material selected, edit the raw material in database
 
-            # fetch existing raw material, edit and save
-            # TODO: add validation at this step (sprint 4)
-            rm = Part.objects.get(pk=request.POST.get('existing-raw-mat'))
-            rm.p_unit_value = request.POST.get('new-mat-cost')
-            rm.save()
+                # fetch existing raw material, edit and save
+                # TODO: add validation at this step (sprint 4)
+                rm = Part.objects.get(pk=request.POST.get('existing-raw-mat'))
+                rm.p_unit_value = request.POST.get('new-mat-cost')
+                rm.save()
 
-            # TODO: modify the vendor, raw material relationship (sprint 4)
-            messages.info(request, 'The raw material was modified.')
-            return redirect('inventory')
+                # TODO: modify the vendor, raw material relationship (sprint 4)
+                messages.info(request, 'The raw material was modified.')
+                return redirect('inventory')
     else:
         return redirect('inventory')
 

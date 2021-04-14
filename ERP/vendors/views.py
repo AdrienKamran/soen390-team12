@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect 
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, JsonResponse
@@ -37,6 +37,8 @@ def vendors_view(request, vendor_pk=None, vendor_form=None, replenish_form=None,
         vendor_inventory = SellsPart.objects.select_related().filter(v_FK=0).all()
     vendors = Vendor.objects.all()
     parts = Part.objects.all()      
+    User = get_user_model()
+    users = User.objects.all()
     context = {
         'vendor_form': vendor_form,
         'replenish_form': replenish_form,
@@ -44,6 +46,7 @@ def vendors_view(request, vendor_pk=None, vendor_form=None, replenish_form=None,
         'vendor_inventory': vendor_inventory,
         'parts': parts,
         'tab': tab,
+        'users': users
     }    
     return render(request, 'vendors.html', context=context)
 
