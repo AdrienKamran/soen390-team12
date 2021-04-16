@@ -14,10 +14,10 @@
                     {% endfor %}
                     <div class="card">
                         <div class="card-header">
-                            <ul class="nav nav-tabs card-header-tabs" onload="setVendors()">
+                            <ul class="nav nav-tabs card-header-tabs">
                                 <li class="nav-item"><a class="nav-link active" href="#tab1" data-toggle="tab">Inventory</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#tab2" data-toggle="tab">Order</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#tab3" data-toggle="tab">Create</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#tab3" data-toggle="tab">Create/Edit</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#tab4" data-toggle="tab">Order History</a></li>
                             </ul>
                         </div>
@@ -28,16 +28,6 @@
                                         <p class="text-primary m-0 font-weight-bold">Inventory by warehouse</p>
                                     </div>
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6 text-nowrap">
-                                                <div id="dataTable_length" class="dataTables_length" aria-controls="dataTable"><label>Warehouse&nbsp;</label><select class="form-control form-control-sm custom-select custom-select-sm">
-                                                        <option value="10" selected="">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
-                                                    </select></div>
-                                            </div>
-                                        </div>
                                         <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
                                             <table class="table my-0 table-hover" id="dataTable">
                                                 <thead>
@@ -152,14 +142,6 @@
                                                                 {% endfor %}
                                                             </optgroup>
                                                         </select><label for="new-mat-cost">Choose the material's unit cost:</label><input class="form-control" type="number" step=".01" id="new-mat-cost" name="new-mat-cost">
-                                                        <!--<label for="new-mat-vendor">Pick the material's vendor:</label><select class="form-control" id="new-mat-vendor" name="new-mat-vendor">
-                                                            <optgroup label="This is a group">
-                                                                <option value="12" selected="">Select a vendor</option>
-                                                                {% for vendor in vendor_all %}
-                                                                    <option value="{{ vendor.pk }}">{{ vendor.v_name }}</option>
-                                                                {% endfor %}
-                                                            </optgroup>
-                                                        </select> -->
                                                         <legend>Specify the material details:</legend>
                                                     </fieldset>
                                                 </form>
@@ -232,15 +214,12 @@
                     </div>
                 </div>
     <script type="text/javascript">
-        var vendor_dict = {};
         var orderRawMaterialUnitCost = -1;
         var vendorMultiplier = -1;
         var totalCostElement = document.getElementById("total-cost");
 
-        function test() {
-            alert("TEST");
-        }
-
+        //Displaying the prices for a given raw material based on the vendor selection
+        //This method is being called when we set the vendors that sells the specified the raw material 
         function DisplayPrice(raw_material_id) {
             if (raw_material_id == 0) {
                 var element = document.getElementById("total-cost-here");
@@ -260,11 +239,9 @@
                         var element = document.getElementById("total-cost-here");
                         var quantity = document.getElementById("purchase-order-quantity").value
                         var total = uc * quantity
-
                         element.innerHTML = "$" + total.toFixed(2);
                         totalCostElement.value = total;
                         orderRawMaterialUnitCost = uc;
-
                     },
                     error: function(data) {
                         alert("Uh-oh");
@@ -273,6 +250,7 @@
             }
         }
 
+        //Whenever we change the quantity of the desired raw material we update the displayed price.
         function UpdatePrice(quantity) {
             if (orderRawMaterialUnitCost < 0) {
                 alert("Select a raw material before changing quantity.");
@@ -281,20 +259,20 @@
                 if (vendorMultiplier < 0) {
                     var total = orderRawMaterialUnitCost * quantity;
                     var element = document.getElementById("total-cost-here");
-
                     element.innerHTML = "$" + total.toFixed(2);
                     totalCostElement.value = total;
                 }
                 else {
                     var total = orderRawMaterialUnitCost * vendorMultiplier * quantity;
                     var element = document.getElementById("total-cost-here");
-
                     element.innerHTML = "$" + total.toFixed(2);
                     totalCostElement.value = total;
                 }
             }
         }
 
+        //Checking if the raw material name is unique and does not exist in the database.
+        //This is necessary functionality for the create/edit raw material for an inventory
         function CheckIfUnique() {
             element = document.getElementById("new-raw-mat-name");
             $.ajax({
@@ -318,10 +296,10 @@
             });
         }
 
+        //if the raw material already exists, then that means we only want to change the unit price for it.
         function SelectExistingRM() {
             element = document.getElementById("new-raw-mat-name");
             element.value = "";
-
             existing_raw_material = document.getElementById("existing-raw-mat");
             $.ajax({
                 url: '/inventory/get-raw-material/',
@@ -340,12 +318,12 @@
             });
         }
 
+        //This function is responsible for displaying the total price for order based on the unit price, vendor multiplier, and the quantity
         function SelectOrderVendor(vendor_id) {
             if (vendor_id == 0) {
                 var quantity = document.getElementById("purchase-order-quantity").value;
                 var updatedUnitCost = orderRawMaterialUnitCost * quantity;
                 var element = document.getElementById("total-cost-here");
-
                 element.innerHTML = "$" + updatedUnitCost.toFixed(2);
                 totalCostElement.value = updatedUnitCost;
             }
@@ -359,7 +337,6 @@
                     success: function(data) {
                         var v_multiplier = data[0].fields.v_price_multiplier;
                         var element = document.getElementById("total-cost-here");
-
                         if (orderRawMaterialUnitCost >= 0) {
                             var quantity = document.getElementById("purchase-order-quantity").value;
                             var updatedUnitCost = orderRawMaterialUnitCost * v_multiplier * quantity;
@@ -380,13 +357,15 @@
             }
         }
 
+        //This function directs you to a detail view page upon clicking on a certain row in the table of inventory
         function goToDetailView(warehouse_id, part_id) {
             window.location.href = '/inventory/part/?warehouse_id=' + warehouse_id + "&part_id=" + part_id;
             return false;
         }
         
-        function updateVendorsList(rm_pk) {
-            
+        //This updates the drop down options based on the selected the raw material. because we only want to display the vendors that
+        //sell the selected raw material.
+        function updateVendorsList(rm_pk) {  
             DisplayPrice(rm_pk);
             var vendorDropBox = document.getElementById("purchase-vendor-name");
             $.ajax({
@@ -403,29 +382,6 @@
                             option.text = data[i].fields.v_name;
                             vendorDropBox.appendChild(option);
                         }
-                        
-                        var v_FK = data[0].fields.v_FK;
-
-
-                        var v_name = data[0].fields.v_name;
-
-                        //alert(data);
-
-                        // var v_multiplier = data[0].fields.v_price_multiplier;
-                        // var element = document.getElementById("total-cost-here");
-
-                        // if (orderRawMaterialUnitCost >= 0) {
-                        //     var quantity = document.getElementById("purchase-order-quantity").value;
-                        //     var updatedUnitCost = orderRawMaterialUnitCost * v_multiplier * quantity;
-                        //     element.innerHTML = "$" + updatedUnitCost.toFixed(2);
-                        //     totalCostElement.value = updatedUnitCost;
-                        //     vendorMultiplier = v_multiplier;
-                        // }
-                        // else {
-                        //     alert("You must choose a raw material first");
-                        //     var select = document.getElementById("purchase-vendor-name");
-                        //     select.value = 0;
-                        // }
                     },
                     error: function(data) {
                         alert("Uh-oh");
@@ -433,31 +389,12 @@
                 });    
         }
 
+        //When a raw material is selected we want to empty the options in the select drop down.
         function removeOptions(selectElement) {
             var i, L = selectElement.options.length - 1;
             for(i = L; i >= 1; i--) {
                 selectElement.remove(i);
             }
-        }
-
-        function setVendors() {
-
-            $.ajax({
-                    url: '/inventory/get-all-vendors/',
-                    dataType: 'json',
-                    success: function(data) {
-                        alert(data[0].fields.v_name);
-                        //alert(data[0].fields.v_name);
-                        for (var i=0; i<data.length; i++) {
-                            alert(data[i].fields.v_name);
-                            vendor_dict[data[i].fields.v_FK] = data[i].fields.v_name; 
-                            alert(vendor_dict[data[i].fields.v_FK]);
-                        }
-                    },
-                    error: function(data) {
-                        alert("Uh-oh");
-                    }
-                });
         }
     </script>
 {% endblock %}
