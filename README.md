@@ -29,6 +29,8 @@ Web Image:
 docker pull abdul97/soen390-team12:DBD-ERP-web
 
 ## Useful Links
+Docker-compose file:
+https://github.com/AdrienKamran/soen390-team12/blob/main/ERP/docker-compose.yml
 
 Jira link:
 https://soen390-team12.atlassian.net/
