@@ -8,8 +8,11 @@ Abdul Sirawan | Adrien Kamran | Anthony Chraim | Cedrik Duboi | Killian Kelly | 
 The system is was built as a django application. The data is stored in a Postgresql database. The languages used in the frontend are HTML, CSS, Javascript and Bootstrap. The backend is coded entirely by using Python.
 
 
-## Sprint 4 Documents
-https://github.com/AdrienKamran/soen390-team12/tree/sprint4-dev/Sprint4Documents
+## Documents
+https://github.com/AdrienKamran/soen390-team12/tree/main/Sprint4Documents
+
+## Postmortem
+https://github.com/AdrienKamran/soen390-team12/tree/main/Sprint5Documents
 
 ## Demo app
 https://erp-soen390-team12.herokuapp.com/
@@ -17,6 +20,13 @@ https://erp-soen390-team12.herokuapp.com/
 user: team12
 
 password: password
+
+## Dokcer Images
+DB Image:
+docker pull abdul97/soen390-team12:DBD-ERP-db
+
+Web Image:
+docker pull abdul97/soen390-team12:DBD-ERP-web
 
 ## Useful Links
 
@@ -31,3 +41,7 @@ https://docs.docker.com/compose/install/ (docker-compose up)
 
 Coverage.py library for coverage report:
 https://docs.djangoproject.com/en/3.1/topics/testing/advanced/#integration-with-coverage-py
+
+DockerHub repo:
+https://hub.docker.com/r/abdul97/soen390-team12
+
